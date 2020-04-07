@@ -119,9 +119,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(5644 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(9399 bytes)*
 
-  v1.6
+  v1.7.0
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -129,7 +129,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
 
-  Required: nircmd.exe, 7z.exe, requires tuning for local conditions
+  Required: curl.exe, nircmd.exe, 7z.exe, requires tuning for local conditions
 
   Keys: launch from Macro Browser alt.
 
