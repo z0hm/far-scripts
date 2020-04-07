@@ -119,15 +119,25 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(9399 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10419 bytes)*
 
-  v1.7.0
+  v1.7.1
 
   Opening changelog and updating Far Manager to any version available on the site
 
-  ![changelog](http://i.piccy.info/i9/2e704ed9a9c5f058da7ed1e08402453c/1585846769/24321/1370793/2020_04_02_195044.png)
+  ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 
   ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
+
+  Far: press [ Reload Last ] to reload the list with files
+
+  GitHub: press [ More >> ] to get more files
+
+  GitHub: press [ Reload Last ] to reload last page with files
+
+  GitHub: press [ Reload All ] to reload all pages
+
+  When you run the macro again, the build will be taken from the current position in Far.changelog
 
   Required: curl.exe, nircmd.exe, 7z.exe, requires tuning for local conditions
 

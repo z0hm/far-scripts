@@ -1,8 +1,13 @@
 ﻿-- FarUpdate.lua
--- v1.7.0
+-- v1.7.1
 -- Opening changelog and updating Far Manager to any version available on the site
--- ![changelog](http://i.piccy.info/i9/2e704ed9a9c5f058da7ed1e08402453c/1585846769/24321/1370793/2020_04_02_195044.png)
+-- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
+-- Far: press [ Reload Last ] to reload the list with files
+-- GitHub: press [ More >> ] to get more files
+-- GitHub: press [ Reload Last ] to reload last page with files
+-- GitHub: press [ Reload All ] to reload all pages
+-- When you run the macro again, the build will be taken from the current position in Far.changelog
 -- Required: curl.exe, nircmd.exe, 7z.exe, requires tuning for local conditions
 -- Keys: launch from Macro Browser alt.
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=700#19
@@ -32,6 +37,7 @@ local FileList0,pages,FileName = 0,{}
 local GitItemsPerPage,ListActions = 20,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
 local RealPos,FileList = 1,{}
 local box={true,x64,true} -- [ Far ]   [ x64 ]   [ 7z  ]
+local EGI,StringText,build
 
 -- Create FarUpdate.bat
 local FarUpdate=function(FileName)
@@ -97,6 +103,13 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
         hDlg:send(F.DM_LISTADD,5,{{Text=ListActions[i]}}) table.insert(ListT,ListActions[i])
       end
     end
+    if build then
+      local ans
+      for i=1,#ListT do
+        if type(ListT[i])=="table" then ans=ListT[i][1]:find("^"..build) end
+        if ans then RealPos=i break end
+      end
+    end
     hDlg:send(F.DM_LISTSETCURPOS,5,{SelectPos=RealPos})
     FileName=tostring(hDlg:send(F.DM_GETTEXT,5))
     hDlg:send(F.DM_SETFOCUS,5,0)
@@ -155,15 +168,30 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
 end
 
 Macro {
-area="Common"; flags=""; description="! FarUpdateGit";
+area="Common"; flags=""; description="! FarUpdate";
 action=function()
-  local f=tmp.."Far.changelog"
+  local changelog="Far.changelog"
+  local f=tmp..changelog
   if #FileList==0 then
     --fwrite(GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'),f)
     fwrite(GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'),f)
     GetFileList(0)
   end
   editor.Editor(f,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_USEEXISTING),1,1,nil)
+  EGI=editor.GetInfo()
+  if EGI then
+    local FileName=EGI.FileName
+    if FileName then 
+      FileName=FileName:match("[^%\\]+$")
+      if FileName==changelog then
+        for CurLine=EGI.CurLine,1,-1 do
+          StringText=editor.GetString(EGI.EditorID,CurLine).StringText
+          if StringText then build=StringText:match(' build (%d+)%s*$') end
+          if build then break end
+        end
+      end
+    end
+  end
   local w=far.AdvControl(F.ACTL_GETFARRECT)
   local res=far.Dialog(uGuid,w.Right-items[1][4]-2,w.Bottom-w.Top-7,w.Right-2,w.Bottom-w.Top-2,nil,items,F.FDLG_SMALLDIALOG,DlgProc)
   if res==#items-2 or res==#items-1 then
