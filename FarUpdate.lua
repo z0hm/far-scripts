@@ -67,20 +67,25 @@ local GetFileList=function(page,items)
       -- /Far.x64.3.0.5523.1332.0e89356681209509d3db8c5dcfbe6a82194d14a4.pdb.7z
       local patt='%},(%c%c-[^%}%{]-"browser_download_url" ?: ?"(http[^"]-)"[^%}%{]-)%}'
       for txt,url in text:gmatch(patt) do
-        local size=txt:match('"size" ?: ?(%d+)')
-        if size then size=math.floor(tonumber(size)/100000+1)/10 end
+        --local size=txt:match('"size" ?: ?(%d+)')
+        --if size then
+        --  size=math.floor(tonumber(size)/100000+1)/10
+        --  size=' '..tostring(size)..'MB'
+        --else size=''
+        --end
+        local size=''
         -- 2019-12-10T18:59:06Z
         local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
         date=date:gsub("T"," "):gsub("Z","")
         local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
-        table.insert(FileList,{build..xx..' '..date..' '..ext..' '..size..'MB',url,page,fname})
+        table.insert(FileList,{build..xx..' '..date..' '..ext..size,url,page,fname})
       end
       table.insert(pages,page)
     end
   end
 end
 
-local ListT={}
+local ListT,PosProtect = {}
 local DlgProc=function(hDlg,Msg,Param1,Param2)
   local function BoxUpdate()
     hDlg:send(F.DM_SETTEXT,2,box[1] and '[ Far ]' or '[ Git ]')
@@ -107,7 +112,7 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
       local ans
       for i=1,#ListT do
         if type(ListT[i])=="table" then ans=ListT[i][1]:find("^"..build) end
-        if ans then RealPos=i break end
+        if ans then RealPos=PosProtect and RealPos or i PosProtect=false break end
       end
     end
     hDlg:send(F.DM_LISTSETCURPOS,5,{SelectPos=RealPos})
@@ -129,14 +134,16 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
     RefreshList()
   elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==5 then
     local ListInfo=hDlg:send(F.DM_LISTINFO,5)
-    RealPos=ListInfo.SelectPos==0 and RealPos or ListInfo.SelectPos
     local LastPos=ListInfo.ItemsNumber
+    local SelectPos=ListInfo.SelectPos
+    RealPos=SelectPos==0 and RealPos or SelectPos
     local str=tostring(hDlg:send(F.DM_GETTEXT,5))
     if Msg==F.DN_EDITCHANGE and str:sub(1,1)=="*"
     then
       if str==ListActions[1] then
         RemoveListActions(LastPos)
         GetFileList(FileList[#FileList][3]+1)
+        PosProtect=true
       elseif str==ListActions[2] then
         RemoveListActions(LastPos)
         local page=FileList[#FileList][3]
@@ -144,7 +151,7 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
         for i=#FileList,1,-1 do if FileList[i][3]==page then table.remove(FileList,i) else break end end
         GetFileList(page)
         local p=ListT[#ListT][2]
-        for i=#ListT,1,-1 do if ListT[i][2]==p then table.remove(ListT,i) else RealPos=i+1 break end end
+        for i=#ListT,1,-1 do if ListT[i][2]==p then table.remove(ListT,i) else RealPos=i+1 PosProtect=true break end end
       elseif str==ListActions[3] then
         RemoveListActions(LastPos)
         local p={} for i=1,#pages do p[i]=pages[i] end
