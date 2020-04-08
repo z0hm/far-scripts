@@ -1,5 +1,5 @@
 ﻿-- Editor.FilterDuplicatesFileNames.lua
--- v1.2.2
+-- v1.2.3
 -- Filter Duplicates File Names with complex logic
 -- ![Editor.FilterDuplicatesFileNames](http://i.piccy.info/i9/ef8a00f82a655df0f6058b78be55fc5f/1585847959/7483/1370793/2020_04_02_201451.png)
 -- Keys: launch from Macro Browser alt.
@@ -67,7 +67,7 @@ local function StartAndLenW(name)
     ptr = C.wcschr(name,HTAB)
     name = ptr==NULL and name or ptr+1
   end
-  local ptr = C.wcsrchr(name,BS)
+  ptr = C.wcsrchr(name,BS)
   name = ptr==NULL and name or ptr+1
   local len = tonumber(C.wcslen(name))
   if ts[2] and ts[3]<0 and -ts[3]<len then

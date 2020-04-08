@@ -1,5 +1,5 @@
 ﻿-- Panel.SelectDuplicatesFileNames.lua
--- v13.2.3
+-- v13.2.4
 -- Select Duplicates File Names in Branch panel with complex logic
 -- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/7a5542e442b1ee61b39f6f9ad8dcae63/1585894944/7348/1370861/2020_04_03_091759.png)
 -- Keys: launch from Macro Browser alt.
@@ -125,7 +125,7 @@ action=function()
         if bit.band(pif,F.PFLAGS_REVERSESORTORDER)==0 then pc(PANEL_ACTIVE,"FCTL_SETSORTORDER",1,NULL) end
         Panel.LoadCustomSortMode(PanelMode,{Description=Desc1;Indicator=Indi1;Compare=Compare})
         Panel.SetCustomSortMode(PanelMode,0)
-        local st0,ln0,st1,ln1,st2,ln2,st3,ln3,sz0,sz1,fa0,fa1 = nil
+        local st0,ln0,st1,ln1,st2,ln2,st3,ln3,sz0,sz1,fa0,fa1
         local ppi = ffi.new("struct FarGetPluginPanelItem")
         ppi.StructSize = ffi.sizeof("struct FarGetPluginPanelItem")
         local function PGPI(i)

@@ -1,5 +1,5 @@
 ﻿-- Panel.VisualCompare.lua
--- v.1.8.2
+-- v.1.8.3
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 -- Keys: CtrlAltC
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2080#6
@@ -108,7 +108,7 @@ action = function()
   else
     local NotRead,NotReadFile = false,""
     local function crash_protect(f)
-      local zero,zzzzfeff,fffezzzz,feff,fffe,efbbbf,zero = false,false,"\255\254\000\000","\000\000\254\255","\254\255","\255\254","\239\187\191"
+      local fffezzzz,zzzzfeff,feff,fffe,efbbbf,zero = "\255\254\000\000","\000\000\254\255","\254\255","\255\254","\239\187\191"
       if not win.GetFileInfo(f).FileAttributes:find("d") then
         local h=io.open(f,"rb")
         if h then

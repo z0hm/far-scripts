@@ -61,9 +61,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.FilterDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.FilterDuplicatesFileNames.lua "Editor.FilterDuplicatesFileNames.lua")   *(11706 bytes)*
+## [Editor.FilterDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.FilterDuplicatesFileNames.lua "Editor.FilterDuplicatesFileNames.lua")   *(11700 bytes)*
 
-  v1.2.2
+  v1.2.3
 
   Filter Duplicates File Names with complex logic
 
@@ -119,9 +119,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10419 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10476 bytes)*
 
-  v1.7.1
+  v1.7.2
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -368,9 +368,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")   *(11536 bytes)*
+## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")   *(11530 bytes)*
 
-  v13.2.3
+  v13.2.4
 
   Select Duplicates File Names in Branch panel with complex logic
 
@@ -396,9 +396,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")   *(6149 bytes)*
+## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")   *(6132 bytes)*
 
-  v.1.8.2
+  v.1.8.3
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 

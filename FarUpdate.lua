@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.1
+-- v1.7.2
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
@@ -33,7 +33,7 @@ local items={
 local tmp=win.GetEnv("TEMP").."\\"
 local farhome=win.GetEnv("FARHOME")
 local x64=win.IsProcess64bit()
-local FileList0,pages,FileName = 0,{}
+local pages,FileName = {}
 local GitItemsPerPage,ListActions = 20,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
 local RealPos,FileList = 1,{}
 local box={true,x64,true} -- [ Far ]   [ x64 ]   [ 7z  ]
@@ -49,7 +49,6 @@ local FarUpdate=function(FileName)
 end
 
 local GetFileList=function(page,items)
-  FileList0=#FileList
   local brk
   if not page then page=box[1] and 0 or 1 end
   for _,v in pairs(pages) do if page==v then brk=true break end end
@@ -69,18 +68,19 @@ local GetFileList=function(page,items)
       local patt='%},(%c%c-[^%}%{]-"browser_download_url" ?: ?"(http[^"]-)"[^%}%{]-)%}'
       for txt,url in text:gmatch(patt) do
         local size=txt:match('"size" ?: ?(%d+)')
+        if size then size=math.floor(tonumber(size)/100000+1)/10 end
         -- 2019-12-10T18:59:06Z
         local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
         date=date:gsub("T"," "):gsub("Z","")
         local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
-        table.insert(FileList,{build..xx..' '..date..' '..ext,url,page,fname})
+        table.insert(FileList,{build..xx..' '..date..' '..ext..' '..size..'MB',url,page,fname})
       end
       table.insert(pages,page)
     end
   end
 end
 
-ListT={}
+local ListT={}
 local DlgProc=function(hDlg,Msg,Param1,Param2)
   local function BoxUpdate()
     hDlg:send(F.DM_SETTEXT,2,box[1] and '[ Far ]' or '[ Git ]')
@@ -181,7 +181,7 @@ action=function()
   EGI=editor.GetInfo()
   if EGI then
     local FileName=EGI.FileName
-    if FileName then 
+    if FileName then
       FileName=FileName:match("[^%\\]+$")
       if FileName==changelog then
         for CurLine=EGI.CurLine,1,-1 do
