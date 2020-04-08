@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.2
+-- v1.7.3
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
@@ -67,18 +67,13 @@ local GetFileList=function(page,items)
       -- /Far.x64.3.0.5523.1332.0e89356681209509d3db8c5dcfbe6a82194d14a4.pdb.7z
       local patt='%},(%c%c-[^%}%{]-"browser_download_url" ?: ?"(http[^"]-)"[^%}%{]-)%}'
       for txt,url in text:gmatch(patt) do
-        --local size=txt:match('"size" ?: ?(%d+)')
-        --if size then
-        --  size=math.floor(tonumber(size)/100000+1)/10
-        --  size=' '..tostring(size)..'MB'
-        --else size=''
-        --end
-        local size=''
+        local size=txt:match('"size" ?: ?(%d+)')
+        if size then size=math.floor(tonumber(size)/100000+1)/10 size=' '..tostring(size)..'MB' else size='' end
         -- 2019-12-10T18:59:06Z
         local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
-        date=date:gsub("T"," "):gsub("Z","")
+        if date then date=' '..date:gsub("T"," "):gsub("Z","") else date='' end
         local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
-        table.insert(FileList,{build..xx..' '..date..' '..ext..size,url,page,fname})
+        table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname})
       end
       table.insert(pages,page)
     end
