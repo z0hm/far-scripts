@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.3
+-- v1.7.4
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
@@ -131,8 +131,8 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
     local ListInfo=hDlg:send(F.DM_LISTINFO,5)
     local LastPos=ListInfo.ItemsNumber
     local SelectPos=ListInfo.SelectPos
-    RealPos=SelectPos==0 and RealPos or SelectPos
     local str=tostring(hDlg:send(F.DM_GETTEXT,5))
+    RealPos=SelectPos==0 and RealPos or SelectPos
     if Msg==F.DN_EDITCHANGE and str:sub(1,1)=="*"
     then
       if str==ListActions[1] then
@@ -162,6 +162,8 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
     BoxUpdate()
     local ListInfo=hDlg:send(F.DM_LISTINFO,5)
     local LastPos=ListInfo.ItemsNumber
+    local str=tostring(hDlg:send(F.DM_GETTEXT,5))
+    build=str:match("^%d+")
     RemoveListActions(LastPos)
     if Param1==2 then GetFileList() end
     RealPos=1
