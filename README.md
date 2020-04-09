@@ -119,7 +119,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10744 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10748 bytes)*
 
   v1.7.4
 
@@ -129,7 +129,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
 
-  Far: press [ Reload Last ] to reload the list with files
+  Far: press **[ Reload Last ]** to reload the list with files
 
   GitHub: press **[ More >> ]** to get more files
 
