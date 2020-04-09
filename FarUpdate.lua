@@ -4,16 +4,16 @@
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
 -- Far: press [ Reload Last ] to reload the list with files
--- GitHub: press [ More >> ] to get more files
--- GitHub: press [ Reload Last ] to reload last page with files
--- GitHub: press [ Reload All ] to reload all pages
+-- GitHub: press **[ More >> ]** to get more files
+-- GitHub: press **[ Reload Last ]** to reload last page with files
+-- GitHub: press **[ Reload All ]** to reload all pages
 -- When you run the macro again, the build will be taken from the current position in Far.changelog
 -- Required: curl.exe, nircmd.exe, 7z.exe, requires tuning for local conditions
 -- Keys: launch from Macro Browser alt.
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=700#19
 
 local function fwrite(s,f) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
-local function GetPage(x) panel.GetUserScreen() local s="" if x then s=io.popen('curl.exe -k '..x,'rb'):read('*all') end panel.SetUserScreen() return s end
+local function GetPage(x) panel.GetUserScreen() local s="" if x then s=io.popen('curl.exe '..x,'rb'):read('*all') end panel.SetUserScreen() return s end
 
 local F=far.Flags
 local guid="0EEE33E2-1E95-4753-982C-B2BD1E63C3C4"
@@ -204,7 +204,7 @@ action=function()
       for _,v in pairs(FileList) do if v[1]==FileName then url,FileName = v[2],v[4] break end end
       local function Download(tmp,FileName)
         if not win.GetFileInfo(tmp..FileName) or far.Message("Download it again?","WARNING! File exist",";YesNo","w")==1
-        then panel.GetUserScreen() win.system('curl.exe -g -k -L --location-trusted "'..url..'" -o "'..tmp..FileName..'"') panel.SetUserScreen()
+        then panel.GetUserScreen() win.system('curl.exe -g -L --location-trusted "'..url..'" -o "'..tmp..FileName..'"') panel.SetUserScreen()
         end
       end
       if res==#items-1 then

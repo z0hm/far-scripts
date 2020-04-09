@@ -1,7 +1,7 @@
 # [far-scripts](https://github.com/z0hm/far-scripts "far-scripts")
 
 
-lua and moon scripts repository for [Far Manager 3.0](https://farmanager.com/ "File Manager for Windows")
+lua and moon scripts, macros repository for [Far Manager 3.0](https://farmanager.com/ "File Manager for Windows")
 
 Far Manager is powerful files and archives manager and first choice Admins for Windows OSes.
 Far Manager works in text mode and provides a simple and intuitive interface
@@ -119,7 +119,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10738 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10744 bytes)*
 
   v1.7.4
 
@@ -131,11 +131,11 @@ a very wide range of tasks using the Far and Windows API's.
 
   Far: press [ Reload Last ] to reload the list with files
 
-  GitHub: press [ More >> ] to get more files
+  GitHub: press **[ More >> ]** to get more files
 
-  GitHub: press [ Reload Last ] to reload last page with files
+  GitHub: press **[ Reload Last ]** to reload last page with files
 
-  GitHub: press [ Reload All ] to reload all pages
+  GitHub: press **[ Reload All ]** to reload all pages
 
   When you run the macro again, the build will be taken from the current position in Far.changelog
 
@@ -438,7 +438,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")   *(2993 bytes)*
+## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")   *(2990 bytes)*
 
   v1.0
 
@@ -449,7 +449,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(1968 bytes)*
+## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(1965 bytes)*
 
   v1.0
 

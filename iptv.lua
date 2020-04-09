@@ -18,7 +18,7 @@ local urls={
 }
 local function fread(f) local x,h = nil,io.open(f,"rb") if h then x=h:read("*all") io.close(h) end return x end
 local function fwrite(f,s) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
-local function GetPage(x) local s="" if x then s=io.popen("curl.exe -k "..x,"rb"):read("*all") end return s end
+local function GetPage(x) local s="" if x then s=io.popen("curl.exe "..x,"rb"):read("*all") end return s end
 local pgm={}
 for j=1,#urls do
   local i,s = 1,','..j..': '

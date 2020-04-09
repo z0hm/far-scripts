@@ -10,7 +10,7 @@ area="Common"; flags=""; description="! btpolicy.xml";
 action=function()
   local function fread(f) local x,h = nil,io.open(f,"rb") if h then x=h:read("*all") io.close(h) end return x end
   local function fwrite(s,f) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
-  local function GetPage(x) local s="" if x then panel.GetUserScreen() s=io.popen("curl.exe -k "..x,"rb"):read("*all") panel.SetUserScreen() end return s end
+  local function GetPage(x) local s="" if x then panel.GetUserScreen() s=io.popen("curl.exe "..x,"rb"):read("*all") panel.SetUserScreen() end return s end
 
   local Temp=win.GetEnv("TEMP")
   local AppData=win.GetEnv("APPDATA")
