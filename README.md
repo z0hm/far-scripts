@@ -148,7 +148,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(5377 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(5427 bytes)*
 
   v0.5
 
@@ -156,21 +156,25 @@ a very wide range of tasks using the Far and Windows API's.
 
   ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 
-  Support flags: "wlcm", w - warning dialog, l - left align, с - color mode, m - mono mode
+  Support flags: **"wlcm"**, **w** - warning dialog, **l** - left align, **с** - color mode, **m** - monochrome mode
 
-  Tags format: <#xy>, x - foreground color 0..f, y - background color 0..f
+  Tags format: **<#xy>**, **x** - foreground color 0..f, **y** - background color 0..f
 
-  r - restore default color for foreground/background, s - skip, don't change color
+  **r** - restore default color for foreground/background, **s** - skip, don't change color
 
   Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
 
   Usage: put MessageX.lua to modules folder
 
-  Call in scripts (example):       
+  Call in scripts (example):
+
+  ``` lua
 
     local MessageX = require'MessageX'
 
     MessageX("aaa <#e2>bbb<#s1>\nccc<#bs> ddd\neee<#9s> fff <#sr> ggg <#ec>hhh","MessageX","&Ok;!Ca&ncel","wc")
+
+  ```
 
 
 
