@@ -152,7 +152,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   v0.5
 
-  Color MessageX() module
+  Color MessageX() module with support default button assignments
 
   ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 
@@ -160,7 +160,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   Tags format: <#xy>, x - foreground color 0..f, y - background color 0..f
 
-  r - restore default color for dialog text, s - skip, don't change color
+  r - restore default color for foreground/background, s - skip, don't change color
 
   Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
 
