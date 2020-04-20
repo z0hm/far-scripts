@@ -119,7 +119,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10748 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(10971 bytes)*
 
   v1.7.4
 
@@ -148,7 +148,34 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")   *(10372 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(5377 bytes)*
+
+  v0.5
+
+  Color MessageX() module
+
+  ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
+
+  Support flags: "wlcm", w - warning dialog, l - left align, с - color mode, m - mono mode
+
+  Tags format: <#xy>, x - foreground color 0..f, y - background color 0..f
+
+  r - restore default color for dialog text, s - skip, don't change color
+
+  Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
+
+  Usage: put MessageX.lua to modules folder
+
+  Call in scripts (example):       
+
+    local MessageX = require'MessageX'
+
+    MessageX("aaa <#e2>bbb<#s1>\nccc<#bs> ddd\neee<#9s> fff <#sr> ggg <#ec>hhh","MessageX","&Ok;!Ca&ncel","wc")
+
+
+
+
+## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")   *(10278 bytes)*
 
   v2.0
 

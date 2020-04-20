@@ -165,8 +165,6 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     hDlg:send(F.DM_SETTEXT,4,tSAttributes)
   elseif Msg==F.DN_BTNCLICK and Param1==28 then   -- [x] Report
     xReport = Param2~=0
-  elseif Msg==F.DN_GOTFOCUS then
-    if Param1>1 and Param1<#Items-2 then GFocus=Param1 end
   else
     return
   end
