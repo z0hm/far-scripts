@@ -95,11 +95,13 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")   *(1946 bytes)*
+## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")   *(2454 bytes)*
 
-  v1.3
+  v1.3.1
 
   Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
+
+  Required: MessageX.lua in the modules folder
 
   Keys: <kbd>F3</kbd>
 
@@ -148,9 +150,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(6460 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(6461 bytes)*
 
-  v0.6
+  v0.6.1
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 
@@ -166,7 +168,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
 
-  Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
+  Example message string: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
 
 
 

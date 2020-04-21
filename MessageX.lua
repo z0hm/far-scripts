@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6
+-- v0.6.1
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 -- Support flags: **"wlcm"**
@@ -7,7 +7,7 @@
 -- without **cm** will be used raw mode 
 -- Tags format: **<#xy>**, **x** - foreground color **0..f**, **y** - background color **0..f**
 -- **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
--- Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
+-- Example message string: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
 --
 -- Usage: put **MessageX.lua** to modules folder
 -- Call in scripts (example):
@@ -24,7 +24,7 @@ local patlen=5
 
 local function CreateColorTbl(tbl,width)
   local ct={}
-  local line,smax,fg,bg = 1,0,0,0
+  local line,smax,fg,bg = 1,0
   while line<=#tbl do
     table.insert(ct,{})
     local len,to,from,_fg,_bg = 0,0

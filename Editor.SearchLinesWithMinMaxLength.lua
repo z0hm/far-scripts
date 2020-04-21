@@ -1,7 +1,10 @@
 ﻿-- Editor.SearchLinesWithMinMaxLength.lua
--- v1.3
+-- v1.3.1
 -- Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
+-- Required: MessageX.lua in the modules folder
 -- Keys: F3
+
+local MessageX=require'MessageX'
 
 Macro {
   description="Search Lines with MinMax Lengths";
@@ -29,12 +32,25 @@ Macro {
     end
     MinText=win.Utf16ToUtf8(MinText)--:sub(1,70)
     MaxText=win.Utf16ToUtf8(MaxText)--:sub(1,70)
+    local spc='\183'
+    local tab='\26'
+    local function show(s)
+      s=s:gsub('%d+%.?%d*','<#2s>%1<#rs>')
+      s=s:gsub(' +','<#1s>%1<#rs>')
+      s=s:gsub(' ',spc)
+      s=s:gsub('\t+','<#1s>%1<#rs>')
+      s=s:gsub('\t',tab)
+      return s
+    end
+    MinText=show(MinText)
+    MaxText=show(MaxText)
     ttime=far.FarClock()-ttime
-    local res=far.Message(
-      '   MinLine: '..MinNumber..'   Symbols: '..MinSymbols..'   Bytes: '..MinBytes..'\n'..MinText..'\n\n'..
-      '   MaxLine: '..MaxNumber..'   Symbols: '..MaxSymbols..'   Bytes: '..MaxBytes..'\n'..MaxText..'\n\nTime: '..ttime..' mcs',
+    local res=MessageX(
+    --local res=far.Message(
+      '   MinLine: <#1s>'..MinNumber..'<#rs>   Symbols: <#1s>'..MinSymbols..'<#rs>   Bytes: <#1s>'..MinBytes..'<#rs>\n'..MinText..'\n\n'..
+      '   MaxLine: <#1s>'..MaxNumber..'<#rs>   Symbols: <#1s>'..MaxSymbols..'<#rs>   Bytes: <#1s>'..MaxBytes..'<#rs>\n'..MaxText..'\n\nTime: <#9s>'..ttime..'<#rs> mcs',
       'Search Lines with MinMax Lengths',
-      'Min;Max;Cancel'
+      'Min;Max;Cancel','c'
     )
     if res==1 then editor.SetPosition(EditorID,{CurLine=MinNumber})
     elseif res==2 then editor.SetPosition(EditorID,{CurLine=MaxNumber})
