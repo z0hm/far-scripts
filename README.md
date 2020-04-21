@@ -148,23 +148,29 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(5427 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(6460 bytes)*
 
-  v0.5
+  v0.6
 
-  Color MessageX() module with support default button assignments
+  Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 
   ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 
-  Support flags: **"wlcm"**, **w** - warning dialog, **l** - left align, **с** - color mode, **m** - monochrome mode
+  Support flags: **"wlcm"**
 
-  Tags format: **<#xy>**, **x** - foreground color 0..f, **y** - background color 0..f
+  **w** - warning dialog, **l** - left align (default center align), **c** - color mode, **m** - monochrome mode
 
-  **r** - restore default color for foreground/background, **s** - skip, don't change color
+  without **cm** will be used raw mode 
+
+  Tags format: **<#xy>**, **x** - foreground color **0..f**, **y** - background color **0..f**
+
+  **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
 
   Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
 
-  Usage: put MessageX.lua to modules folder
+
+
+  Usage: put **MessageX.lua** to modules folder
 
   Call in scripts (example):
 

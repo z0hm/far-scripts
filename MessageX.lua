@@ -1,12 +1,15 @@
 ﻿-- MessageX.lua
--- v0.5
--- Color MessageX() module with support default button assignments
+-- v0.6
+-- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
--- Support flags: **"wlcm"**, **w** - warning dialog, **l** - left align, **с** - color mode, **m** - monochrome mode
--- Tags format: **<#xy>**, **x** - foreground color 0..f, **y** - background color 0..f
--- **r** - restore default color for foreground/background, **s** - skip, don't change color
+-- Support flags: **"wlcm"**
+-- **w** - warning dialog, **l** - left align (default center align), **c** - color mode, **m** - monochrome mode
+-- without **cm** will be used raw mode 
+-- Tags format: **<#xy>**, **x** - foreground color **0..f**, **y** - background color **0..f**
+-- **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
 -- Example message str: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
--- Usage: put MessageX.lua to modules folder
+--
+-- Usage: put **MessageX.lua** to modules folder
 -- Call in scripts (example):
 -- ``` lua
 --   local MessageX = require'MessageX'
@@ -19,10 +22,10 @@ local K=far.Colors
 local pat="<#([0-9A-FRSa-frs])([0-9A-FRSa-frs])>"
 local patlen=5
 
-local function CreateColorTbl(tbl,tbllen)
+local function CreateColorTbl(tbl,width)
   local ct={}
-  local smax,fg,bg = 0,0,0
-  for line=1,tbllen do
+  local line,smax,fg,bg = 1,0,0,0
+  while line<=#tbl do
     table.insert(ct,{})
     local len,to,from,_fg,_bg = 0,0
     repeat
@@ -40,46 +43,72 @@ local function CreateColorTbl(tbl,tbllen)
       end
     until not from
     tbl[line]=tbl[line]:gsub(pat,"")
-    local slen=tbl[line]:len()
-    if smax<slen then smax=slen end
+    local sz=tbl[line]:len()
+    local w=width-4
+    if sz>=w then smax=w elseif smax<sz then smax=sz end
+    while sz>w do
+      table.insert(ct,{})
+      for k in pairs(ct[line]) do if k>w then ct[line+1][k-w]=ct[line][k] ct[line][k]=nil end end
+      local s
+      tbl[line],s = tbl[line]:sub(1,w),tbl[line]:sub(w+1,sz)
+      line=line+1 table.insert(tbl,line,s) sz=sz-w
+    end
+    line=line+1
   end
   return tbl,ct,smax
 end
 
-local function CreateMonoTbl(tbl,tbllen,Flags)
-  local ct,smax,mono = {},0
+local function CreateMonoTbl(tbl,width,Flags)
+  local line,ct,smax,mono = 1,{},0
   if Flags:find("m") then mono=true end
-  for line=1,tbllen do
+  while line<=#tbl do
     table.insert(ct,{})
     if mono then tbl[line]=tbl[line]:gsub(pat,"") end
-    local slen=tbl[line]:len()
-    if smax<slen then smax=slen end
+    local sz=tbl[line]:len()
+    local w=width-4
+    if sz>=w then smax=w elseif smax<sz then smax=sz end
+    while sz>w do
+      table.insert(ct,{})
+      local s
+      tbl[line],s = tbl[line]:sub(1,w),tbl[line]:sub(w+1,sz)
+      line=line+1 table.insert(tbl,line,s) sz=sz-w
+    end
+    line=line+1
   end
   return tbl,ct,smax
 end
 
-local function CreateButtons(tbllen,Buttons)
-  if Buttons=="" then return end
-  local bFlags,tButtons,butlen,butnum,butdef = F.DIF_CENTERGROUP,{},0,0,0
+local function CreateButtons(line,Buttons)
+  local butnum,butdef,butlen,tButtons = 0,0,0,{}
+  if Buttons=="" then return butdef,butlen end
+  local bFlags=F.DIF_CENTERGROUP
   for def,button in Buttons:gmatch("(!?)([^;]+)") do
     butnum=butnum+1
     if def=="!" then butdef=butnum end
-    table.insert(tButtons,{F.DI_BUTTON,0,tbllen+2,0,0,0,0,0,bFlags,button})
+    table.insert(tButtons,{F.DI_BUTTON,0,line,0,0,0,0,0,bFlags,button})
     butlen=butlen+button:gsub("&",""):len()+4
   end
   if butdef==0 then butdef=1 end
   tButtons[butdef][9]=bFlags+F.DIF_DEFAULTBUTTON
-  return tButtons,butnum,butdef,butlen+butnum-1
+  return butdef,butlen+butnum-1,tButtons
 end
 
-local function CreateItem(tbl,tbllen,butnum,butlen,Flags)
+local function CreateItem(tbl,width,height,Flags,Buttons)
   local ct,smax
   if Flags:find("c")
-  then tbl,ct,smax = CreateColorTbl(tbl,tbllen)
-  else tbl,ct,smax = CreateMonoTbl(tbl,tbllen,Flags)
+  then tbl,ct,smax = CreateColorTbl(tbl,width)
+  else tbl,ct,smax = CreateMonoTbl(tbl,width,Flags)
   end
+  local tbllen=#tbl
+
+  -- Buttons processing
+  local line=tbllen+4>height and height-2 or tbllen+2
+  local butdef,butlen,tButtons = CreateButtons(line,Buttons)
+
   local X2=smax>butlen and smax+4 or butlen+4
-  local Y2=tbllen+(butnum==0 and 2 or 4)
+  local Y2=tbllen+(tButtons and 4 or 2)
+  if Y2>height then Y2,tbllen = height,(tButtons and height-4 or height-2) end
+
   local buffer=far.CreateUserControl(X2-4,tbllen)
   local cFlags=bit64.bor(F.FCF_FG_4BIT,F.FCF_BG_4BIT)
   local elem=Flags:find("w") and K.COL_WARNDIALOGTEXT or K.COL_DIALOGTEXT
@@ -105,7 +134,7 @@ local function CreateItem(tbl,tbllen,butnum,butlen,Flags)
       ptr=ptr+1
     end
   end
-  return X2,Y2,{F.DI_USERCONTROL,2,1,X2-3,tbllen,buffer,0,0,F.DIF_NOFOCUS,""}
+  return tButtons,butdef,X2,Y2,{F.DI_USERCONTROL,2,1,X2-3,tbllen,buffer,0,0,F.DIF_NOFOCUS,""}
 end
 
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
@@ -115,24 +144,25 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   else Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
   end
 
+  -- Window size
+  local width,height
+  local w=far.AdvControl(F.ACTL_GETFARRECT)
+  if w then width,height = w.Right+1,w.Bottom+1 end
+
   -- Line processing
   local tbl={}
   for line in Msg:gmatch("([^\r\n]*)\r?\n") do table.insert(tbl,line) end
   table.insert(tbl,Msg:match("[^\r\n]+$"))
 
-  -- Buttons processing
-  local tbllen,butnum,butdef,butlen,tButtons = #tbl,0,0,0
-  if Buttons~="" then tButtons,butnum,butdef,butlen = CreateButtons(tbllen,Buttons) end
-  
   -- Message Creation
-  local X2,Y2,item = CreateItem(tbl,tbllen,butnum,butlen,Flags)
+  local tButtons,butdef,X2,Y2,item = CreateItem(tbl,width,height,Flags,Buttons)
 
   -- Frame Creation
   local Items={{F.DI_DOUBLEBOX,0,0,X2,Y2,0,0,0,0,Title or ""}}
   -- Message Insertion
   table.insert(Items,item)
   -- Button Creation
-  if Buttons and Buttons~="" then
+  if tButtons then
     table.insert(Items,{F.DI_TEXT,0,Y2-3,0,0,0,0,0,F.DIF_SEPARATOR,""})
     for i=1,#tButtons do table.insert(Items,tButtons[i]) end
   end
