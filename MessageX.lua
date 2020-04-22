@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6.1
+-- v0.6.4
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 -- Support flags: **"wlcm"**
@@ -94,20 +94,26 @@ local function CreateButtons(line,Buttons)
 end
 
 local function CreateItem(tbl,width,height,Flags,Buttons)
-  local ct,smax
-  if Flags:find("c")
-  then tbl,ct,smax = CreateColorTbl(tbl,width)
-  else tbl,ct,smax = CreateMonoTbl(tbl,width,Flags)
+  local tbllen,smax,ct = #tbl,0
+  if tbllen>0 then
+    if Flags:find("c")
+    then tbl,ct,smax = CreateColorTbl(tbl,width)
+    else tbl,ct,smax = CreateMonoTbl(tbl,width,Flags)
+    end
+    tbllen=#tbl
   end
-  local tbllen=#tbl
 
   -- Buttons processing
-  local line=tbllen+4>height and height-2 or tbllen+2
+  local line=tbllen+4>height and height-2 or (tbllen + (tbllen>0 and 2 or 1))
   local butdef,butlen,tButtons = CreateButtons(line,Buttons)
 
   local X2=smax>butlen and smax+4 or butlen+4
-  local Y2=tbllen+(tButtons and 4 or 2)
+  local Y2=2+tbllen -- add box and Msg
+  if tButtons then Y2=Y2+1 -- add Buttons
+    if tbllen>0 then Y2=Y2+1 end -- add separator
+  end
   if Y2>height then Y2,tbllen = height,(tButtons and height-4 or height-2) end
+  if tbllen==0 then return tButtons,butdef,X2,Y2 end -- No Msg
 
   local buffer=far.CreateUserControl(X2-4,tbllen)
   local cFlags=bit64.bor(F.FCF_FG_4BIT,F.FCF_BG_4BIT)
@@ -139,11 +145,11 @@ end
 
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   -- Protection against incorrect arguments
-  if not Msg or Msg==""
-  then return
-  else Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
-  end
-
+  --if not Msg or Msg==""
+  --then return
+  --else Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
+  --end
+  Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
   -- Window size
   local width,height
   local w=far.AdvControl(F.ACTL_GETFARRECT)
@@ -151,8 +157,10 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
 
   -- Line processing
   local tbl={}
-  for line in Msg:gmatch("([^\r\n]*)\r?\n") do table.insert(tbl,line) end
-  table.insert(tbl,Msg:match("[^\r\n]+$"))
+  if Msg and Msg~="" then
+    for line in Msg:gmatch("([^\r\n]*)\r?\n") do table.insert(tbl,line) end
+    table.insert(tbl,Msg:match("[^\r\n]+$"))
+  end
 
   -- Message Creation
   local tButtons,butdef,X2,Y2,item = CreateItem(tbl,width,height,Flags,Buttons)
@@ -160,16 +168,18 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   -- Frame Creation
   local Items={{F.DI_DOUBLEBOX,0,0,X2,Y2,0,0,0,0,Title or ""}}
   -- Message Insertion
-  table.insert(Items,item)
+  if item then table.insert(Items,item) end
+
+  -- Seperator Insertion
+  if item and tButtons then table.insert(Items,{F.DI_TEXT,0,Y2-3,0,0,0,0,0,F.DIF_SEPARATOR,""}) end
+
   -- Button Creation
-  if tButtons then
-    table.insert(Items,{F.DI_TEXT,0,Y2-3,0,0,0,0,0,F.DIF_SEPARATOR,""})
-    for i=1,#tButtons do table.insert(Items,tButtons[i]) end
-  end
+  if tButtons then for i=1,#tButtons do table.insert(Items,tButtons[i]) end end
 
   -- Dialogue processing
+  local shft=item and 3 or 1
   local DlgProc=function(hDlg,Msg,Param1,Param2)
-    if Msg==F.DN_INITDIALOG then if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdef+3,0) end end
+    if Msg==F.DN_INITDIALOG then if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdef+shft,0) end end
   end
 
   -- Flags processing
@@ -178,7 +188,7 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
 
   -- Show dialogue
   local result=far.Dialog(Guid,-1,-1,X2,Y2,HelpTopic,Items,DlgFlags,DlgProc)
-  return result<0 and result or result-3
+  return result<0 and result or result-shft
 end
 
 return MessageX

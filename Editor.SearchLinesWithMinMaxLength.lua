@@ -30,9 +30,9 @@ Macro {
     then MinBytes,MaxBytes = MinSymbols*2,MaxSymbols*2
     else MinBytes,MaxBytes = #win.WideCharToMultiByte(MinText,CodePage),#win.WideCharToMultiByte(MaxText,CodePage)
     end
-    MinText=win.Utf16ToUtf8(MinText)--:sub(1,70)
-    MaxText=win.Utf16ToUtf8(MaxText)--:sub(1,70)
-    local spc='\183'
+    MinText=win.Utf16ToUtf8(MinText)
+    MaxText=win.Utf16ToUtf8(MaxText)
+    local spc='\194\183'
     local tab='\26'
     local function show(s)
       s=s:gsub('%d+%.?%d*','<#2s>%1<#rs>')
@@ -46,9 +46,8 @@ Macro {
     MaxText=show(MaxText)
     ttime=far.FarClock()-ttime
     local res=MessageX(
-    --local res=far.Message(
-      '   MinLine: <#1s>'..MinNumber..'<#rs>   Symbols: <#1s>'..MinSymbols..'<#rs>   Bytes: <#1s>'..MinBytes..'<#rs>\n'..MinText..'\n\n'..
-      '   MaxLine: <#1s>'..MaxNumber..'<#rs>   Symbols: <#1s>'..MaxSymbols..'<#rs>   Bytes: <#1s>'..MaxBytes..'<#rs>\n'..MaxText..'\n\nTime: <#9s>'..ttime..'<#rs> mcs',
+      '   MinLine: <#1s>'..MinNumber..'<#rs>   Symbols: <#1s>'..MinSymbols..'<#rs>   Bytes: <#1s>'..MinBytes..'<#rs>\n'..MinText..'   \n\n'..
+      '   MaxLine: <#1s>'..MaxNumber..'<#rs>   Symbols: <#1s>'..MaxSymbols..'<#rs>   Bytes: <#1s>'..MaxBytes..'<#rs>\n'..MaxText..'   \n\nTime: <#9s>'..ttime..'<#rs> mcs',
       'Search Lines with MinMax Lengths',
       'Min;Max;Cancel','c'
     )
