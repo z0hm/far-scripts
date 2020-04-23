@@ -130,7 +130,7 @@ Macro
         finish:0
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#fa> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
+        Answer=MessageX "\nStatus: <#a2> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
         if Answer==2
           ShowTimeofProcessing=false
     else
@@ -141,6 +141,6 @@ Macro
       editors[id]=nil
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#fc> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
+        Answer=MessageX "\nStatus: <#c4> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
         if Answer==2
           ShowTimeofProcessing=false
