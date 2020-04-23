@@ -1,5 +1,5 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.2
+-- v1.1.3
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
 -- Keys: F3
@@ -14,6 +14,8 @@ ShowTimeofProcessing=true
 
 F=far.Flags
 Flags=F.ECF_AUTODELETE
+MessageX=require'MessageX'
+
 editors={}
 Colors={
   {regex.new "/(\\s+)(\\S|$)/"
@@ -128,10 +130,8 @@ Macro
         finish:0
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=far.Message "\n Status: ON \n\nCount: "..count.."\nTime: "..ttime0.." mcs","LatCyrMixHighlighting","Show;Hide;Cancel"
-        if Answer==1
-          ShowTimeofProcessing=true
-        elseif Answer==2
+        Answer=MessageX "\nStatus: <#fa> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
+        if Answer==2
           ShowTimeofProcessing=false
     else
       Editor.Set 20,0
@@ -141,8 +141,6 @@ Macro
       editors[id]=nil
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=far.Message "\n Status: OFF\n\nCount: "..count.."\nTime: "..ttime0.." mcs","LatCyrMixHighlighting","Show;Hide;Cancel"
-        if Answer==1
-          ShowTimeofProcessing=true
-        elseif Answer==2
+        Answer=MessageX "\nStatus: <#fc> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
+        if Answer==2
           ShowTimeofProcessing=false

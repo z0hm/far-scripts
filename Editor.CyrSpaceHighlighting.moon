@@ -1,5 +1,5 @@
 ﻿-- Editor.CyrSpaceHighlighting.moon
--- v1.1.2
+-- v1.1.3
 -- Highlighting Cyrillic and space symbols
 -- ![Highlight ON](http://i62.fastpic.ru/big/2014/0603/18/0f2bf6171580c92d52a09ead18b86e18.png)
 -- Keys: F3
@@ -14,6 +14,8 @@ ShowTimeofProcessing=true
 
 F=far.Flags
 Flags=F.ECF_AUTODELETE
+MessageX=require'MessageX'
+
 editors={}
 Colors={
   {regex.new "/(\\s+)(\\S|$)/"
@@ -127,10 +129,8 @@ Macro
         finish:0
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=far.Message "\n Status: ON \n\nCount: "..count.."\nTime: "..ttime0.." mcs","CyrSpaceHighlighting","Show;Hide;Cancel"
-        if Answer==1
-          ShowTimeofProcessing=true
-        elseif Answer==2
+        Answer=MessageX "\nStatus: <#fa> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c"
+        if Answer==2
           ShowTimeofProcessing=false
     else
       Editor.Set 20,0
@@ -140,8 +140,6 @@ Macro
       editors[id]=nil
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=far.Message "\n Status: OFF\n\nCount: "..count.."\nTime: "..ttime0.." mcs","CyrSpaceHighlighting","Show;Hide;Cancel"
-        if Answer==1
-          ShowTimeofProcessing=true
-        elseif Answer==2
+        Answer=MessageX "\nStatus: <#fc> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c"
+        if Answer==2
           ShowTimeofProcessing=false
