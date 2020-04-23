@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6.4
+-- v0.6.7
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 -- Support flags: **"wlcm"**
@@ -22,9 +22,9 @@ local K=far.Colors
 local pat="<#([0-9A-FRSa-frs])([0-9A-FRSa-frs])>"
 local patlen=5
 
+-- if available flag "c"
 local function CreateColorTbl(tbl,width)
-  local ct={}
-  local line,smax,fg,bg = 1,0
+  local ct,line,smax,fg,bg = {},1,0
   while line<=#tbl do
     table.insert(ct,{})
     local len,to,from,_fg,_bg = 0,0
@@ -58,6 +58,7 @@ local function CreateColorTbl(tbl,width)
   return tbl,ct,smax
 end
 
+-- if available flag "m" or w/o him
 local function CreateMonoTbl(tbl,width,Flags)
   local line,ct,smax,mono = 1,{},0
   if Flags:find("m") then mono=true end
@@ -78,6 +79,7 @@ local function CreateMonoTbl(tbl,width,Flags)
   return tbl,ct,smax
 end
 
+-- if available Buttons
 local function CreateButtons(line,Buttons)
   local butnum,butdef,butlen,tButtons = 0,0,0,{}
   if Buttons=="" then return butdef,butlen end
@@ -93,7 +95,7 @@ local function CreateButtons(line,Buttons)
   return butdef,butlen+butnum-1,tButtons
 end
 
-local function CreateItem(tbl,width,height,Flags,Buttons)
+local function CreateItem(tbl,width,height,Flags,Buttons,Title)
   local tbllen,smax,ct = #tbl,0
   if tbllen>0 then
     if Flags:find("c")
@@ -107,7 +109,7 @@ local function CreateItem(tbl,width,height,Flags,Buttons)
   local line=tbllen+4>height and height-2 or (tbllen + (tbllen>0 and 2 or 1))
   local butdef,butlen,tButtons = CreateButtons(line,Buttons)
 
-  local X2=smax>butlen and smax+4 or butlen+4
+  local X2=math.max(smax+4,butlen+4,Title:len()+4)
   local Y2=2+tbllen -- add box and Msg
   if tButtons then Y2=Y2+1 -- add Buttons
     if tbllen>0 then Y2=Y2+1 end -- add separator
@@ -145,15 +147,26 @@ end
 
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   -- Protection against incorrect arguments
-  --if not Msg or Msg==""
-  --then return
-  --else Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
-  --end
   Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
-  -- Window size
+
+  -- Check window size
   local width,height
   local w=far.AdvControl(F.ACTL_GETFARRECT)
   if w then width,height = w.Right+1,w.Bottom+1 end
+  
+  local MsgType=type(Msg)
+  if MsgType~="string" then
+    if MsgType=="table" then far.Show(unpack(Msg)) else far.Show(Msg) end
+    exit()
+  end
+  if Msg:find'^[%s%c]+$' then
+    local spc='\194\183'
+    local tab='\26'
+    Msg=Msg:gsub(' ',spc)
+    Msg=Msg:gsub('\t',tab)
+    Msg='<#1s>'..Msg..'<#rs>'
+    Title,Buttons,Flags,HelpTopic,Guid = "MessageX","","c","",""
+  end
 
   -- Line processing
   local tbl={}
@@ -163,7 +176,7 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   end
 
   -- Message Creation
-  local tButtons,butdef,X2,Y2,item = CreateItem(tbl,width,height,Flags,Buttons)
+  local tButtons,butdef,X2,Y2,item = CreateItem(tbl,width,height,Flags,Buttons,Title)
 
   -- Frame Creation
   local Items={{F.DI_DOUBLEBOX,0,0,X2,Y2,0,0,0,0,Title or ""}}
