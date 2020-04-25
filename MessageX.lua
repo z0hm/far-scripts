@@ -1,10 +1,10 @@
 ﻿-- MessageX.lua
--- v0.6.7
+-- v0.6.7.1
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
 -- Support flags: **"wlcm"**
 -- **w** - warning dialog, **l** - left align (default center align), **c** - color mode, **m** - monochrome mode
--- without **cm** will be used raw mode 
+-- without **cm** will be used raw mode
 -- Tags format: **<#xy>**, **x** - foreground color **0..f**, **y** - background color **0..f**
 -- **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
 -- Example message string: "aaa<#e1>bbb<#s2>\nccc<#bs>ddd\neee<#rs>fff<#sr>ggg"
@@ -126,9 +126,8 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title)
   local bg_dlg=bit64.band(tFarColor.BackgroundColor,0xF)
   local fg,bg,ptr = fg_dlg,bg_dlg,1
   for y=1,tbllen do
-    local half
     if not leftAlign then
-      half=math.floor((X2-4-tbl[y]:len())/2)
+      local half=math.floor((X2-4-tbl[y]:len())/2)
       if half>0 then
         tbl[y]=(" "):rep(half)..tbl[y]
         for x=X2-4,1,-1 do if ct[y][x] then ct[y][x+half]=ct[y][x] ct[y][x]=nil end end
@@ -148,12 +147,13 @@ end
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   -- Protection against incorrect arguments
   Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
+  Flags=Flags:lower()
 
   -- Check window size
   local width,height
   local w=far.AdvControl(F.ACTL_GETFARRECT)
   if w then width,height = w.Right+1,w.Bottom+1 end
-  
+
   local MsgType=type(Msg)
   if MsgType~="string" then
     if MsgType=="table" then far.Show(unpack(Msg)) else far.Show(Msg) end

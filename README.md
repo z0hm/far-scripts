@@ -27,9 +27,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(9987 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(10509 bytes)*
 
-  v1.0
+  v1.0.5
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -150,9 +150,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(7278 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(7290 bytes)*
 
-  v0.6.7
+  v0.6.7.1
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
 
@@ -162,7 +162,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   **w** - warning dialog, **l** - left align (default center align), **c** - color mode, **m** - monochrome mode
 
-  without **cm** will be used raw mode 
+  without **cm** will be used raw mode
 
   Tags format: **<#xy>**, **x** - foreground color **0..f**, **y** - background color **0..f**
 
