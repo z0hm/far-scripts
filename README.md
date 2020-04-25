@@ -42,13 +42,19 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")   *(4895 bytes)*
+## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")   *(5189 bytes)*
 
-  v1.1.3
+  v1.1.3.1
 
   Highlighting Cyrillic and space symbols
 
   ![Highlight ON](http://i62.fastpic.ru/big/2014/0603/18/0f2bf6171580c92d52a09ead18b86e18.png)
+
+  ![Highlight ON](http://i.piccy.info/i9/7223f0c8d8e8b124e0849af1cdd4e5de/1587815203/7934/1374955/2020_04_25_134822.png)
+
+  ![Highlight OFF](http://i.piccy.info/i9/953bb710b86c522d71cd4b4211d3f616/1587815270/7789/1374955/2020_04_25_134843.png)
+
+  Required: MessageX.lua in modules folder
 
   Keys: <kbd>F3</kbd>
 
@@ -76,13 +82,15 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")   *(5008 bytes)*
+## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")   *(5055 bytes)*
 
-  v1.1.3
+  v1.1.3.1
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 
   ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
+
+  Required: MessageX.lua in modules folder
 
   Keys: <kbd>F3</kbd>
 

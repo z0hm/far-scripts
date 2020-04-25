@@ -1,7 +1,10 @@
 ﻿-- Editor.CyrSpaceHighlighting.moon
--- v1.1.3
+-- v1.1.3.1
 -- Highlighting Cyrillic and space symbols
 -- ![Highlight ON](http://i62.fastpic.ru/big/2014/0603/18/0f2bf6171580c92d52a09ead18b86e18.png)
+-- ![Highlight ON](http://i.piccy.info/i9/7223f0c8d8e8b124e0849af1cdd4e5de/1587815203/7934/1374955/2020_04_25_134822.png)
+-- ![Highlight OFF](http://i.piccy.info/i9/953bb710b86c522d71cd4b4211d3f616/1587815270/7789/1374955/2020_04_25_134843.png)
+-- Required: MessageX.lua in modules folder
 -- Keys: F3
 -- author zg, co-author AleXH
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=48136&start=960#17

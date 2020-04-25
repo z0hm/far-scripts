@@ -1,7 +1,8 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.3
+-- v1.1.3.1
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
+-- Required: MessageX.lua in modules folder
 -- Keys: F3
 -- author zg, co-author AleXH
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2460#3
