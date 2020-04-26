@@ -1,5 +1,5 @@
 ﻿-- Dialog.Maximize.moon
--- v1.1.0
+-- v1.1.1
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -55,7 +55,6 @@ transform=
   --[win.Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1.0,"2.15.&Preset: ",3.4,"3.6.8",5.3,"5.6.4",4.3,"4.6.4",3.0,"3.13.0.-4.0.0",10.0,"16.6.1","17.9.0.1","17.15.Compression &level: ","18.6.1","19.6.1","19.9.0.1","19.15.&Method: ","20.13.2.-1.0.0","22.9.0.1","22.15.Advan&ced parameters: ","23.9.1.0",23.0,"40.6.1","43.10.45"}
 
 F=far.Flags
-edtFlags=F.DIF_HISTORY+F.DIF_USELASTHISTORY
 
 ConsoleSize=->
   rr=far.AdvControl"ACTL_GETFARRECT"
@@ -65,10 +64,10 @@ Proc=(id,hDlg)->
   xs,cx,dl,dt,dr,db = 0
   cx=ConsoleSize!
   {Left:dl,Top:dt,Right:dr,Bottom:db}=hDlg\send F.DM_GETDLGRECT
-  if _G._XScale and cx==_G._XScale.cx
-    xs,cx,dl,dt,dr,db = _G._XScale.xs,_G._XScale.cx,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
+  if _G._XScale and cx==_G._XScale.cx and id==_G._XScale.id
+    xs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
   else
-    _G._XScale={xs:0,cx:cx,dl:dl,dt:dt,dr:dr,db:db}
+    _G._XScale={xs:0,cx:cx,dl:dl,dt:dt,dr:dr,db:db,id:id}
   ex,ax = dr-dl+1,cx-DX
   diff=(ax-ex)*xs
   DlgWidth=ex+diff
