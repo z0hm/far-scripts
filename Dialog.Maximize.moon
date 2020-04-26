@@ -66,6 +66,8 @@ Proc=(id,hDlg)->
   {Left:dl,Top:dt,Right:dr,Bottom:db}=hDlg\send F.DM_GETDLGRECT
   if _G._XScale and cx==_G._XScale.cx and id==_G._XScale.id
     xs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
+  elseif _G._XScale and cx==_G._XScale.cx and id~=_G._XScale.id
+    xs=_G._XScale.xs
   else
     _G._XScale={xs:0,cx:cx,dl:dl,dt:dt,dr:dr,db:db,id:id}
   ex,ax = dr-dl+1,cx-DX
@@ -242,4 +244,7 @@ Event
           tmp=_G._XScale.xs
           far.Dialog Guid_DlgXScale,-1,-1,19,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
           if _G._XScale.xs~=tmp
-            Proc _id,_hDlg
+            id=param.hDlg\send F.DM_GETDIALOGINFO
+            if id and transform[id.Id]
+              _id,_hDlg = id.Id,param.hDlg
+              Proc _id,_hDlg
