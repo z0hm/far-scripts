@@ -1,5 +1,5 @@
 ﻿-- Dialog.Maximize.moon
--- v1.1.1
+-- v1.1.2
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -51,8 +51,11 @@ transform=
   [win.Uuid"E45555AE-6499-443C-AA04-12A1AADAB989"]: {1.0,3.0,10.0,11.0,12.0,13.0,14.0}
   -- LiveFileSearch
   [win.Uuid"6A69A5AF-FC3F-4B7A-9A3C-6047B7CBA242"]: {1.0,5.0,"8.12.2.1","10.12.2.1",11.1,12.1,13.1,14.1,15.1}
-  -- ArcLite ShiftF1 in Shell
-  --[win.Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1.0,"2.15.&Preset: ",3.4,"3.6.8",5.3,"5.6.4",4.3,"4.6.4",3.0,"3.13.0.-4.0.0",10.0,"16.6.1","17.9.0.1","17.15.Compression &level: ","18.6.1","19.6.1","19.9.0.1","19.15.&Method: ","20.13.2.-1.0.0","22.9.0.1","22.15.Advan&ced parameters: ","23.9.1.0",23.0,"40.6.1","43.10.45"}
+  -- Extract files (Shell: ShiftF2 on archive)
+  [win.Uuid"97877FD0-78E6-4169-B4FB-D76746249F4D"]: {1.0,3.0,"8.10.11","9.6.3","17.9.0.14"}
+  -- Create archive (Shell: ShiftF1)
+  [win.Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1.0,"43.10.45"}
+
 
 F=far.Flags
 
