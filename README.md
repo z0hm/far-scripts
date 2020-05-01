@@ -27,7 +27,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11281 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11181 bytes)*
 
   v1.1.3
 

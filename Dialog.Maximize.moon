@@ -65,8 +65,7 @@ ConsoleSize=->
   rr.Right-rr.Left+1
 
 Proc=(id,hDlg)->
-  xs,cx,dl,dt,dr,db = 0
-  cx=ConsoleSize!
+  xs,cx,dl,dt,dr,db = 0,ConsoleSize!
   {Left:dl,Top:dt,Right:dr,Bottom:db}=hDlg\send F.DM_GETDLGRECT
   if _G._XScale and cx==_G._XScale.cx and id==_G._XScale.id
     xs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
@@ -231,14 +230,12 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         result=1
     _G._XScale.xs=result or _G._XScale.xs
 
-exec=(tmp,param)->
+exec=(tmp,hDlg)->
   if _G._XScale.xs~=tmp
-    id=param.hDlg\send F.DM_GETDIALOGINFO
+    id=hDlg\send F.DM_GETDIALOGINFO
     if id and transform[id.Id]
-      _id,_hDlg = id.Id,param.hDlg
-      Proc _id,_hDlg
+      Proc id.Id,hDlg
 
-local _id,_hDlg
 Event
   group:"DialogEvent"
   description:"Dialog Transform"
@@ -246,27 +243,25 @@ Event
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG
       id=param.hDlg\send F.DM_GETDIALOGINFO
       if id and transform[id.Id]
-        _id,_hDlg = id.Id,param.hDlg
-        Proc _id,_hDlg
+        Proc id.Id,param.hDlg
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=far.InputRecordToName param.Param2
-        local tmp
         if name=="F2"
           tmp=_G._XScale.xs
           far.Dialog Guid_DlgXScale,-1,-1,19,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
-          exec tmp,param
+          exec tmp,param.hDlg
         elseif name=="CtrlAltRight"
           tmp=_G._XScale.xs
           if _G._XScale.xs<1
             _G._XScale.xs+=XStep
             if _G._XScale.xs>1
               _G._XScale.xs=1
-          exec tmp,param
+          exec tmp,param.hDlg
         elseif name=="CtrlAltLeft"
           tmp=_G._XScale.xs
           if _G._XScale.xs>0
             _G._XScale.xs-=XStep
             if _G._XScale.xs<0
               _G._XScale.xs=0
-          exec tmp,param
+          exec tmp,param.hDlg
