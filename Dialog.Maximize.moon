@@ -1,12 +1,13 @@
 ﻿-- Dialog.Maximize.moon
--- v1.1.2
+-- v1.1.3
 -- Resizing dialogs, aligning the positions of dialog elements
--- Keys: F2 in dialogs
+-- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
 -- Based on https://forum.farmanager.com/viewtopic.php?p=146816#p146816
 
 Guid_DlgXScale=win.Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
 DX=4
+XStep=0.25
 
 transform=
   --[Guid_DlgXScale]: {0,"1.16.A27",3.0} -- Set Dlg.XScale
@@ -25,7 +26,7 @@ transform=
   [win.Uuid'89664EF4-BB8C-4932-A8C0-59CAFD937ABA']: {1,3,11} -- Move current
   -- RESearch
   [win.Uuid"E506EA8F-484F-7261-FEED-9B10267753E9"]: {1.0,4.0,6.0,7.3,26.3}          -- Shell/Search
-  [win.Uuid"9736CFC1-9F3A-D4F9-02A4-566717182E8B"]: {1.0,4.0,6.0,8.0,9.3,10.3,37.3} -- Shell/Replace
+  [win.Uuid"9736CFC1-9F3A-D4F9-02A4-566717182E8B"]: {1.0,4.0,6.0,8.0,9.3,10.3,"33.10.32",37.3} -- Shell/Replace
   [win.Uuid"3D95792C-E25C-1CE1-EC09-DC409184EC7A"]: {1.0,4.0,6.0,7.3,24.0,35.3}     -- Shell/Grep
   [win.Uuid"AA3CA1C7-062A-67A8-3A73-80B5E9394046"]: {1.0,5.0} -- Shell/SelectFiles,UnselectFiles,FlipSelection
   [win.Uuid"0AE75CCC-5872-74A7-3561-BBA1991C0395"]: {1.0,4.0,6.0,8.0,28.3}          -- Shell/RenameFiles
@@ -230,6 +231,13 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         result=1
     _G._XScale.xs=result or _G._XScale.xs
 
+exec=(tmp,param)->
+  if _G._XScale.xs~=tmp
+    id=param.hDlg\send F.DM_GETDIALOGINFO
+    if id and transform[id.Id]
+      _id,_hDlg = id.Id,param.hDlg
+      Proc _id,_hDlg
+
 local _id,_hDlg
 Event
   group:"DialogEvent"
@@ -243,11 +251,22 @@ Event
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=far.InputRecordToName param.Param2
+        local tmp
         if name=="F2"
           tmp=_G._XScale.xs
           far.Dialog Guid_DlgXScale,-1,-1,19,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
-          if _G._XScale.xs~=tmp
-            id=param.hDlg\send F.DM_GETDIALOGINFO
-            if id and transform[id.Id]
-              _id,_hDlg = id.Id,param.hDlg
-              Proc _id,_hDlg
+          exec tmp,param
+        elseif name=="CtrlAltRight"
+          tmp=_G._XScale.xs
+          if _G._XScale.xs<1
+            _G._XScale.xs+=XStep
+            if _G._XScale.xs>1
+              _G._XScale.xs=1
+          exec tmp,param
+        elseif name=="CtrlAltLeft"
+          tmp=_G._XScale.xs
+          if _G._XScale.xs>0
+            _G._XScale.xs-=XStep
+            if _G._XScale.xs<0
+              _G._XScale.xs=0
+          exec tmp,param

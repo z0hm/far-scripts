@@ -27,13 +27,13 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(10763 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11281 bytes)*
 
-  v1.1.2
+  v1.1.3
 
   Resizing dialogs, aligning the positions of dialog elements
 
-  Keys: <kbd>F2</kbd> in dialogs
+  Keys: <kbd>F2</kbd> in dialogs or <kbd>CtrlAltRight</kbd> or <kbd>CtrlAltLeft</kbd>
 
   Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
 
