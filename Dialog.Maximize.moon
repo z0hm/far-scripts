@@ -75,8 +75,8 @@ Proc=(id,hDlg)->
     _G._XScale={xs:0,cx:cx,dl:dl,dt:dt,dr:dr,db:db,id:id}
   ex,ax = dr-dl+1,cx-DX
   diff=(ax-ex)*xs
-  DlgWidth=ex+diff
-  hDlg\send F.DM_RESIZEDIALOG,0,{X:DlgWidth,Y:db-dt+1}
+  DlgWidth,DlgHeight = ex+diff,db-dt+1
+  hDlg\send F.DM_RESIZEDIALOG,0,{X:DlgWidth,Y:DlgHeight}
   hDlg\send F.DM_MOVEDIALOG,1,{X:(ax+DX-DlgWidth)/2,Y:dt}
   itm1=hDlg\send F.DM_GETDLGITEM,1
   pl=itm1[2]+2
