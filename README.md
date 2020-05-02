@@ -27,7 +27,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11203 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11204 bytes)*
 
   v1.1.3
 
@@ -432,7 +432,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")   *(3080 bytes)*
 
-  v1.3.1
+  v1.3.2
 
   Extend Panel (Shift)?F[56] Dialog
 

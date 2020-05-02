@@ -1,5 +1,5 @@
 ﻿-- Panel.ShiftF[56].lua
--- v1.3.1
+-- v1.3.2
 -- Extend Panel (Shift)?F[56] Dialog
 -- Required: FAR3 build >= 5467
 -- Keys: none, to use put in the scripts folder
@@ -10,7 +10,7 @@ local TGuid={
 [win.Uuid("502D00DF-EE31-41CF-9028-442D2E352990")]="SF5",
 [win.Uuid("89664EF4-BB8C-4932-A8C0-59CAFD937ABA")]="SF6"
 }
-local btnOK=17 -- dialog execution button
+local btnOK=18 -- dialog execution button
 
 local lng,key,btn
 local lang={

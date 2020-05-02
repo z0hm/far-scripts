@@ -65,15 +65,15 @@ ConsoleSize=->
   rr.Right-rr.Left+1
 
 Proc=(id,hDlg)->
-  xs,cx,dl,dt,dr,db = 0,ConsoleSize!
+  xs,cs,dl,dt,dr,db = 0,ConsoleSize!
   {Left:dl,Top:dt,Right:dr,Bottom:db}=hDlg\send F.DM_GETDLGRECT
-  if _G._XScale and cx==_G._XScale.cx and id==_G._XScale.id
+  if _G._XScale and cs==_G._XScale.cs and id==_G._XScale.id
     xs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
-  elseif _G._XScale and cx==_G._XScale.cx and id~=_G._XScale.id
+  elseif _G._XScale and cs==_G._XScale.cs and id~=_G._XScale.id
     xs=_G._XScale.xs
   else
-    _G._XScale={xs:0,cx:cx,dl:dl,dt:dt,dr:dr,db:db,id:id}
-  ex,ax = dr-dl+1,cx-DX
+    _G._XScale={xs:0,cs:cs,dl:dl,dt:dt,dr:dr,db:db,id:id}
+  ex,ax = dr-dl+1,cs-DX
   diff=(ax-ex)*xs
   DlgWidth,DlgHeight = ex+diff,db-dt+1
   hDlg\send F.DM_RESIZEDIALOG,0,{X:DlgWidth,Y:DlgHeight}
@@ -82,7 +82,7 @@ Proc=(id,hDlg)->
   pl=itm1[2]+2
   pr=DlgWidth-pl-1
   corr=true
-  Items={"ex":ex,"DlgWidth":DlgWidth,"diff":diff,"id":Dlg.Id}
+  --Items={"ex":ex,"DlgWidth":DlgWidth,"diff":diff,"id":id}
   for ii in *transform[id]
     local idx,opt,ref
     if "number"==type ii
@@ -94,7 +94,7 @@ Proc=(id,hDlg)->
       idx=tonumber idx
       opt=tonumber opt
     item=far.GetDlgItem hDlg,idx
-    rawset(Items,idx,item)
+    --rawset Items,idx,item
     if item  -- prevent error message for out-of-range index (see "hack" above)
       switch opt
         when 0  -- Stretch full
@@ -187,7 +187,7 @@ Proc=(id,hDlg)->
           else
             w=sc
 --          DlgWidth=w
-          hDlg\send F.DM_RESIZEDIALOG,0,{X:w,Y:db-dt+1}
+          hDlg\send F.DM_RESIZEDIALOG,0,{X:w,Y:DlgHeight}
           hDlg\send F.DM_MOVEDIALOG,1,{X:(ax+DX-w)/2,Y:dt}
           pr=w-pl-1
           if idx==1
