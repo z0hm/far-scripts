@@ -27,9 +27,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11204 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11167 bytes)*
 
-  v1.1.3
+  v1.1.4
 
   Resizing dialogs, aligning the positions of dialog elements
 

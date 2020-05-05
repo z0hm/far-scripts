@@ -1,5 +1,5 @@
-﻿-- Dialog.Maximize.moon
--- v1.1.3
+-- Dialog.Maximize.moon
+-- v1.1.4
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -43,7 +43,7 @@ transform=
   [win.Uuid"AF8D7072-FF17-4407-9AF4-7323273BA899"]: {1.0,3.0,11.0,13.0,14.4,16.4,20.2,21.1,22.5,25.0,27.0} -- Shell/Rename
   -- LFSearch/Editor
   [win.Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1.0,3.0,4.3,7.1,"8.12.F2.2.13",10.1,14.4,15.4,"16.12.3.2","17.10.16","18.10.16","19.12.3.3","20.10.19","21.10.19",25.0,27.2,28.1,29.5} -- Editor/Find
-  [win.Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1.0,3.0,5.0,6.3,7.3,8.4,9.1,10.4,11.5,12.8,14.1,"14.9.-2.6","15.12.F2.2.11","17.10.11","20.12.3.1","21.10.10","22.10.20","23.12.3.2","24.10.23","25.10.23","26.12.3.3","27.10.26","28.10.26",32.0,34.2,35.5,36.5} -- Editor/Replace
+  [win.Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1.0,3.0,5.0,6.3,7.3,8.4,9.1,10.4,11.5,14.1,"14.9.-2.6","15.12.F2.2.11","17.10.11","20.12.3.1","21.10.10","22.10.20","23.12.3.2","24.10.23","25.10.23","26.12.3.3","27.10.26","28.10.26",32.0,34.2,35.5,36.5} -- Editor/Replace
   [win.Uuid"87ED8B17-E2B2-47D0-896D-E2956F396F1A"]: {1.0,3.0,5.0,6.4,19.2,20.1,21.5} -- Editor/Multi-Line Replace
   -- Editor Find
   [win.Uuid"A0562FC4-25FA-48DC-BA5E-48EFA639865F"]: {1.0,4.0,10.1} -- Find
@@ -59,20 +59,25 @@ transform=
 
 
 F=far.Flags
+_G._XScale={xs:0,cs:nil,dl:nil,dt:nil,dr:nil,db:nil,id:""}
 
 ConsoleSize=->
   rr=far.AdvControl"ACTL_GETFARRECT"
   rr.Right-rr.Left+1
 
+DlgRect=(hDlg)->
+  {Left:_G._XScale.dl,Top:_G._XScale.dt,Right:_G._XScale.dr,Bottom:_G._XScale.db}=hDlg\send F.DM_GETDLGRECT
+
 Proc=(id,hDlg)->
-  xs,cs,dl,dt,dr,db = 0,ConsoleSize!
-  {Left:dl,Top:dt,Right:dr,Bottom:db}=hDlg\send F.DM_GETDLGRECT
-  if _G._XScale and cs==_G._XScale.cs and id==_G._XScale.id
-    xs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
-  elseif _G._XScale and cs==_G._XScale.cs and id~=_G._XScale.id
-    xs=_G._XScale.xs
+  cs=ConsoleSize!
+  if cs==_G._XScale.cs
+    if id~=_G._XScale.id
+      _G._XScale.id=id
+      DlgRect(hDlg)
   else
-    _G._XScale={xs:0,cs:cs,dl:dl,dt:dt,dr:dr,db:db,id:id}
+    _G._XScale.xs,_G._XScale.cs,_G._XScale.id = 0,cs,id
+    DlgRect(hDlg)
+  xs,cs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.cs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
   ex,ax = dr-dl+1,cs-DX
   diff=(ax-ex)*xs
   DlgWidth,DlgHeight = ex+diff,db-dt+1
@@ -81,8 +86,7 @@ Proc=(id,hDlg)->
   itm1=hDlg\send F.DM_GETDLGITEM,1
   pl=itm1[2]+2
   pr=DlgWidth-pl-1
-  corr=true
-  --Items={"ex":ex,"DlgWidth":DlgWidth,"diff":diff,"id":id}
+  --_G.Items={"ex":ex,"DlgWidth":DlgWidth,"diff":diff,"id":id}
   for ii in *transform[id]
     local idx,opt,ref
     if "number"==type ii
@@ -94,23 +98,21 @@ Proc=(id,hDlg)->
       idx=tonumber idx
       opt=tonumber opt
     item=far.GetDlgItem hDlg,idx
-    --rawset Items,idx,item
+    --rawset _G.Items,idx,item
     if item  -- prevent error message for out-of-range index (see "hack" above)
       switch opt
         when 0  -- Stretch full
           if idx==1 and item[1]==3
             item[4]=pr+2
           else
-            if corr or diff>=0
-              if item[4]==item[2]
-                item[2]+=diff
-              item[4]+=diff
+            if item[4]==item[2]
+              item[2]+=diff
+            item[4]+=diff
         when 1  -- Move half
           if item[4]==item[2]
             item[4]+=diff/2
           item[2]+=diff/2
         when 2  -- Stretch half
---          if corr
           if item[4]==item[2]
             item[2]+=diff/2
           item[4]+=diff/2
@@ -134,8 +136,8 @@ Proc=(id,hDlg)->
           y=tonumber ref\match"[%-%+]?%d+"
           item[3]+=y
           item[5]+=y
-        when 8  -- Switch Correction Stretch full
-          corr=not corr
+--        when 8  -- reserved
+--          corr=not corr
         when 9  -- Move & Size relative by X1 & X2
           x1,x2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d+)"
           item[2]+=tonumber x1
@@ -230,38 +232,38 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         result=1
     _G._XScale.xs=result or _G._XScale.xs
 
-exec=(tmp,hDlg)->
-  if _G._XScale.xs~=tmp
-    id=hDlg\send F.DM_GETDIALOGINFO
-    if id and transform[id.Id]
-      Proc id.Id,hDlg
+exec=(hDlg)->
+  id=hDlg\send F.DM_GETDIALOGINFO
+  if id and transform[id.Id]
+    Proc id.Id,hDlg
 
 Event
   group:"DialogEvent"
   description:"Dialog Transform"
   action:(event,param)->
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG
-      id=param.hDlg\send F.DM_GETDIALOGINFO
-      if id and transform[id.Id]
-        Proc id.Id,param.hDlg
+      exec param.hDlg
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=far.InputRecordToName param.Param2
         if name=="F2"
           tmp=_G._XScale.xs
           far.Dialog Guid_DlgXScale,-1,-1,19,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
-          exec tmp,param.hDlg
+          if _G._XScale.xs~=tmp
+            exec param.hDlg
         elseif name=="CtrlAltRight"
           tmp=_G._XScale.xs
           if _G._XScale.xs<1
             _G._XScale.xs+=XStep
             if _G._XScale.xs>1
               _G._XScale.xs=1
-          exec tmp,param.hDlg
+          if _G._XScale.xs~=tmp
+            exec param.hDlg
         elseif name=="CtrlAltLeft"
           tmp=_G._XScale.xs
           if _G._XScale.xs>0
             _G._XScale.xs-=XStep
             if _G._XScale.xs<0
               _G._XScale.xs=0
-          exec tmp,param.hDlg
+          if _G._XScale.xs~=tmp
+            exec param.hDlg
