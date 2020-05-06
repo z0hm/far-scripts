@@ -59,7 +59,7 @@ transform=
 
 
 F=far.Flags
-_G._XScale={cs:nil,id:"",xs:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil}
+_G._XScale={id:"",xs:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil}
 
 ConsoleSize=->
   rr=far.AdvControl"ACTL_GETFARRECT"
@@ -69,26 +69,22 @@ DlgRect=(hDlg)->
   {Left:_G._XScale.dl,Top:_G._XScale.dt,Right:_G._XScale.dr,Bottom:_G._XScale.db}=hDlg\send F.DM_GETDLGRECT
   _G._XScale.dw=_G._XScale.dr-_G._XScale.dl+1
   _G._XScale.dh=_G._XScale.db-_G._XScale.dt+1
+  itm1=hDlg\send F.DM_GETDLGITEM,1
+  _G._XScale.pl=itm1[2]+2
 
 Proc=(id,hDlg)->
   cs=ConsoleSize!
-  if cs==_G._XScale.cs
-    if id~=_G._XScale.id
-      _G._XScale.id=id
-      DlgRect(hDlg)
-  else
-    _G._XScale.cs,_G._XScale.id = cs,id
+  if id~=_G._XScale.id
+    _G._XScale.id=id
     DlgRect(hDlg)
-    if cs-DX-_G._XScale.dw<=0
-      _G._XScale.xs=0
-  xs,cs,dw,dh,dt = _G._XScale.xs,_G._XScale.cs,_G._XScale.dw,_G._XScale.dh,_G._XScale.dt
+  if cs-DX-_G._XScale.dw<=0
+    _G._XScale.xs=0
+  xs,dw,dh,dt,pl = _G._XScale.xs,_G._XScale.dw,_G._XScale.dh,_G._XScale.dt,_G._XScale.pl
   diff=(cs-DX-dw)*xs
-  dw=dw+diff
+  dw+=diff
+  pr=dw-pl-1
   hDlg\send F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
   hDlg\send F.DM_MOVEDIALOG,1,{X:(cs-dw)/2,Y:dt}
-  itm1=hDlg\send F.DM_GETDLGITEM,1
-  pl=itm1[2]+2
-  pr=dw-pl-1
   --_G.Items={"ex":ex,"dw":dw,"diff":diff,"id":id}
   for ii in *transform[id]
     local idx,opt,ref
@@ -139,8 +135,7 @@ Proc=(id,hDlg)->
           y=tonumber ref\match"[%-%+]?%d+"
           item[3]+=y
           item[5]+=y
---        when 8  -- reserved
---          corr=not corr
+--      when 8  -- reserved
         when 9  -- Move & Size relative by X1 & X2
           x1,x2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d+)"
           item[2]+=tonumber x1
@@ -186,12 +181,7 @@ Proc=(id,hDlg)->
         when 16  -- Scale Dialog
           m,sc=ref\match"([AF]?)([%d%.]+)"
           sc=tonumber sc
-          local w
-          if m==""
-            w=dw*sc
-          else
-            w=sc
---          dw=w
+          w=m=="" and dw*sc or sc
           hDlg\send F.DM_RESIZEDIALOG,0,{X:w,Y:dh}
           hDlg\send F.DM_MOVEDIALOG,1,{X:(cs-w)/2,Y:dt}
           pr=w-pl-1
