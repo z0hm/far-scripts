@@ -59,7 +59,7 @@ transform=
 
 
 F=far.Flags
-_G._XScale={xs:0,cs:nil,dl:nil,dt:nil,dr:nil,db:nil,id:""}
+_G._XScale={cs:nil,id:"",xs:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil}
 
 ConsoleSize=->
   rr=far.AdvControl"ACTL_GETFARRECT"
@@ -67,6 +67,8 @@ ConsoleSize=->
 
 DlgRect=(hDlg)->
   {Left:_G._XScale.dl,Top:_G._XScale.dt,Right:_G._XScale.dr,Bottom:_G._XScale.db}=hDlg\send F.DM_GETDLGRECT
+  _G._XScale.dw=_G._XScale.dr-_G._XScale.dl+1
+  _G._XScale.dh=_G._XScale.db-_G._XScale.dt+1
 
 Proc=(id,hDlg)->
   cs=ConsoleSize!
@@ -75,18 +77,19 @@ Proc=(id,hDlg)->
       _G._XScale.id=id
       DlgRect(hDlg)
   else
-    _G._XScale.xs,_G._XScale.cs,_G._XScale.id = 0,cs,id
+    _G._XScale.cs,_G._XScale.id = cs,id
     DlgRect(hDlg)
-  xs,cs,dl,dt,dr,db = _G._XScale.xs,_G._XScale.cs,_G._XScale.dl,_G._XScale.dt,_G._XScale.dr,_G._XScale.db
-  ex,ax = dr-dl+1,cs-DX
-  diff=(ax-ex)*xs
-  DlgWidth,DlgHeight = ex+diff,db-dt+1
-  hDlg\send F.DM_RESIZEDIALOG,0,{X:DlgWidth,Y:DlgHeight}
-  hDlg\send F.DM_MOVEDIALOG,1,{X:(ax+DX-DlgWidth)/2,Y:dt}
+    if cs-DX-_G._XScale.dw<=0
+      _G._XScale.xs=0
+  xs,cs,dw,dh,dt = _G._XScale.xs,_G._XScale.cs,_G._XScale.dw,_G._XScale.dh,_G._XScale.dt
+  diff=(cs-DX-dw)*xs
+  dw=dw+diff
+  hDlg\send F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
+  hDlg\send F.DM_MOVEDIALOG,1,{X:(cs-dw)/2,Y:dt}
   itm1=hDlg\send F.DM_GETDLGITEM,1
   pl=itm1[2]+2
-  pr=DlgWidth-pl-1
-  --_G.Items={"ex":ex,"DlgWidth":DlgWidth,"diff":diff,"id":id}
+  pr=dw-pl-1
+  --_G.Items={"ex":ex,"dw":dw,"diff":diff,"id":id}
   for ii in *transform[id]
     local idx,opt,ref
     if "number"==type ii
@@ -155,7 +158,7 @@ Proc=(id,hDlg)->
           if not q
             m,q,n = ref\match"([F]?)(%d)%.(%d)"
             x=0
-          wc=(DlgWidth-pl*2-1)/tonumber q
+          wc=(dw-pl*2-1)/tonumber q
           n=tonumber n
           w=item[4]-item[2]+1
           if w>wc
@@ -185,18 +188,18 @@ Proc=(id,hDlg)->
           sc=tonumber sc
           local w
           if m==""
-            w=DlgWidth*sc
+            w=dw*sc
           else
             w=sc
---          DlgWidth=w
-          hDlg\send F.DM_RESIZEDIALOG,0,{X:w,Y:DlgHeight}
-          hDlg\send F.DM_MOVEDIALOG,1,{X:(ax+DX-w)/2,Y:dt}
+--          dw=w
+          hDlg\send F.DM_RESIZEDIALOG,0,{X:w,Y:dh}
+          hDlg\send F.DM_MOVEDIALOG,1,{X:(cs-w)/2,Y:dt}
           pr=w-pl-1
           if idx==1
             item[4]=pr+2
           else
             p=pl*2+1
-            sc=(w-p)/(DlgWidth-p)
+            sc=(w-p)/(dw-p)
             w=item[4]-item[2]+1
             if m=="A"
               w*=sc  -- Adaptive width
@@ -215,9 +218,9 @@ Proc=(id,hDlg)->
       far.SetDlgItem hDlg,idx,item
 
 XItems={
-         {F.DI_DOUBLEBOX, 0,0,18,2,0,       0,0,       0,  "XScale"}
+         {F.DI_DOUBLEBOX, 0,0,19,2,0,       0,0,       0,  "XScale"}
          {F.DI_TEXT,      2,1, 9,1,0,       0,0,       0,"0<=X<=1:"}
-         {F.DI_EDIT,     11,1,16,1,0,"XScale",0,       0,        ""}
+         {F.DI_EDIT,     11,1,17,1,0,"XScale",0,       0,        ""}
        }
 
 XDlgProc=(hDlg,Msg,Param1,Param2)->
@@ -248,7 +251,7 @@ Event
         name=far.InputRecordToName param.Param2
         if name=="F2"
           tmp=_G._XScale.xs
-          far.Dialog Guid_DlgXScale,-1,-1,19,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
+          far.Dialog Guid_DlgXScale,-1,-1,20,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
           if _G._XScale.xs~=tmp
             exec param.hDlg
         elseif name=="CtrlAltRight"
