@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.4
+-- v1.7.5
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
@@ -21,9 +21,9 @@ local uGuid=win.Uuid(guid)
 -- 32 13 23 -- 44 19 35
 local items={
  --[[01]] {F.DI_DOUBLEBOX,    0,0, 32,6, 0, 0,0, 0, "Download file?"},
- --[[02]] {F.DI_BUTTON,       3,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ Far ]"},
- --[[03]] {F.DI_BUTTON,      13,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ x86 ]"},
- --[[04]] {F.DI_BUTTON,      23,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ 7z  ]"},
+ --[[02]] {F.DI_BUTTON,       2,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &1 Far ]"},
+ --[[03]] {F.DI_BUTTON,      12,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &2 x86 ]"},
+ --[[04]] {F.DI_BUTTON,      22,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &3 7z  ]"},
  --[[05]] {F.DI_COMBOBOX,     2,2, 29,2,{}, 0,0, F.DIF_DROPDOWNLIST, ""},
  --[[06]] {F.DI_TEXT,         0,3,  0,0, 0, 0,0, F.DIF_SEPARATOR,""},
  --[[07]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Update"},
@@ -85,9 +85,9 @@ end
 local ListT,PosProtect = {}
 local DlgProc=function(hDlg,Msg,Param1,Param2)
   local function BoxUpdate()
-    hDlg:send(F.DM_SETTEXT,2,box[1] and '[ Far ]' or '[ Git ]')
-    hDlg:send(F.DM_SETTEXT,3,box[2] and '[ x64 ]' or '[ x86 ]')
-    hDlg:send(F.DM_SETTEXT,4,box[3] and '[ 7z  ]' or '[ msi ]')
+    hDlg:send(F.DM_SETTEXT,2,box[1] and '[ &1 Far ]' or '[ &1 Git ]')
+    hDlg:send(F.DM_SETTEXT,3,box[2] and '[ &2 x64 ]' or '[ &2 x86 ]')
+    hDlg:send(F.DM_SETTEXT,4,box[3] and '[ &3 7z  ]' or '[ &3 msi ]')
   end
   local function RefreshList()
     local ListInfo=hDlg:send(F.DM_LISTINFO,5)
