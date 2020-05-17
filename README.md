@@ -406,11 +406,11 @@ a very wide range of tasks using the Far and Windows API's.
 
   v1.0
 
-  Functions:
+  Actions:
 
-    &#9679; Creating a playlist from rad files in a folder and subfolders.
+  1. M3U: &#9679; Creating a playlist from rad files in a folder and subfolders
 
-    &#9679; To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>.
+  2. RAD: &#9679; To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>
 
   Keys: <kbd>F2</kbd>
 

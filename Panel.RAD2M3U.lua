@@ -1,8 +1,8 @@
 ﻿-- Panel.RAD2M3U.lua
 -- v1.0
--- Functions:
---    Creating a playlist from rad files in a folder and subfolders.
---    To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press F2.
+-- Actions:
+-- 1. M3U:  Creating a playlist from rad files in a folder and subfolders
+-- 2. RAD:  To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press F2
 -- Keys: F2
 
 Macro {
