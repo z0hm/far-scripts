@@ -408,9 +408,9 @@ a very wide range of tasks using the Far and Windows API's.
 
   Functions:
 
-    &#8226; Creating a playlist from rad files in a folder and subfolders.
+    &#9679; Creating a playlist from rad files in a folder and subfolders.
 
-    &#8226; To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>.
+    &#9679; To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>.
 
   Keys: <kbd>F2</kbd>
 
