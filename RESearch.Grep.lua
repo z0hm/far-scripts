@@ -1,5 +1,5 @@
 ﻿-- RESearch.Grep.lua
--- v1.4.1
+-- v1.4.2
 -- Comfortable Grep text from files by search pattern to editor
 -- ![RESearch Grep](http://i.piccy.info/i9/23f14ef428e4f1d2f1fc1937da2a549c/1442294013/13901/950058/1.png)
 -- Press AltG, MacroBrowserAlt.lua file will be opened in the editor and the cursor will be set to this position on hDlg.
@@ -28,7 +28,7 @@ end
 
 local function FileSave(t)
   editor.Editor(t[1][1],_,_,_,_,_,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_USEEXISTING))
-  for j=2,#t do editor.SetString(-1,t[j][1],t[j][2]) end
+  for j=2,#t do local StringEOL=editor.GetString(-1,t[j][1]).StringEOL editor.SetString(-1,t[j][1],t[j][2],StringEOL) end
   if not editor.SaveFile(-1) then far.Message(t[1][1],"Warning! File is not saved - blocked?") else editor.Quit(-1) end
 end
 

@@ -1,5 +1,5 @@
 ﻿-- Panel.RAD2M3U.lua
--- v1.0
+-- v1.0.1
 -- Actions:
 -- 1. M3U:  Creating a playlist from rad files in a folder and subfolders
 -- 2. RAD:  To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press F2
@@ -14,10 +14,7 @@ Macro {
     -- write file
     local fwrite = function(s,f) s = s or "" local h,x = io.open(f,"wb") if h then x=h:write(s) io.close(h) end return x end
     -- delete invisible symbols at the end of a link
-    local fixlink = function(link)
-      while true do if string.byte(string.sub(link,-1,-1))<=32 then link=string.sub(link,1,-2) else break end end
-      return link
-    end
+    local fixlink = function(link) link=string.gsub(link,"[%z\1-\32]+$","") return link end
 
     if string.sub(apc,-4,-1)==".m3u" then
       for fname,link in fread(app.."\\"..apc):gmatch("#EXTINF:(%C-)%c%c-(%C+)") do

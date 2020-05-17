@@ -402,9 +402,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")   *(1679 bytes)*
+## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")   *(1603 bytes)*
 
-  v1.0
+  v1.0.1
 
   Actions:
 
@@ -471,9 +471,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")   *(3652 bytes)*
+## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")   *(3717 bytes)*
 
-  v1.4.1
+  v1.4.2
 
   Comfortable Grep text from files by search pattern to editor
 
