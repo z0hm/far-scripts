@@ -56,7 +56,8 @@ transform=
   [win.Uuid"97877FD0-78E6-4169-B4FB-D76746249F4D"]: {1.0,3.0,"8.10.11","9.6.3","17.9.0.14"}
   -- Create archive (Shell: ShiftF1)
   [win.Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1.0,"43.10.45"}
-
+  -- AudioPlayer
+  [win.Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1.0}
 
 F=far.Flags
 _G._XScale={id:"",xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil}

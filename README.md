@@ -27,7 +27,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11145 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11220 bytes)*
 
   v1.1.5
 
@@ -398,6 +398,21 @@ a very wide range of tasks using the Far and Windows API's.
   Very convenient navigation in panels with elevators through empty subfolders and etc.
 
   Keys: <kbd>Left</kbd> <kbd>Right</kbd> <kbd>Enter</kbd>
+
+
+
+
+## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")   *(1679 bytes)*
+
+  v1.0
+
+  Functions:
+
+     Creating a playlist from rad files in a folder and subfolders.
+
+     To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>.
+
+  Keys: <kbd>F2</kbd>
 
 
 
