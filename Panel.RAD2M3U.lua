@@ -1,12 +1,13 @@
 ﻿-- Panel.RAD2M3U.lua
 -- v1.0.1
+-- [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad<=>FolderName.m3u
 -- Actions:
 -- 1. M3U:  Creating a playlist from rad files in a folder and subfolders
 -- 2. RAD:  To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press F2
 -- Keys: F2
 
 Macro {
-  area="Shell"; key="F2"; description="RAD<=>M3U";
+  area="Shell"; key="F2"; description="RAD<=>M3U converter";
   action=function()
     local app,apc = APanel.Path,APanel.Current
     -- read file
