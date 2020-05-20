@@ -1,7 +1,8 @@
 ﻿-- MessageX.lua
--- v0.6.7.1
--- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)** module with support default button assignments
--- ![MessageX Dialog](http://i.piccy.info/i9/f32e76a419bc6d8296d2b97fb581a87e/1587382829/2331/1373917/2020_04_20_143539.png)
+-- v0.6.7.4
+-- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
+-- ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
+-- Support delay execution in seconds (ExecDelay:integer)
 -- Support flags: **"wlcm"**
 -- **w** - warning dialog, **l** - left align (default center align), **c** - color mode, **m** - monochrome mode
 -- without **cm** will be used raw mode
@@ -13,7 +14,7 @@
 -- Call in scripts (example):
 -- ``` lua
 --   local MessageX = require'MessageX'
---   MessageX("aaa <#e2>bbb<#s1>\nccc<#bs> ddd\neee<#9s> fff <#sr> ggg <#ec>hhh","MessageX","&Ok;!Ca&ncel","wc")
+--   MessageX("aaa <#e2>bbb<#s1>\nccc<#bs> ddd\neee<#9s> fff <#sr> ggg <#ec>hhh","MessageX","&Ok;!Ca&ncel","wc","","",11)
 -- ```
 
 local F=far.Flags
@@ -95,7 +96,7 @@ local function CreateButtons(line,Buttons)
   return butdef,butlen+butnum-1,tButtons
 end
 
-local function CreateItem(tbl,width,height,Flags,Buttons,Title)
+local function CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
   local tbllen,smax,ct = #tbl,0
   if tbllen>0 then
     if Flags:find("c")
@@ -109,7 +110,7 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title)
   local line=tbllen+4>height and height-2 or (tbllen + (tbllen>0 and 2 or 1))
   local butdef,butlen,tButtons = CreateButtons(line,Buttons)
 
-  local X2=math.max(smax+4,butlen+4,Title:len()+4)
+  local X2=math.max(smax+4,butlen+4,Title:len()+4+(ExecDelay and math.floor(math.log(ExecDelay,10)+3) or 0))
   local Y2=2+tbllen -- add box and Msg
   if tButtons then Y2=Y2+1 -- add Buttons
     if tbllen>0 then Y2=Y2+1 end -- add separator
@@ -144,10 +145,11 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title)
   return tButtons,butdef,X2,Y2,{F.DI_USERCONTROL,2,1,X2-3,tbllen,buffer,0,0,F.DIF_NOFOCUS,""}
 end
 
-local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
+local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
   -- Protection against incorrect arguments
-  Title,Buttons,Flags,HelpTopic,Guid = Title or "",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
+  Title,Buttons,Flags,HelpTopic,Guid = Title or "MessageX",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
   Flags=Flags:lower()
+  if ExecDelay and type(ExecDelay)=="number" then ExecDelay=math.floor(ExecDelay) else ExecDelay=nil end
 
   -- Check window size
   local width,height
@@ -159,13 +161,13 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
     if MsgType=="table" then far.Show(unpack(Msg)) else far.Show(Msg) end
     exit()
   end
-  if Msg:find'^[%s%c]+$' then
-    local spc='\194\183'
-    local tab='\26'
-    Msg=Msg:gsub(' ',spc)
-    Msg=Msg:gsub('\t',tab)
-    Msg='<#1s>'..Msg..'<#rs>'
-    Title,Buttons,Flags,HelpTopic,Guid = "MessageX","","c","",""
+  if Msg:find"^[%s%c]+$" then
+    local spc="\194\183"
+    local tab="\26"
+    Msg=Msg:gsub(" ",spc)
+    Msg=Msg:gsub("\t",tab)
+    Msg="<#1s>"..Msg.."<#rs>"
+    Flags=Flags:find"c" and Flags or Flags..'c'
   end
 
   -- Line processing
@@ -176,7 +178,7 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   end
 
   -- Message Creation
-  local tButtons,butdef,X2,Y2,item = CreateItem(tbl,width,height,Flags,Buttons,Title)
+  local tButtons,butdef,X2,Y2,item = CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
 
   -- Frame Creation
   local Items={{F.DI_DOUBLEBOX,0,0,X2,Y2,0,0,0,0,Title or ""}}
@@ -190,9 +192,25 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
   if tButtons then for i=1,#tButtons do table.insert(Items,tButtons[i]) end end
 
   -- Dialogue processing
+  local timer
   local shft=item and 3 or 1
   local DlgProc=function(hDlg,Msg,Param1,Param2)
-    if Msg==F.DN_INITDIALOG then if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdef+shft,0) end end
+    local function OnTimer()
+      ExecDelay=ExecDelay-1
+      if ExecDelay>0 then
+        local txt=hDlg:send(F.DM_GETTEXT,1)
+        hDlg:send(F.DM_SETTEXT,1,txt:gsub(" :%d+$"," :"..ExecDelay))
+      else
+        hDlg:send(F.DM_CLOSE,hDlg:send(F.DM_GETFOCUS))
+      end
+    end
+    if Msg==F.DN_INITDIALOG then
+      if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdef+shft,0) end
+      if ExecDelay then
+        hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1).." :"..ExecDelay)
+        timer=far.Timer(1000,OnTimer)
+      end
+    end
   end
 
   -- Flags processing
@@ -201,6 +219,7 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid)
 
   -- Show dialogue
   local result=far.Dialog(Guid,-1,-1,X2,Y2,HelpTopic,Items,DlgFlags,DlgProc)
+  if timer then timer:Close() timer=nil end
   return result<0 and result or result-shft
 end
 
