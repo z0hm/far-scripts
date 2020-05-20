@@ -158,7 +158,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(8067 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(8071 bytes)*
 
   v0.6.7.4
 
@@ -166,7 +166,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
 
-  Support delay execution in seconds (ExecDelay:integer)
+  Support delay execution in seconds (**ExecDelay**:integer)
 
   Support flags: **"wlcm"**
 

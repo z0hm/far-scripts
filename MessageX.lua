@@ -2,7 +2,7 @@
 -- v0.6.7.4
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
--- Support delay execution in seconds (ExecDelay:integer)
+-- Support delay execution in seconds (**ExecDelay**:integer)
 -- Support flags: **"wlcm"**
 -- **w** - warning dialog, **l** - left align (default center align), **c** - color mode, **m** - monochrome mode
 -- without **cm** will be used raw mode
