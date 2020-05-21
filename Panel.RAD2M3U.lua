@@ -1,5 +1,5 @@
 ﻿-- Panel.RAD2M3U.lua
--- v1.0.1
+-- v1.0.2
 -- [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad<=>FolderName.m3u
 -- Actions:
 -- 1. M3U:  Creating a playlist from rad files in a folder and subfolders
@@ -11,11 +11,11 @@ Macro {
   action=function()
     local app,apc = APanel.Path,APanel.Current
     -- read file
-    local fread = function(f) local h,x = io.open(f,"rb") if h then x=h:read("*all") io.close(h) end return x end
+    local function fread(f) local x,h = nil,io.open(f,"rb") if h then x=h:read("*all") io.close(h) end return x end
     -- write file
-    local fwrite = function(s,f) s = s or "" local h,x = io.open(f,"wb") if h then x=h:write(s) io.close(h) end return x end
+    local function fwrite(s,f) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
     -- delete invisible symbols at the end of a link
-    local fixlink = function(link) link=string.gsub(link,"[%z\1-\32]+$","") return link end
+    local function fixlink(link) link=string.gsub(link,"[%z\1-\32]+$","") return link end
 
     if string.sub(apc,-4,-1)==".m3u" then
       for fname,link in fread(app.."\\"..apc):gmatch("#EXTINF:(%C-)%c%c-(%C+)") do
