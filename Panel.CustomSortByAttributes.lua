@@ -120,7 +120,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     for i=1,#AttributeValue do
       hDlg:send(F.DM_SETCHECK,i+6,tFAttributes[i] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
     end
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif Msg==F.DN_EDITCHANGE and Param1==4 then
     local text = hDlg:send(F.DM_GETTEXT,4):lower()
     if text:match("^%d") then text=text:gsub("%D","")

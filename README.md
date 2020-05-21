@@ -129,7 +129,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11002 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11000 bytes)*
 
   v1.7.5
 
@@ -158,9 +158,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(8071 bytes)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(8290 bytes)*
 
-  v0.6.7.4
+  v0.6.7.5
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 
@@ -197,7 +197,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")   *(10278 bytes)*
+## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")   *(10276 bytes)*
 
   v2.0
 
@@ -212,7 +212,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")   *(18092 bytes)*
+## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")   *(18080 bytes)*
 
   v1.1
 
@@ -421,7 +421,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.SelectBOM.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectBOM.lua "Panel.SelectBOM.lua")   *(5655 bytes)*
+## [Panel.SelectBOM.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectBOM.lua "Panel.SelectBOM.lua")   *(5653 bytes)*
 
   v1.3
 

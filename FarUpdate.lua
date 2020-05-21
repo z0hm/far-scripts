@@ -114,7 +114,7 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
     end
     hDlg:send(F.DM_LISTSETCURPOS,5,{SelectPos=RealPos})
     FileName=tostring(hDlg:send(F.DM_GETTEXT,5))
-    hDlg:send(F.DM_SETFOCUS,5,0)
+    hDlg:send(F.DM_SETFOCUS,5)
   end
   local function RemoveListActions(pos)
     for i=pos,pos-#ListActions-1,-1 do

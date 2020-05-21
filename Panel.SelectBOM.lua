@@ -51,7 +51,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
   if Msg==F.DN_INITDIALOG then
     for i=1,#ChkBOX do hDlg:send(F.DM_SETCHECK,i+1,ChkBOX[i] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED) end
     hDlg:send(F.DM_SETTEXT,9,ReportPath)
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif Msg==F.DN_BTNCLICK and Param1>1 and Param1<7 then
     ChkBOX[Param1-1]=Param2~=0
   elseif Msg==F.DN_BTNCLICK and Param1==7 then

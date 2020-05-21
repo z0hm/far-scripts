@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6.7.4
+-- v0.6.7.5
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
 -- Support delay execution in seconds (**ExecDelay**:integer)
@@ -194,22 +194,24 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
   -- Dialogue processing
   local timer
   local shft=item and 3 or 1
+  local butdefid=butdef+shft
   local DlgProc=function(hDlg,Msg,Param1,Param2)
     local function OnTimer()
       ExecDelay=ExecDelay-1
-      if ExecDelay>0 then
-        local txt=hDlg:send(F.DM_GETTEXT,1)
-        hDlg:send(F.DM_SETTEXT,1,txt:gsub(" :%d+$"," :"..ExecDelay))
-      else
-        hDlg:send(F.DM_CLOSE,hDlg:send(F.DM_GETFOCUS))
+      if ExecDelay>0
+      then hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1):gsub(" :%d+$"," :"..ExecDelay))
+      else hDlg:send(F.DM_CLOSE,hDlg:send(F.DM_GETFOCUS))
       end
     end
     if Msg==F.DN_INITDIALOG then
-      if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdef+shft,0) end
+      if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdefid) end
       if ExecDelay then
         hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1).." :"..ExecDelay)
         timer=far.Timer(1000,OnTimer)
       end
+    elseif timer and Msg==F.DN_GOTFOCUS and hDlg:send(F.DM_GETFOCUS)~=butdefid then -- Param1 1st time return wrong id
+      timer:Close() timer=nil
+      hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1):gsub(" :%d+$",""))
     end
   end
 

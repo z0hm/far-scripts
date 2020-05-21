@@ -264,15 +264,15 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     ttSort[14] = tostring(hDlg:send(F.DM_GETTEXT,14))
     Set2()
     hDlg:send(F.DM_SETCHECK,10,ttSort[10] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif Msg==F.DN_BTNCLICK and Param1==2 then   -- [x] Offset
     ttSort[2] = Param2~=0 ttSort[4] = not ttSort[2] SetAlg()
     GFocus = ttSort[2] and 3 or 5
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif Msg==F.DN_BTNCLICK and Param1==4 then   -- [x] Symbols
     ttSort[4] = Param2~=0 ttSort[2] = not ttSort[4] SetAlg()
     GFocus = ttSort[2] and 3 or 5
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif Msg==F.DN_EDITCHANGE and Param1==3 then -- Offset changed
     ttSort[3] = tonumber(hDlg:send(F.DM_GETTEXT,3)) or ttSort[3]
   elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==5 then -- Symbols changed
@@ -284,7 +284,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
   elseif Msg==F.DN_BTNCLICK and Param1==8 then   -- [x] Digits
     SetAlg2(Param1,Param2~=0)
     GFocus = ttSort[8] and 9 or 11
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif Msg==F.DN_EDITCHANGE and Param1==9 then -- Digits changed
     ttSort[9] = tonumber(hDlg:send(F.DM_GETTEXT,9)) or ttSort[9]
     maxnum = math.pow(10,ttSort[9])
@@ -293,13 +293,13 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
   elseif Msg==F.DN_BTNCLICK and Param1==11 then   -- [x] Regexp
     SetAlg2(Param1,Param2~=0)
     GFocus = ttSort[11] and 12 or 13
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==12 then -- Regexp changed
     ttSort[12] = tostring(hDlg:send(F.DM_GETTEXT,12)) or ttSort[12]
   elseif Msg==F.DN_BTNCLICK and Param1==13 then   -- [x] Func()
     SetAlg2(Param1,Param2~=0)
     GFocus = ttSort[13] and 14 or 15
-    hDlg:send(F.DM_SETFOCUS,GFocus,0)
+    hDlg:send(F.DM_SETFOCUS,GFocus)
   elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==14 then -- Func() changed
     ttSort[14] = tostring(hDlg:send(F.DM_GETTEXT,14)) or ttSort[14]
   elseif Msg==F.DN_BTNCLICK and Param1==15 then   -- [x] Report
