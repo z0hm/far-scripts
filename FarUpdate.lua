@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.5
+-- v1.7.6
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
@@ -47,7 +47,7 @@ local FarUpdate=function(FileName)
   --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\LuaMacro" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\LuaMacro-b737.7z" > '..tmp..'FarUpdate.log'
   --..'\nmove /Y "'..farhome..'\\Plugins\\LuaMacro\\luafar3.dll" "'..farhome..'"'
   ..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\FarColorer" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarColorer-1.2.9.1_Far3_x86.7z" > '..tmp..'FarUpdate.log'
-  ..'\nstart "" "'..farhome..'\\ConEmu.exe"\nexit',tmp..'FarUpdate.bat')
+  ..'\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarUpdate.bat')
 end
 
 local GetFileList=function(page,items)
@@ -119,7 +119,7 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
   local function RemoveListActions(pos)
     for i=pos,pos-#ListActions-1,-1 do
       local FarListItem=hDlg:send(F.DM_LISTGETITEM,5,i)
-      if FarListItem.Text:sub(1,1)=="*" then
+      if FarListItem and FarListItem.Text:sub(1,1)=="*" then
         hDlg:send(F.DM_LISTDELETE,5,{StartIndex=i,Count=1})
         table.remove(ListT,i)
       else break
@@ -135,7 +135,7 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
     local SelectPos=ListInfo.SelectPos
     local str=tostring(hDlg:send(F.DM_GETTEXT,5))
     RealPos=SelectPos==0 and RealPos or SelectPos
-    if Msg==F.DN_EDITCHANGE and str:sub(1,1)=="*"
+    if Msg==F.DN_EDITCHANGE and str and str:sub(1,1)=="*"
     then
       if str==ListActions[1] then
         RemoveListActions(LastPos)
@@ -225,7 +225,7 @@ end;
 Macro {
 area="Common"; flags=""; description="! FarProfileBackUp";
 action=function()
-  fwrite('nircmd.exe waitprocess Far.exe\n7z.exe a -aoa -xr!CrashLogs "'..farhome..'"\\Profile.7z "'..farhome..'\\Profile" > '..tmp..'FarProfileBackUp.log\nstart "" "'..farhome..'\\ConEmu.exe"\nexit',tmp..'FarProfileBackUp.bat')
+  fwrite('nircmd.exe waitprocess Far.exe\n7z.exe a -aoa -xr!CrashLogs "'..farhome..'"\\Profile.7z "'..farhome..'\\Profile" > '..tmp..'FarProfileBackUp.log\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarProfileBackUp.bat')
   win.system('start /MIN '..tmp..'FarProfileBackUp.bat')
 end;
 }
