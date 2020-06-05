@@ -27,9 +27,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11220 bytes)*
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")   *(11312 bytes)*
 
-  v1.1.5
+  v1.1.6
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -515,12 +515,25 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(1965 bytes)*
+## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(1967 bytes)*
 
   v1.0
 
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 
   Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
+
+
+
+
+## [moon2lua.lua](https://github.com/z0hm/far-scripts/blob/master/moon2lua.lua "moon2lua.lua")   *(627 bytes)*
+
+  v1.0
+
+  author Shmuel, 28.05.2020
+
+  copy to folder included Moonscript files and run it: lua:@moon2lua.lua
+
+  all Moonscript files will be deleted after convert!
 
 

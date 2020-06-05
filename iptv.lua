@@ -9,7 +9,7 @@ local dir=win.GetEnv('PROGRAMFILES')..'\\IP-TV Player\\'
 local fname=dir..'My.m3u'
 -- list of links to free playlists
 local urls={
-  "http://help.a1.by/_files/TelecomTV/TelecomTVpacket/TVPACKET2.m3u",
+--  "http://help.a1.by/_files/TelecomTV/TelecomTVpacket/TVPACKET2.m3u",
   "https://iptvm3u.ru/iptvhd.m3u",
   "https://iptvm3u.ru/one.m3u",
   "https://smarttvnews.ru/apps/iptvchannels.m3u",

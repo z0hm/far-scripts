@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.5
+-- v1.1.6
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -16,7 +16,7 @@ transform=
   [win.Uuid"FAD00DBE-3FFF-4095-9232-E1CC70C67737"]: {1,3,6,8} --mkdir
   [win.Uuid"5EB266F4-980D-46AF-B3D2-2C50E64BCA81"]: {1,3,11} --link
   [win.Uuid"1D07CEE2-8F4F-480A-BE93-069B4FF59A2B"]: {1,3,6} --new
-  [win.Uuid"8C9EAD29-910F-4B24-A669-EDAFBA6ED964"]: {1,3,6,7,9,15.1,16.1,17.1,18.1,20.1,22.2,23.1} --findfile
+  [win.Uuid"8C9EAD29-910F-4B24-A669-EDAFBA6ED964"]: {1,3,6,9,15.1,16.1,17.1,18.1,20.1,22.2,23.1} --findfile
   [win.Uuid"5D3CBA90-F32D-433C-B016-9BB4AF96FACC"]: {1,2.3,3.3,5,7,12.1,13.1} --editsearch
   [win.Uuid"8BCCDFFD-3B34-49F8-87CD-F4D885B75873"]: {1,2.3,3.3,5,7,12.1,13.1} --editreplace
   [win.Uuid"9162f965-78b8-4476-98ac-d699e5b6afe7"]: {1,3,6} --saveas
@@ -85,8 +85,9 @@ Proc=(id,hDlg)->
     _G._XScale.xs=0
     _G._XScale.xp=0
   dw,dh,dt,pl = _G._XScale.dw,_G._XScale.dh,_G._XScale.dt,_G._XScale.pl
-  diff=df*(_G._XScale.xs-_G._XScale.xp)+0.5 -- +0.5 for round
+  diff=df*(_G._XScale.xs-_G._XScale.xp)
   dw+=df*_G._XScale.xs
+  dw=math.floor dw+0.5
   pr=dw-pl-1
   hDlg\send F.DM_SHOWDIALOG,0,0  -- hide dialog
   for ii in *transform[id]
@@ -198,6 +199,8 @@ Proc=(id,hDlg)->
               w*=sc  -- Adaptive width
             item[2]=(item[2]-pl)*sc+pl
             item[4]=item[2]+w-1
+      item[2]=math.floor item[2]+0.5
+      item[4]=math.floor item[4]+0.5
       if idx==1
         if item[2]<pl-2
           item[2]=pl-2
@@ -210,7 +213,7 @@ Proc=(id,hDlg)->
           item[4]=pr
       far.SetDlgItem hDlg,idx,item
   hDlg\send F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
-  hDlg\send F.DM_MOVEDIALOG,1,{X:(cs-dw)/2,Y:dt}
+  hDlg\send F.DM_MOVEDIALOG,1,{X:math.floor((cs-dw)/2+0.5),Y:dt}
   --hDlg\send F.DM_REDRAW,0,0
   hDlg\send F.DM_SHOWDIALOG,1,0 -- show dialog
 
