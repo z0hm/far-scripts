@@ -1,17 +1,17 @@
 -- iptv.lua
--- v1.0
+-- v1.0.1
 -- Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 -- Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
 
 -- replace the path with your own
-local dir=win.GetEnv('PROGRAMFILES')..'\\IP-TV Player\\'
+local dir=win.GetEnv('APPDATA')..'\\IP-TV Player\\'
 --local dir=win.GetEnv('TEMP')..'\\'
 local fname=dir..'My.m3u'
 -- list of links to free playlists
 local urls={
---  "http://help.a1.by/_files/TelecomTV/TelecomTVpacket/TVPACKET2.m3u",
-  "https://iptvm3u.ru/iptvhd.m3u",
-  "https://iptvm3u.ru/one.m3u",
+  --"http://help.a1.by/_files/TelecomTV/TelecomTVpacket/TVPACKET2.m3u",
+  "https://iptvm3u.ru/hdlist.m3u",
+  "http://iptvm3u.ru/onelist.m3u",
   "https://smarttvnews.ru/apps/iptvchannels.m3u",
   "https://smarttvnews.ru/apps/AutoIPTV.m3u",
   "https://webarmen.com/my/iptv/auto.nogrp.q.m3u"

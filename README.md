@@ -517,7 +517,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(1967 bytes)*
 
-  v1.0
+  v1.0.1
 
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 
