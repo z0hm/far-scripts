@@ -43,7 +43,7 @@ local EGI,StringText,build
 local FarUpdate=function(FileName)
   fwrite('*.map\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*',tmp..'FarUpdExc.txt')
   fwrite('nircmd.exe waitprocess "'..farhome..'\\Far.exe"\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'
-  --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\NetBox" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarNetBox-2.4.5.531_Far3_x86.7z" > '..tmp..'FarUpdate.log'
+  ..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\NetBox" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarNetBox-2.4.5.531_Far3_x86.7z" > '..tmp..'FarUpdate.log'
   --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\LuaMacro" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\LuaMacro-b737.7z" > '..tmp..'FarUpdate.log'
   --..'\nmove /Y "'..farhome..'\\Plugins\\LuaMacro\\luafar3.dll" "'..farhome..'"'
   ..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\FarColorer" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarColorer-1.2.9.1_Far3_x86.7z" > '..tmp..'FarUpdate.log'
