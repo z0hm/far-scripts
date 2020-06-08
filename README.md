@@ -129,7 +129,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11080 bytes)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11082 bytes)*
 
   v1.7.6
 
