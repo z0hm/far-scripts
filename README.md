@@ -103,11 +103,11 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.Reload.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.Reload.lua "Editor.Reload.lua")   *(858 bytes)*
+## [Editor.Reload.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.Reload.lua "Editor.Reload.lua")   *(863 bytes)*
 
   v1.0
 
-  http://forum.ru-board.com/topic.cgi?forum=5&topic=31718&start=7640#7
+  Url: http://forum.ru-board.com/topic.cgi?forum=5&topic=31718&start=7640#7
 
 
 

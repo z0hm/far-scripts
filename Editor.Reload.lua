@@ -1,6 +1,6 @@
 ﻿-- Editor.Reload.lua
 -- v1.0
--- http://forum.ru-board.com/topic.cgi?forum=5&topic=31718&start=7640#7
+-- Url: http://forum.ru-board.com/topic.cgi?forum=5&topic=31718&start=7640#7
 
 local F = far.Flags
 
