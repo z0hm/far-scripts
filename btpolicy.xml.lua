@@ -1,5 +1,5 @@
 -- btpolicy.xml.lua
--- v1.0
+-- v1.0.1
 -- Create btpolicy.xml for uTorrent, with priority peering zone (example for Belarus users)
 -- Keys: launch from Macro Browser alt.
 
@@ -10,7 +10,15 @@ area="Common"; flags=""; description="! btpolicy.xml";
 action=function()
   local function fread(f) local x,h = nil,io.open(f,"rb") if h then x=h:read("*all") io.close(h) end return x end
   local function fwrite(s,f) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
-  local function GetPage(x) local s="" if x then panel.GetUserScreen() s=io.popen("curl.exe "..x,"rb"):read("*all") panel.SetUserScreen() end return s end
+  local function GetPage(x)
+    local s=""
+    if x then
+      if panel then panel.GetUserScreen() end
+      s=io.popen("curl.exe "..x,"rb"):read("*all")
+      if panel then panel.SetUserScreen() end
+    end
+    return s
+  end
 
   local Temp=win.GetEnv("TEMP")
   local AppData=win.GetEnv("APPDATA")

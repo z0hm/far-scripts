@@ -513,9 +513,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")   *(2990 bytes)*
+## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")   *(3072 bytes)*
 
-  v1.0
+  v1.0.1
 
   Create btpolicy.xml for uTorrent, with priority peering zone (example for Belarus users)
 
@@ -524,9 +524,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(2124 bytes)*
+## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")   *(2188 bytes)*
 
-  v1.0.2
+  v1.0.3
 
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 

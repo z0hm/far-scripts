@@ -1,5 +1,5 @@
 -- iptv.lua
--- v1.0.2
+-- v1.0.3
 -- Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 -- Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
 
@@ -19,7 +19,15 @@ local urls={
 
 local function fread(f) local x,h = nil,io.open(f,"rb") if h then x=h:read("*all") io.close(h) end return x end
 local function fwrite(f,s) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
-local function GetPage(x) local s="" if x then panel.GetUserScreen() s=io.popen("curl.exe "..x,"rb"):read("*all") panel.SetUserScreen() end return s end
+local function GetPage(x)
+  local s=""
+  if x then
+    if panel then panel.GetUserScreen() end
+    s=io.popen("curl.exe "..x,"rb"):read("*all")
+    if panel then panel.SetUserScreen() end
+  end
+  return s
+end
 
 local pgm,head = {},'#EXTM3U\n#EXTINF:-1,-= Update: '..os.date("%d.%m.%Y %H:%M")..' =-\nhttp://127.0.0.1/logo.png\n'
 for j=1,#urls do
