@@ -532,7 +532,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
 
-  Result: [My.m3u](https://github.com/z0hm/far-scripts/raw/master/My.m3u "My.m3u")   *(158149 bytes, changed 2020-06-12 05:09)*
+  Result: [My.m3u](https://raw.githubusercontent.com/z0hm/far-scripts/master/My.m3u "My.m3u")   *(158149 bytes, changed 2020-06-12 05:09)*
 
 
 
