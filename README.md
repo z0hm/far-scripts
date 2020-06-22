@@ -1,4 +1,4 @@
-# [far-scripts](https://github.com/z0hm/far-scripts "far-scripts")
+# [far-scripts](https://github.com/z0hm/far-scripts/blob "far-scripts")
 
 
 lua and moon scripts, macros repository for [Far Manager 3.0](https://farmanager.com/ "File Manager for Windows")
@@ -138,7 +138,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11082 bytes, changed 2020-06-08 11:51)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11178 bytes, changed 2020-06-22 06:28)*
 
   v1.7.6
 
@@ -513,7 +513,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")   *(3072 bytes, changed 2020-06-11 08:38)*
+## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")   *(2992 bytes, changed 2020-06-20 09:14)*
 
   v1.0.1
 
@@ -532,7 +532,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
 
-  Result: [My.m3u](https://raw.githubusercontent.com/z0hm/far-scripts/master/My.m3u "My.m3u")   *(158149 bytes, changed 2020-06-12 05:09)*
+  Result: [My.m3u](https://raw.githubusercontent.com/z0hm/far-scripts/master/My.m3u "My.m3u")   *(153394 bytes, changed 2020-06-22 08:45)*
 
 
 

@@ -46,7 +46,7 @@ local FarUpdate=function(FileName)
   --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\NetBox" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarNetBox-2.4.5.531_Far3_x86.7z" > '..tmp..'FarUpdate.log'
   --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\LuaMacro" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\LuaMacro-b737.7z" > '..tmp..'FarUpdate.log'
   --..'\nmove /Y "'..farhome..'\\Plugins\\LuaMacro\\luafar3.dll" "'..farhome..'"'
-  ..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\FarColorer" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarColorer-1.2.9.1_Far3_x86.7z" > '..tmp..'FarUpdate.log'
+  --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\FarColorer" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarColorer-1.2.9.1_Far3_x86.7z" > '..tmp..'FarUpdate.log'
   ..'\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarUpdate.bat')
 end
 
@@ -221,11 +221,14 @@ action=function()
 end;
 }
 
--- FarProfileBackUp.lua 1.0
+-- FarProfileBackUp.lua 1.0.1
 Macro {
 area="Common"; flags=""; description="! FarProfileBackUp";
 action=function()
-  fwrite('nircmd.exe waitprocess Far.exe\n7z.exe a -aoa -xr!CrashLogs "'..farhome..'"\\Profile.7z "'..farhome..'\\Profile" > '..tmp..'FarProfileBackUp.log\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarProfileBackUp.bat')
+  local farprofile=win.GetEnv("FARPROFILE")
+  local fp7z=farprofile..'.7z'
+  win.MoveFile(fp7z,fp7z..'_','r')
+  fwrite('nircmd.exe waitprocess Far.exe\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarProfileBackUp.bat')
   win.system('start /MIN '..tmp..'FarProfileBackUp.bat')
 end;
 }
