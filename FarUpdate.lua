@@ -1,7 +1,7 @@
 ﻿-- FarUpdate.lua
 -- v1.7.7
 -- Opening changelog and updating Far Manager to any version available on the site
--- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
+-- ![changelog](http://i.piccy.info/i9/5865ac2503bdd91c81896445b0fc5c80/1592908077/25253/1384833/2020_06_23_132407.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
 -- GitHub: press **[ More >> ]** to get more files
