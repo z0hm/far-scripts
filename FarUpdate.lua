@@ -2,7 +2,6 @@
 -- v1.7.7
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
--- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
 -- GitHub: press **[ More >> ]** to get more files
 -- GitHub: press **[ Reload Last ]** to reload last page with files
