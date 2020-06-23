@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.6
+-- v1.7.7
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/853d060868f60a97875406b017505b28/1586274980/29703/1371677/2020_04_07_182023.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
@@ -12,7 +12,7 @@
 -- Keys: launch from Macro Browser alt.
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=700#19
 
-local function fwrite(s,f) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
+local function fwrite(f,s) local x,h = nil,io.open(f,"wb") if h then x=h:write(s or "") io.close(h) end return x end
 local function GetPage(x) panel.GetUserScreen() local s="" if x then s=io.popen('curl.exe '..x,'rb'):read('*all') end panel.SetUserScreen() return s end
 
 local F=far.Flags
@@ -26,28 +26,34 @@ local items={
  --[[04]] {F.DI_BUTTON,      22,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &3 7z  ]"},
  --[[05]] {F.DI_COMBOBOX,     2,2, 29,2,{}, 0,0, F.DIF_DROPDOWNLIST, ""},
  --[[06]] {F.DI_TEXT,         0,3,  0,0, 0, 0,0, F.DIF_SEPARATOR,""},
- --[[07]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Update"},
- --[[08]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&Yes"},
- --[[09]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&No"}
+ --[[07]] {F.DI_CHECKBOX,     8,3,  0,3, 0, 0,0, 0,"Profile BackUp"},
+ --[[08]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Update"},
+ --[[09]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&Yes"},
+ --[[10]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&No"}
 }
 local tmp=win.GetEnv("TEMP").."\\"
 local farhome=win.GetEnv("FARHOME")
+local farprofile=win.GetEnv("FARPROFILE")
+local fp7z=farprofile..'.7z'
 local x64=win.IsProcess64bit()
 local pages,FileName = {}
 local GitItemsPerPage,ListActions = 20,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
 local RealPos,FileList = 1,{}
-local box={true,x64,true} -- [ Far ]   [ x64 ]   [ 7z  ]
+local box={true,x64,true,false} -- [ Far ]   [ x64 ]   [ 7z  ]   [ ] Profile BackUp
 local EGI,StringText,build
+local WaitCloseFar='nircmd.exe waitprocess "'..farhome..'\\Far.exe"'
+local ProfileBackUp='\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log'
+local StartFar=function() return '\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit' end
+local FarProfileBackUpBat=tmp..'FarProfileBackUp.bat'
+local FarUpdateBat=tmp..'FarUpdate.bat'
 
 -- Create FarUpdate.bat
 local FarUpdate=function(FileName)
-  fwrite('*.map\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*',tmp..'FarUpdExc.txt')
-  fwrite('nircmd.exe waitprocess "'..farhome..'\\Far.exe"\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'
-  --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\NetBox" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarNetBox-2.4.5.531_Far3_x86.7z" > '..tmp..'FarUpdate.log'
-  --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\LuaMacro" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\LuaMacro-b737.7z" > '..tmp..'FarUpdate.log'
-  --..'\nmove /Y "'..farhome..'\\Plugins\\LuaMacro\\luafar3.dll" "'..farhome..'"'
-  --..'\n7z.exe x -aoa -o"'..farhome..'\\Plugins\\FarColorer" -x@"'..tmp..'FarUpdExc.txt" "H:\\Temp\\FarColorer-1.2.9.1_Far3_x86.7z" > '..tmp..'FarUpdate.log'
-  ..'\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarUpdate.bat')
+  fwrite(tmp..'FarUpdExc.txt','*.map\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*')
+  local s=WaitCloseFar
+  if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
+  s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'..StartFar()
+  fwrite(FarUpdateBat,s)
 end
 
 local GetFileList=function(page,items)
@@ -129,6 +135,7 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
   if Msg==F.DN_INITDIALOG then
     BoxUpdate()
     RefreshList()
+    hDlg:send(F.DM_SETCHECK,7,box[4] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
   elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==5 then
     local ListInfo=hDlg:send(F.DM_LISTINFO,5)
     local LastPos=ListInfo.ItemsNumber
@@ -170,6 +177,8 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
     if Param1==2 then GetFileList() end
     RealPos=1
     RefreshList()
+  elseif Msg==F.DN_BTNCLICK and Param1==7 then   -- [ ] Profile BackUp
+    box[4]=not box[4]
   end
 end
 
@@ -179,8 +188,8 @@ action=function()
   local changelog="Far.changelog"
   local f=tmp..changelog
   if #FileList==0 then
-    --fwrite(GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'),f)
-    fwrite(GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'),f)
+    --fwrite(f,GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'))
+    fwrite(f,GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'))
     GetFileList(0)
   end
   editor.Editor(f,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_USEEXISTING),1,1,nil)
@@ -214,21 +223,19 @@ action=function()
       elseif res==#items-2 then
         Download(tmp,FileName)
         FarUpdate(FileName)
-        panel.GetUserScreen() win.system('start /MIN '..tmp..'FarUpdate.bat') panel.SetUserScreen()
+        panel.GetUserScreen() win.system('start /MIN '..FarUpdateBat) panel.SetUserScreen()
       end
     end
   end
 end;
 }
 
--- FarProfileBackUp.lua 1.0.1
+-- FarProfileBackUp.lua 1.0.2
 Macro {
 area="Common"; flags=""; description="! FarProfileBackUp";
 action=function()
-  local farprofile=win.GetEnv("FARPROFILE")
-  local fp7z=farprofile..'.7z'
   win.MoveFile(fp7z,fp7z..'_','r')
-  fwrite('nircmd.exe waitprocess Far.exe\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit',tmp..'FarProfileBackUp.bat')
-  win.system('start /MIN '..tmp..'FarProfileBackUp.bat')
+  fwrite(FarProfileBackUpBat,WaitCloseFar..ProfileBackUp..StartFar())
+  panel.GetUserScreen() win.system('start /MIN '..FarProfileBackUpBat) panel.SetUserScreen()
 end;
 }
