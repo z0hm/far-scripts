@@ -1,7 +1,7 @@
 ﻿-- FarUpdate.lua
 -- v1.7.7
 -- Opening changelog and updating Far Manager to any version available on the site
--- ![changelog](http://i.piccy.info/i9/5865ac2503bdd91c81896445b0fc5c80/1592908077/25253/1384833/2020_06_23_132407.png)
+-- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- ![update dialog](http://i.piccy.info/i9/2926dae366e86ea1eacadc3a55508f5d/1585846888/29457/1370793/2020_04_02_195019.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
 -- GitHub: press **[ More >> ]** to get more files
@@ -26,7 +26,7 @@ local items={
  --[[04]] {F.DI_BUTTON,      22,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &3 7z  ]"},
  --[[05]] {F.DI_COMBOBOX,     2,2, 29,2,{}, 0,0, F.DIF_DROPDOWNLIST, ""},
  --[[06]] {F.DI_TEXT,         0,3,  0,0, 0, 0,0, F.DIF_SEPARATOR,""},
- --[[07]] {F.DI_CHECKBOX,     8,3,  0,3, 0, 0,0, 0,"Profile BackUp"},
+ --[[07]] {F.DI_CHECKBOX,     8,3,  0,3, 0, 0,0, 0,"&Profile BackUp"},
  --[[08]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Update"},
  --[[09]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&Yes"},
  --[[10]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&No"}
