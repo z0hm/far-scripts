@@ -138,7 +138,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11023 bytes, changed 2020-06-23 11:01)*
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")   *(11023 bytes, changed 2020-06-25 18:07)*
 
   v1.7.7
 
@@ -530,7 +530,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
 
-  Result: [My.m3u](https://raw.githubusercontent.com/z0hm/far-scripts/master/My.m3u "My.m3u")   *(153394 bytes, changed 2020-06-22 08:45)*
+  Result: [My.m3u](https://raw.githubusercontent.com/z0hm/far-scripts/master/My.m3u "My.m3u")   *(153203 bytes, changed 2020-06-25 16:18)*
 
 
 
