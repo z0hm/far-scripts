@@ -1,5 +1,5 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.3.1
+-- v1.1.3.2
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
 -- Required: MessageX.lua in modules folder
@@ -9,6 +9,7 @@
 -- prototype: https://forum.farmanager.com/viewtopic.php?f=60&t=8674
 
 -- default values
+ExecDelay=2
 ForegroundColor=9
 BackgroundColor=1
 ShowTimeofProcessing=true
@@ -131,7 +132,7 @@ Macro
         finish:0
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#a2> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
+        Answer=MessageX "\nStatus: <#a2> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c","","",ExecDelay
         if Answer==2
           ShowTimeofProcessing=false
     else
@@ -142,6 +143,6 @@ Macro
       editors[id]=nil
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#c4> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c"
+        Answer=MessageX "\nStatus: <#c4> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c","","",ExecDelay
         if Answer==2
           ShowTimeofProcessing=false

@@ -1,5 +1,5 @@
 ﻿-- Editor.CyrSpaceHighlighting.moon
--- v1.1.3.1
+-- v1.1.3.2
 -- Highlighting Cyrillic and space symbols
 -- ![Highlight ON](http://i62.fastpic.ru/big/2014/0603/18/0f2bf6171580c92d52a09ead18b86e18.png)
 -- ![Highlight ON](http://i.piccy.info/i9/7223f0c8d8e8b124e0849af1cdd4e5de/1587815203/7934/1374955/2020_04_25_134822.png)
@@ -11,6 +11,7 @@
 -- prototype: https://forum.farmanager.com/viewtopic.php?f=60&t=8674
 
 -- default values
+ExecDelay=2
 ForegroundColor=9
 BackgroundColor=1
 ShowTimeofProcessing=true
@@ -132,7 +133,7 @@ Macro
         finish:0
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#a2> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c"
+        Answer=MessageX "\nStatus: <#a2> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c","","",ExecDelay
         if Answer==2
           ShowTimeofProcessing=false
     else
@@ -143,6 +144,6 @@ Macro
       editors[id]=nil
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#c4> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c"
+        Answer=MessageX "\nStatus: <#c4> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c","","",ExecDelay
         if Answer==2
           ShowTimeofProcessing=false

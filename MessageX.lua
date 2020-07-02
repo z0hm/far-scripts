@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6.7.5
+-- v0.6.7.6
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
 -- Support delay execution in seconds (**ExecDelay**:integer)
@@ -147,9 +147,12 @@ end
 
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
   -- Protection against incorrect arguments
+  if ExecDelay and type(ExecDelay)=="number" then
+    if ExecDelay>0 then ExecDelay=math.floor(ExecDelay) else return end
+  else ExecDelay=nil
+  end
   Title,Buttons,Flags,HelpTopic,Guid = Title or "MessageX",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
   Flags=Flags:lower()
-  if ExecDelay and type(ExecDelay)=="number" then ExecDelay=math.floor(ExecDelay) else ExecDelay=nil end
 
   -- Check window size
   local width,height

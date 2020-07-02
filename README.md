@@ -42,9 +42,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")   *(5189 bytes, changed 2020-04-25 11:45)*
+## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")   *(5234 bytes, changed 2020-07-02 08:58)*
 
-  v1.1.3.1
+  v1.1.3.2
 
   Highlighting Cyrillic and space symbols
 
@@ -82,9 +82,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")   *(5055 bytes, changed 2020-04-25 11:46)*
+## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")   *(5100 bytes, changed 2020-07-02 09:02)*
 
-  v1.1.3.1
+  v1.1.3.2
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 
@@ -165,9 +165,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(8290 bytes, changed 2020-05-23 06:10)*
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")   *(8337 bytes, changed 2020-07-02 08:57)*
 
-  v0.6.7.5
+  v0.6.7.6
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 
