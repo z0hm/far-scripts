@@ -148,7 +148,7 @@ end
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
   -- Protection against incorrect arguments
   if ExecDelay and type(ExecDelay)=="number" then
-    if ExecDelay>0 then ExecDelay=math.floor(ExecDelay) else return end
+    if ExecDelay<1 then ExecDelay=math.floor(ExecDelay) else return end
   else ExecDelay=nil
   end
   Title,Buttons,Flags,HelpTopic,Guid = Title or "MessageX",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
