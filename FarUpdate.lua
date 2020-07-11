@@ -48,7 +48,7 @@ local FarUpdateBat=tmp..'FarUpdate.bat'
 
 -- Create FarUpdate.bat
 local FarUpdate=function(FileName)
-  fwrite(tmp..'FarUpdExc.txt','*.map\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*')
+  fwrite(tmp..'FarUpdExc.txt','*.map\n*.pdb\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*')
   local s=WaitCloseFar
   if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
   s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'..StartFar()
