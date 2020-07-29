@@ -87,9 +87,8 @@ condition = function()
         panel.SetSelection(nil,0,t,false)
       end
       for i=1,tPanelInfo0.ItemsNumber do -- select files on the passive panel with the same names
-        local FileName = panel.GetPanelItem(nil,0,i).FileName
         for k,v in ipairs(t) do
-          if FileName==v then panel.SetSelection(nil,0,i,true) table.remove(t,k) break end
+          if panel.GetPanelItem(nil,0,i).FileName==v then panel.SetSelection(nil,0,i,true) table.remove(t,k) break end
         end
         if #t==0 then break end
       end
