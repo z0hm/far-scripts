@@ -1,5 +1,5 @@
 ﻿-- Panel.VisualCompare.lua
--- v.1.8.5
+-- v.1.8.6
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 -- Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 -- Keys: CtrlAltC
@@ -75,30 +75,34 @@ File compare modes by priority order:
 Macro {
 description="VC: Визуальное сравнение файлов"; area="Shell"; key="CtrlAltC";
 condition = function()
-  if APanel.SelCount>2 then
-    if PPanel.SelCount>0 then -- clear selection on the passive panel
+  local tPanelInfo1 = panel.GetPanelInfo(nil,1)
+  local tPanelInfo0 = panel.GetPanelInfo(nil,0)
+  if tPanelInfo1 and tPanelInfo0 then
+    if tPanelInfo1.SelectedItemsNumber>2 then
       local t={}
-      for i=1,PPanel.SelCount do table.insert(t,i) end
-      panel.SetSelection(nil,0,t,false)
-    end
-    local tPanelInfoA = panel.GetPanelInfo(nil,1)
-    local tPanelInfoP = panel.GetPanelInfo(nil,0)
-    if tPanelInfoA and tPanelInfoP then
-      for i=1,tPanelInfoA.SelectedItemsNumber do -- select files on the passive panel with the same names
-        local FileName = panel.GetSelectedPanelItem(nil,1,i).FileName
-        for j=1,tPanelInfoP.ItemsNumber do
-          if FileName==panel.GetPanelItem(nil,0,j).FileName then panel.SetSelection(nil,0,j,true) break end
-        end
+      for i=1,tPanelInfo1.SelectedItemsNumber do table.insert(t,panel.GetSelectedPanelItem(nil,1,i).FileName) end -- selected => t
+      if tPanelInfo0.SelectedItemsNumber>0 then -- clear selection on the passive panel
+        local t={}
+        for i=1,tPanelInfo0.SelectedItemsNumber do table.insert(t,i) end
+        panel.SetSelection(nil,0,t,false)
       end
+      for i=1,tPanelInfo0.ItemsNumber do -- select files on the passive panel with the same names
+        local FileName = panel.GetPanelItem(nil,0,i).FileName
+        for k,v in ipairs(t) do
+          if FileName==v then panel.SetSelection(nil,0,i,true) table.remove(t,k) break end
+        end
+        if #t==0 then break end
+      end
+      Plugin.SyncCall("ED0C4BD8-D2F0-4B6E-A19F-B0B0137C9B0C") -- call AdvCmpEx
+      panel.RedrawPanel(nil,1)
+      panel.RedrawPanel(nil,0)
+    elseif tPanelInfo1.SelectedItemsNumber==2
+      or tPanelInfo1.SelectedItemsNumber==1 and tPanelInfo0.SelectedItemsNumber<=1
+      or tPanelInfo1.SelectedItemsNumber==0 and (not PPanel.Plugin or PPanel.Plugin and
+      (PPanel.Format=="Branch" or PPanel.Prefix=="tmp" or tPanelInfo0.SelectedItemsNumber<=1))
+    then return true
+    else far.Message(msg,VC)
     end
-    Plugin.SyncCall("ED0C4BD8-D2F0-4B6E-A19F-B0B0137C9B0C") -- call AdvCmpEx
-    panel.RedrawPanel(nil,1)
-    panel.RedrawPanel(nil,0)
-  elseif APanel.SelCount==2
-     or APanel.SelCount==1 and PPanel.SelCount<=1
-     or APanel.SelCount==0 and (not PPanel.Plugin or PPanel.Plugin and (PPanel.Format=="Branch" or PPanel.Prefix=="tmp" or PPanel.SelCount<=1))
-  then return true
-  else far.Message(msg,VC)
   end
 end;
 action = function()
