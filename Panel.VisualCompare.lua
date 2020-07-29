@@ -1,5 +1,5 @@
 ﻿-- Panel.VisualCompare.lua
--- v.1.8.4
+-- v.1.8.5
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 -- Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 -- Keys: CtrlAltC
@@ -84,10 +84,10 @@ condition = function()
     local tPanelInfoA = panel.GetPanelInfo(nil,1)
     local tPanelInfoP = panel.GetPanelInfo(nil,0)
     if tPanelInfoA and tPanelInfoP then
-      for i=1,tPanelInfoA.SelectedItemsNumber do  -- select files on the passive panel with the same names
+      for i=1,tPanelInfoA.SelectedItemsNumber do -- select files on the passive panel with the same names
         local FileName = panel.GetSelectedPanelItem(nil,1,i).FileName
         for j=1,tPanelInfoP.ItemsNumber do
-          if FileName==panel.GetPanelItem(nil,0,j).FileName then panel.SetSelection(nil,0,j,true) end
+          if FileName==panel.GetPanelItem(nil,0,j).FileName then panel.SetSelection(nil,0,j,true) break end
         end
       end
     end
