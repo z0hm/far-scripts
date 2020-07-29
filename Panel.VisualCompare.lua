@@ -1,6 +1,7 @@
 ﻿-- Panel.VisualCompare.lua
--- v.1.8.3
+-- v.1.8.4
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
+-- Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 -- Keys: CtrlAltC
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2080#6
 
@@ -74,7 +75,26 @@ File compare modes by priority order:
 Macro {
 description="VC: Визуальное сравнение файлов"; area="Shell"; key="CtrlAltC";
 condition = function()
-  if APanel.SelCount==2
+  if APanel.SelCount>2 then
+    if PPanel.SelCount>0 then -- clear selection on the passive panel
+      local t={}
+      for i=1,PPanel.SelCount do table.insert(t,i) end
+      panel.SetSelection(nil,0,t,false)
+    end
+    local tPanelInfoA = panel.GetPanelInfo(nil,1)
+    local tPanelInfoP = panel.GetPanelInfo(nil,0)
+    if tPanelInfoA and tPanelInfoP then
+      for i=1,tPanelInfoA.SelectedItemsNumber do  -- select files on the passive panel with the same names
+        local FileName = panel.GetSelectedPanelItem(nil,1,i).FileName
+        for j=1,tPanelInfoP.ItemsNumber do
+          if FileName==panel.GetPanelItem(nil,0,j).FileName then panel.SetSelection(nil,0,j,true) end
+        end
+      end
+    end
+    Plugin.SyncCall("ED0C4BD8-D2F0-4B6E-A19F-B0B0137C9B0C") -- call AdvCmpEx
+    panel.RedrawPanel(nil,1)
+    panel.RedrawPanel(nil,0)
+  elseif APanel.SelCount==2
      or APanel.SelCount==1 and PPanel.SelCount<=1
      or APanel.SelCount==0 and (not PPanel.Plugin or PPanel.Plugin and (PPanel.Format=="Branch" or PPanel.Prefix=="tmp" or PPanel.SelCount<=1))
   then return true

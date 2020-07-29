@@ -471,9 +471,11 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
-  *v.1.8.3 (6132 bytes, changed 2020-04-09 09:55)*
+  *v.1.8.4 (7118 bytes, changed 2020-07-29 06:51)*
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
+
+  Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 
   Keys: <kbd>CtrlAltC</kbd>
 
@@ -529,8 +531,6 @@ a very wide range of tasks using the Far and Windows API's.
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 
   Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
-
-  Result: [My.m3u](https://raw.githubusercontent.com/z0hm/far-scripts/master/My.m3u "My.m3u")
 
 
 
