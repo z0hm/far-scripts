@@ -1,5 +1,5 @@
 ﻿-- Panel.VisualCompare.lua
--- v.1.8.6
+-- v.1.8.7
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 -- Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 -- Keys: CtrlAltC
@@ -79,19 +79,20 @@ condition = function()
   local tPanelInfo0 = panel.GetPanelInfo(nil,0)
   if tPanelInfo1 and tPanelInfo0 then
     if tPanelInfo1.SelectedItemsNumber>2 then
-      local t={}
-      for i=1,tPanelInfo1.SelectedItemsNumber do table.insert(t,panel.GetSelectedPanelItem(nil,1,i).FileName) end -- selected => t
+      local t1,t0 = {},{}
+      for i=1,tPanelInfo1.SelectedItemsNumber do table.insert(t1,panel.GetSelectedPanelItem(nil,1,i).FileName) end -- selected => t1
       if tPanelInfo0.SelectedItemsNumber>0 then -- clear selection on the passive panel
         local t={}
         for i=1,tPanelInfo0.SelectedItemsNumber do table.insert(t,i) end
-        panel.SetSelection(nil,0,t,false)
+        panel.ClearSelection(nil,0,t)
       end
       for i=1,tPanelInfo0.ItemsNumber do -- select files on the passive panel with the same names
-        for k,v in ipairs(t) do
-          if panel.GetPanelItem(nil,0,i).FileName==v then panel.SetSelection(nil,0,i,true) table.remove(t,k) break end
+        for k,v in ipairs(t1) do
+          if panel.GetPanelItem(nil,0,i).FileName==v then table.insert(t0,i) table.remove(t1,k) break end
         end
-        if #t==0 then break end
+        if #t1==0 then break end
       end
+      if #t0>0 then panel.SetSelection(nil,0,t0,true) end
       Plugin.SyncCall("ED0C4BD8-D2F0-4B6E-A19F-B0B0137C9B0C") -- call AdvCmpEx
       panel.RedrawPanel(nil,1)
       panel.RedrawPanel(nil,0)
