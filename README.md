@@ -471,7 +471,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
-  *v.1.8.7 (7437 bytes, changed 2020-07-30 08:32)*
+  *v.1.8.7 (7269 bytes, changed 2020-07-30 09:28)*
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 

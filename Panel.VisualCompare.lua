@@ -81,11 +81,7 @@ condition = function()
     if tPanelInfo1.SelectedItemsNumber>2 then
       local t1,t0 = {},{}
       for i=1,tPanelInfo1.SelectedItemsNumber do table.insert(t1,panel.GetSelectedPanelItem(nil,1,i).FileName) end -- selected => t1
-      if tPanelInfo0.SelectedItemsNumber>0 then -- clear selection on the passive panel
-        local t={}
-        for i=1,tPanelInfo0.SelectedItemsNumber do table.insert(t,i) end
-        panel.ClearSelection(nil,0,t)
-      end
+      Panel.Select(1,0) -- clear selection on the passive panel
       for i=1,tPanelInfo0.ItemsNumber do -- select files on the passive panel with the same names
         for k,v in ipairs(t1) do
           if panel.GetPanelItem(nil,0,i).FileName==v then table.insert(t0,i) table.remove(t1,k) break end
