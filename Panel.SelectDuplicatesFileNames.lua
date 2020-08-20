@@ -1,5 +1,5 @@
 ﻿-- Panel.SelectDuplicatesFileNames.lua
--- v13.2.4
+-- v1.3.2.5
 -- Select Duplicates File Names in Branch panel with complex logic
 -- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/7a5542e442b1ee61b39f6f9ad8dcae63/1585894944/7348/1370861/2020_04_03_091759.png)
 -- Keys: launch from Macro Browser alt.
@@ -18,7 +18,7 @@ local C = ffi.C
 local NULL = ffi.cast("void*",0)
 local PANEL_ACTIVE = ffi.cast("HANDLE",-1)
 local pBL0,pBL1 = ffi.cast("BOOL*",0),ffi.cast("BOOL*",1)
-local PanelMode,Desc1,Indi1 = 999,"Select duplicates","!?"
+local PanelMode,Desc1,Indi1 = 100099,"Select duplicates","!?"
 local BS,ts = string.byte("\\"),{nil,true,9999,true,false,2,2,true,false}
 local Flags = C.SORT_STRINGSORT
 

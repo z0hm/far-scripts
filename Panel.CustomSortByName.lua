@@ -1,5 +1,5 @@
 ﻿-- Panel.CustomSortByName.lua
--- v1.1
+-- v1.1.0.1
 -- Very powerful panel file sorting
 -- ![Panel.CustomSortByName](http://i.piccy.info/i9/305c735c17b77b86698f8161f3b6988e/1585847695/9001/1370793/2020_04_02_201018.png)
 -- <details><summary>Сортировки файлов в панели:</summary>
@@ -83,6 +83,7 @@ local uGuid = win.Uuid(guid)
 local MenuGuid = "B8B6E1DA-4221-47D2-AB2E-9EC67D0DC1E3"
 
 -- Settings --------------------------------------------------------------------
+local ModeNumber = 100110
 local GFocus,tSort = 3,{nil,true,0,false,"",false,false,false,4,true,false,"",false,"",false}
 local First,AlgSort,Offset,Symbols,DigSort,Digits,DirectSeek,xRegexp,sRegexp,xFunc,sFunc,sRgxTbl,sRgxRet,sRgxTrue = true,tSort[2],tSort[3],tSort[5],tSort[8],tSort[9],tSort[10],tSort[11],tSort[12],tSort[13],tSort[14],{}
 local Desc1,Indi1 = "Custom: by Name","!?"
@@ -312,7 +313,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
   return true
 end
 
-Panel.LoadCustomSortMode(110,{Description=Desc1;Indicator=Indicator;Compare=Compare})
+Panel.LoadCustomSortMode(ModeNumber,{Description=Desc1;Indicator=Indicator;Compare=Compare})
 
 Macro {
   description = Desc1; area = "Shell Menu"; key = Key.." Enter MsLClick";
@@ -335,8 +336,8 @@ Macro {
       Flags = tSort[7] and bit.bor(Flags,C.NORM_IGNORESYMBOLS) or bit.band(Flags,bit.bnot(C.NORM_IGNORESYMBOLS))
       count = 0
       local ttime=far.FarClock()
-      Panel.LoadCustomSortMode(110,{Description=Desc1;Indicator=Indicator;Compare=Compare})
-      Panel.SetCustomSortMode(110,0)
+      Panel.LoadCustomSortMode(ModeNumber,{Description=Desc1;Indicator=Indicator;Compare=Compare})
+      Panel.SetCustomSortMode(ModeNumber,0)
       ttime = far.FarClock()-ttime
       local report = "Curr count: "..count.."  mcs: "..ttime
       if count0 then

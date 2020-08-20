@@ -206,7 +206,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")
 
-  *v2.0 (10276 bytes, changed 2020-05-21 07:09)*
+  *v2.0.0.1 (10283 bytes, changed 2020-08-20 20:34)*
 
   Panel files sorting by attributes
 
@@ -221,7 +221,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")
 
-  *v1.1 (18080 bytes, changed 2020-05-21 07:09)*
+  *v1.1.0.1 (18132 bytes, changed 2020-08-20 20:39)*
 
   Very powerful panel file sorting
 
@@ -376,7 +376,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortOther.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortOther.lua "Panel.CustomSortOther.lua")
 
-  *v1.0 (992 bytes, changed 2020-04-09 09:55)*
+  *v1.0.0.1 (1008 bytes, changed 2020-08-20 20:43)*
 
   Custom panel file sorts: by Name with StrCmpLogicalW, by FullPath length
 
@@ -443,7 +443,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")
 
-  *v13.2.4 (11530 bytes, changed 2020-04-09 09:55)*
+  *v1.3.2.5 (11534 bytes, changed 2020-08-20 20:44)*
 
   Select Duplicates File Names in Branch panel with complex logic
 

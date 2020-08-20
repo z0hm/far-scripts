@@ -1,5 +1,5 @@
 ﻿-- Panel.CustomSortOther.lua
--- v1.0
+-- v1.0.0.1
 -- Custom panel file sorts: by Name with StrCmpLogicalW, by FullPath length
 -- Keys: CtrlShiftF3 or from Menu "Sort by"
 
@@ -8,7 +8,7 @@ local C=ffi.C
 local Key="CtrlShiftF3"
 
 local desc111="Custom: by FullPath length"
-Panel.LoadCustomSortMode (111, {
+Panel.LoadCustomSortMode (100111, {
   Description=desc111; Indicator="lL";
   Compare=function(p1,p2)
     local l=C.wcslen(p1.FileName)-C.wcslen(p2.FileName)
@@ -18,12 +18,12 @@ Panel.LoadCustomSortMode (111, {
 
 Macro {
   description=desc111; area="Shell"; key=Key;
-  action=function() Panel.SetCustomSortMode(111,0) end;
+  action=function() Panel.SetCustomSortMode(100111,0) end;
 }
 
 local shlwapi=ffi.load("shlwapi")
 local desc112="Custom: by Name with StrCmpLogicalW"
-Panel.LoadCustomSortMode (112, {
+Panel.LoadCustomSortMode (100112, {
   Description=desc112;
   Compare=function(pi1,pi2)
   return shlwapi.StrCmpLogicalW(pi1.FileName, pi2.FileName)
@@ -33,5 +33,5 @@ Panel.LoadCustomSortMode (112, {
 
 Macro {
   description=desc112; area="Shell"; key=Key;
-  action=function() Panel.SetCustomSortMode(112,0) end;
+  action=function() Panel.SetCustomSortMode(100112,0) end;
 }

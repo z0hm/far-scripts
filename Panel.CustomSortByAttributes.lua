@@ -1,5 +1,5 @@
 ﻿-- Panel.CustomSortByAttributes.lua
--- v2.0
+-- v2.0.0.1
 -- Panel files sorting by attributes
 -- ![Panel.CustomSortByAttributes](http://i.piccy.info/i9/e4a7f377afa812d28e195dbae27e802b/1585895856/14743/1370861/2020_04_03_093318.png)
 -- Keys: CtrlShiftF3 or from Menu "Sort by"
@@ -11,7 +11,7 @@ local F = far.Flags
 local guid = win.Uuid("A79390CE-5450-403A-8FAE-17EE3315CB38")
 local MenuGuid = "B8B6E1DA-4221-47D2-AB2E-9EC67D0DC1E3"
 -- Settings --------------------------------------------------------------------
-local ModeNumber = 109
+local ModeNumber = 100109
 local Description = "Custom: by Attributes"
 local Indi1 = "aA"
 local Indicator = Indi1
