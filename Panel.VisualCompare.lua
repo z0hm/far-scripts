@@ -1,5 +1,5 @@
 ﻿-- Panel.VisualCompare.lua
--- v.1.8.7
+-- v1.8.7
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 -- Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 -- Keys: CtrlAltC

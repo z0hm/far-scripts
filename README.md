@@ -471,7 +471,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
-  *v.1.8.7 (7269 bytes, changed 2020-07-30 09:28)*
+  *v1.8.7 (7268 bytes, changed 2020-08-30 08:03)*
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 
@@ -509,6 +509,17 @@ a very wide range of tasks using the Far and Windows API's.
   Keys: <kbd>AltG</kbd>
 
   Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2600#19
+
+
+
+
+## [aq](https://github.com/z0hm/far-scripts/blob/master/aq "aq")
+
+  *7082 bytes, changed 2020-08-30 07:17*
+
+  Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
+
+  Url: http://albumplayer.ru/linux/english.html
 
 
 

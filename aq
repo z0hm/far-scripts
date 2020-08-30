@@ -1,0 +1,260 @@
+#!/bin/bash
+
+# init
+home=/media
+aqpage=/tmp/aqpage
+aqjump=/tmp/aqjump
+appath=/usr/ap/path.txt
+out=/tmp/out.wav
+pglen=100
+exts=("WAV" "FLAC" "APE" "WV" "OGG" "TAK" "ALAC" "AIFF" "DFF" "DSF" "MP3" "MP4" "AAC" "OPUS" "WMA")
+# hmstr="ap /"
+# hmlen=${#hmstr}
+arr0=()  # array files in folder
+arr1=()  # array files type
+jump=()  # jumps stack
+num=0
+oldnum=0
+page=0
+start=0
+finish=0
+last=0
+id=-1
+path=""
+folder=""
+from=""
+key_a=""
+key_z=""
+key_r=""
+msg=""
+
+# colors
+yr="\e[1;33;41m"
+yg="\e[1;33;42m"
+yb="\e[1;33;44m"
+yk="\e[1;33;40m"
+wr="\e[1;37;41m"
+wg="\e[1;37;42m"
+wb="\e[1;37;44m"
+eb="\e[1;30;44m"
+wk="\e[1;37;40m"
+gb="\e[1;32;44m"
+gk="\e[1;32;40m"
+cb="\e[1;36;44m"
+ck="\e[1;36;40m"
+te="\e[0m"
+
+
+# show page
+shpage(){
+  start=$(($page*$pglen))
+  finish=$(($start+$pglen-1))
+  if [ $finish -gt $last ]; then finish=$last; fi
+  for ((i=start;i<=finish;i++))
+  do
+    if [ "$from" == "${arr0[$i]}" ]
+    then echo -e "$yr $i $wr ${arr0[$i]} $te"
+    else
+      if ${arr1[$i]}
+      then echo -e "$wb $i $wk ${arr0[$i]}$te"
+      else
+        ext=""; res=false
+        for v in ${exts[@]}
+        do
+          ext=${arr0[$i]:(-$((${#v}+1)))}
+          if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
+        done
+        if $res
+        then echo -e "$gb $i $gk ${arr0[$i]}$te"
+        else
+          if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo -e "$yb $i $yk ${arr0[$i]}$te"
+          elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]
+          then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
+          fi
+        fi
+      fi
+    fi
+  done
+}
+
+# seek folder and its id
+seekid(){
+  folder=${path##*/}
+  local n=0
+  while read line
+  do
+    n=$(($n+1))
+    if [ "$line" == "$folder" ]; then id=$n; break; fi
+  done <<< "$(ls "${path%/*}")"
+}
+
+# msg for command line
+prompt(){
+  if [ $page -gt 0 ]; then key_a="$wk,$gk a"; else key_a=""; fi
+  if [ $finish -lt $last ]; then key_z="$wk,$gk z"; else key_z=""; fi
+  if [ ${#jump[*]} -gt 1 ]; then key_r="$wk,$gk r"; else key_r=""; fi
+  msg=$(echo -e "aq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk h$wk,$gk s$wk,$gk x$key_a$key_z$wk, or$te nothing$wk: $te")
+}
+
+# kill ap
+killap(){
+  while read line
+  do
+    if [ "${line:0:4}" == "ap /" ]; then killall -q ap; sleep 1s; break; fi
+  done <<< "$(ps -o args)"
+}
+
+# save state
+aqsave(){
+  echo "$page" > $aqpage
+  echo -n "$path" > $appath
+  if [ -f $aqjump ]; then rm $aqjump; fi
+  for ((i=0;i<=$((${#jump[*]}-1));i++)); do echo "${jump[i]}" >> $aqjump; done
+}
+
+# view files
+vname=""; vpath=""
+fview(){
+  echo -e "$yb view:$gb $num $ck $vname$te"
+  exec 6<&0  # save STDIN to descriptor #6
+  local n=0
+  while read line
+  do
+    n=$(($n+1))
+    if [ $n -gt $pglen ]
+    then
+      n=0
+      exec 7<&0 <&6  # save current descriptor to descriptor #7 and restore STDIN from descriptor #6
+      read -p "$(echo -e "vw>$wk enter$gk a$wk for abort or just press$gk Enter$wk for next $pglen lines: $te")"
+      if [ "$REPLY" == "a" ]; then break; fi
+      exec <&7  # restore input from vpath
+    fi
+    echo -e "$wb$line$te"
+  done <<< "$(cat "$vpath")"
+  exec 6<&- 7<&-  # close descriptors #6 & #7
+}
+
+# Main()
+echo -e "$yr -=[ AP console quiet ]=- $te"
+echo
+echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$gk s$wk  stop,$te nothing$wk  repeat last command$te"
+echo -e "$gk l$wk  list files,$gk a$wk  show previous $wb$pglen$wk files,$gk z$wk  show next $wb$pglen$wk files$te"
+echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>,$gk r$wk  return$te"
+if [ -s "$aqpage" ]; then page=$(<$aqpage); fi
+if [ -s "$aqjump" ]; then while read line; do jump+=("$line"); done <<< "$(cat "$aqjump")"; else jump[0]="$home"; fi
+path=${jump[@]:(-1)}
+
+while true #:show
+do
+  unset arr0; arr0=(); unset arr1; arr1=()
+  if [ "$path" == "$home" ]
+  then arr0[0]=$(echo -e "$yb[ EXIT ] $te")
+  else
+    if [ $id -lt 0 ]; then seekid; fi
+    echo -e "$yg $id $wg $folder/ $te"
+    arr0[0]=$(echo -e "$wk..$te"); arr1[0]=true
+  fi
+  while read line
+  do
+    if [ "${line:(-1)}" == "/" ]
+    then arr0+=("${line:0:(-1)}"); arr1+=(true)
+    else arr0+=("$line"); arr1+=(false)
+    fi
+  done <<< "$(ls -p "$path")"
+  last=$((${#arr0[*]}-1))
+  shpage
+  while true #:cline
+  do
+    if [ "$oldnum" != "r" ]; then oldnum=$num; fi
+    prompt
+    while read -p "$msg" num
+    do
+      if [ "$num" == "x" ]; then aqsave; exit
+      elif [ "$num" == "e" ]; then exit
+      else
+        act=${num:0:1}
+        if [ "$act" == "c" ]
+        then
+          name=${arr0[${num:1}]}
+          ffmpeg -y -i "$path/$name" -acodec pcm_s32le "$out"
+          killap
+          echo -e "$yb play:$gb $num $gk $name$te"
+          ap "$out"
+        elif [ "$act" == "v" ]; then vname=${arr0[${num:1}]}; vpath=$path/$vname; fview
+        fi
+      fi
+      if [ "$num" == "" ]; then num=$oldnum; fi
+      if [ "$num" == "r" ]
+      then
+        oldnum=$num
+        if [ ${#jump[*]} -gt 1 ]
+        then
+          unset jump[$((${#jump[*]}-1))]
+          newpath=${jump[@]:(-1)}
+          if [ ${#newpath} -lt ${#path} ]
+          then num=0
+          else curpath=$path; path=$newpath; seekid; num=$id; path=$curpath
+          fi
+          break
+        else oldnum="xxx"; num="xxx"  # re-query command
+        fi
+      elif [ "$num" == "s" ]; then echo -e "$yb stop $te"; killap
+      elif [ "$num" == "l" ]; then shpage
+      elif [ "$num" == "z" -a $finish -lt $last ]; then page=$(($page+1)); oldnum=$num; shpage
+      elif [ "$num" == "a" -a $page -gt 0 ]; then page=$(($page-1)); oldnum=$num; shpage
+      elif [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
+      then if [ $num -lt ${#arr0[*]} ]; then oldnum=$num; break; fi
+      fi
+      prompt
+    done
+    if [ $num -eq 0 ]
+    then  #cdup
+      from=${path##*/}
+      if [ "$path" == "$home" ]
+      then exit
+      else
+        seekid
+        page=$(($id/$pglen))
+        id=-1
+        path="${path%/*}"
+        cd "$path"
+        if [ "$oldnum" != "r" ]; then jump+=("$path"); fi
+        break #goto show
+      fi
+    else  #cddn
+      id=$num
+      folder=${arr0[$num]}
+      from=""
+      path="$path/${arr0[$num]}"
+      if ${arr1[$num]}
+      then
+        cd "$path"
+        if [ "$oldnum" != "r" ]; then jump+=("$path"); fi
+        page=0
+        break #goto show
+      elif [ -f "$path" ]
+      then
+        ext=""; res=false
+        for v in ${exts[@]}
+        do
+          ext=${arr0[$num]:(-$((${#v}+1)))}
+          if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
+        done
+        if $res
+        then
+          killap
+          echo -e "$yb play:$gb $num $gk ${arr0[$num]}$te"
+          ap "$path"
+        else
+          vname=${arr0[$num]}; vpath=$path
+          if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then aqsave; exit; fi
+          if [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]; then fview; fi
+        fi
+        path=${jump[@]:(-1)}
+        seekid
+        # continue #goto cline
+      fi
+    fi
+  done #goto cline
+done #goto show
+exit
