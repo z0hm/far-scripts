@@ -134,12 +134,19 @@ fview(){
   exec 6<&- 7<&-  # close descriptors #6 & #7
 }
 
+cdir(){
+  cd "$path"
+  if [ "$oldnum" != "h" ]; then jump+=("$path"); fi
+  break #goto show
+}
+
 # Main()
 echo -e "$yr -=[ AP console quiet ]=- $te"
 echo
 echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$gk s$wk  stop,$te nothing$wk  repeat last command$te"
-echo -e "$gk l$wk  list files,$gk a$wk  show previous $wb$pglen$wk files,$gk z$wk  show next $wb$pglen$wk files$te"
-echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>,$gk r$wk  return$te"
+echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
+echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>$te"
+echo -e "$gk h$wk  history, remount $gk ro<num>$wk, remount $gk rw<num>$te"
 if [ -s "$aqpage" ]; then page=$(<$aqpage); fi
 if [ -s "$aqjump" ]; then while read line; do jump+=("$line"); done <<< "$(cat "$aqjump")"; else jump[0]="$home"; fi
 path=${jump[@]:(-1)}
@@ -148,7 +155,7 @@ while true #:show
 do
   unset arr0; arr0=(); unset arr1; arr1=()
   if [ "$path" == "$home" ]
-  then arr0[0]=$(echo -e "$yb[ EXIT ] $te")
+  then arr0[0]=$(echo -e "$yb[ EXIT ]$te")
   else
     if [ $id -lt 0 ]; then seekid; fi
     echo -e "$yg $id $wg $folder/ $te"
@@ -165,26 +172,28 @@ do
   shpage
   while true #:cline
   do
-    if [ "$oldnum" != "r" ]; then oldnum=$num; fi
+    if [ "$oldnum" != "h" ]; then oldnum=$num; fi
     prompt
     while read -p "$msg" num
     do
       if [ "$num" == "x" ]; then aqsave; exit 0
       elif [ "$num" == "e" ]; then exit 0
       else
-        act=${num:0:1}
-        if [ "$act" == "c" ]
+        act1=${num:0:1}; act2=${num:0:2}
+        if [ "$act1" == "c" ]
         then
           name=${arr0[${num:1}]}
           ffmpeg -y -i "$path/$name" -acodec pcm_s32le "$out"
           killap
           echo -e "$yb play:$gb $num $gk $name$te"
           ap "$out"
-        elif [ "$act" == "v" ]; then vname=${arr0[${num:1}]}; vpath=$path/$vname; fview
+        elif [ "$act1" == "v" ]; then vname=${arr0[${num:1}]}; vpath=$path/$vname; fview
+        elif [ "$act2" == "ro" ]; then vname=${arr0[${num:2}]}; vpath=$path/$vname; mount -o remount,ro $vpath
+        elif [ "$act2" == "rw" ]; then vname=${arr0[${num:2}]}; vpath=$path/$vname; mount -o remount,rw $vpath
         fi
       fi
       if [ "$num" == "" ]; then num=$oldnum; fi
-      if [ "$num" == "r" ]
+      if [ "$num" == "h" ]
       then
         oldnum=$num
         if [ ${#jump[*]} -gt 1 ]
@@ -217,21 +226,14 @@ do
         page=$(($id/$pglen))
         id=-1
         path="${path%/*}"
-        cd "$path"
-        if [ "$oldnum" != "r" ]; then jump+=("$path"); fi
-        break #goto show
+        cdir
       fi
     else  #cddn
       id=$num
       folder=${arr0[$num]}
       from=""
       path="$path/${arr0[$num]}"
-      if ${arr1[$num]}
-      then
-        cd "$path"
-        if [ "$oldnum" != "r" ]; then jump+=("$path"); fi
-        page=0
-        break #goto show
+      if ${arr1[$num]}; then page=0; cdir
       elif [ -f "$path" ]
       then
         ext=""; res=false
