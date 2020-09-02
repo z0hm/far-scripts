@@ -1,4 +1,6 @@
 #!/bin/bash
+# Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
+# Url: http://albumplayer.ru/linux/english.html
 
 # init
 home=/media
@@ -7,7 +9,7 @@ aqjump=/tmp/aqjump
 appath=/usr/ap/path.txt
 out=/tmp/out.wav
 pglen=100
-exts=("WAV" "FLAC" "APE" "WV" "OGG" "TAK" "ALAC" "AIFF" "DFF" "DSF" "MP3" "MP4" "AAC" "OPUS" "WMA")
+exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
 # hmstr="ap /"
 # hmlen=${#hmstr}
 arr0=()  # array files in folder
@@ -23,12 +25,10 @@ id=-1
 path=""
 folder=""
 from=""
-key_a=""
-key_z=""
-key_r=""
 msg=""
 
 # colors
+rk="\e[1;31;40m"
 yr="\e[1;33;41m"
 yg="\e[1;33;42m"
 yb="\e[1;33;44m"
@@ -52,24 +52,28 @@ shpage(){
   if [ $finish -gt $last ]; then finish=$last; fi
   for ((i=start;i<=finish;i++))
   do
-    if [ "$from" == "${arr0[$i]}" ]
-    then echo -e "$yr $i $wr ${arr0[$i]} $te"
+    if [ "$path" == "$home" ] && [ -w "$path/${arr0[$i]}" ]
+    then echo -e "$wb $i $rk ${arr0[$i]}$te"
     else
-      if ${arr1[$i]}
-      then echo -e "$wb $i $wk ${arr0[$i]}$te"
+      if [ "$from" == "${arr0[$i]}" ]
+      then echo -e "$yr $i $wr ${arr0[$i]} $te"
       else
-        ext=""; res=false
-        for v in ${exts[@]}
-        do
-          ext=${arr0[$i]:(-$((${#v}+1)))}
-          if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
-        done
-        if $res
-        then echo -e "$gb $i $gk ${arr0[$i]}$te"
+        if ${arr1[$i]}
+        then echo -e "$wb $i $wk ${arr0[$i]}$te"
         else
-          if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo -e "$yb $i $yk ${arr0[$i]}$te"
-          elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]
-          then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
+          ext=""; res=false
+          for v in ${exts[@]}
+          do
+            ext=${arr0[$i]:(-$((${#v}+1)))}
+            if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
+          done
+          if $res
+          then echo -e "$gb $i $gk ${arr0[$i]}$te"
+          else
+            if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo -e "$yb $i $yk ${arr0[$i]}$te"
+            elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]
+            then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
+            fi
           fi
         fi
       fi
@@ -93,7 +97,8 @@ prompt(){
   if [ $page -gt 0 ]; then key_a="$wk,$gk a"; else key_a=""; fi
   if [ $finish -lt $last ]; then key_z="$wk,$gk z"; else key_z=""; fi
   if [ ${#jump[*]} -gt 1 ]; then key_r="$wk,$gk r"; else key_r=""; fi
-  msg=$(echo -e "aq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk h$wk,$gk s$wk,$gk x$key_a$key_z$wk, or$te nothing$wk: $te")
+  if [ "$path" == "$home" ]; then key_rw="$wk,$gk ro<num>$wk,$gk rw<num>"; else key_rw=""; fi
+  msg=$(echo -e "aq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk: $te")
 }
 
 # kill ap
@@ -136,17 +141,21 @@ fview(){
 
 cdir(){
   cd "$path"
-  if [ "$oldnum" != "h" ]; then jump+=("$path"); fi
+  if [ "$oldnum" != "r" ]; then jump+=("$path"); fi
   break #goto show
+}
+
+aqhelp(){
+  echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$gk s$wk  stop,$te nothing$wk  repeat last command$te"
+  echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
+  echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>$te"
+  echo -e "$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
 }
 
 # Main()
 echo -e "$yr -=[ AP console quiet ]=- $te"
 echo
-echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$gk s$wk  stop,$te nothing$wk  repeat last command$te"
-echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
-echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>$te"
-echo -e "$gk h$wk  history, remount $gk ro<num>$wk, remount $gk rw<num>$te"
+echo -e "$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te"
 if [ -s "$aqpage" ]; then page=$(<$aqpage); fi
 if [ -s "$aqjump" ]; then while read line; do jump+=("$line"); done <<< "$(cat "$aqjump")"; else jump[0]="$home"; fi
 path=${jump[@]:(-1)}
@@ -172,12 +181,13 @@ do
   shpage
   while true #:cline
   do
-    if [ "$oldnum" != "h" ]; then oldnum=$num; fi
+    if [ "$oldnum" != "r" ]; then oldnum=$num; fi
     prompt
     while read -p "$msg" num
     do
       if [ "$num" == "x" ]; then aqsave; exit 0
       elif [ "$num" == "e" ]; then exit 0
+      elif [ "$num" == "h" ]; then aqhelp
       else
         act1=${num:0:1}; act2=${num:0:2}
         if [ "$act1" == "c" ]
@@ -188,12 +198,12 @@ do
           echo -e "$yb play:$gb $num $gk $name$te"
           ap "$out"
         elif [ "$act1" == "v" ]; then vname=${arr0[${num:1}]}; vpath=$path/$vname; fview
-        elif [ "$act2" == "ro" ]; then vname=${arr0[${num:2}]}; vpath=$path/$vname; mount -o remount,ro $vpath
-        elif [ "$act2" == "rw" ]; then vname=${arr0[${num:2}]}; vpath=$path/$vname; mount -o remount,rw $vpath
+        elif [ "$path" == "$home" ] && ([ "$act2" == "ro" ] || [ "$act2" == "rw" ])
+        then vname=${arr0[${num:2}]}; vpath=$path/$vname; mount -o remount,$act2 $vpath; shpage
         fi
       fi
       if [ "$num" == "" ]; then num=$oldnum; fi
-      if [ "$num" == "h" ]
+      if [ "$num" == "r" ]
       then
         oldnum=$num
         if [ ${#jump[*]} -gt 1 ]
@@ -205,7 +215,7 @@ do
           else curpath=$path; path=$newpath; seekid; num=$id; path=$curpath
           fi
           break
-        else oldnum="xxx"; num="xxx"  # re-query command
+        else oldnum="xxx"; num="xxx"  # wrong command for re-query
         fi
       elif [ "$num" == "s" ]; then echo -e "$yb stop $te"; killap
       elif [ "$num" == "l" ]; then shpage
