@@ -7,7 +7,7 @@ home=/media
 aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
 appath=/usr/ap/path.txt
-out=/tmp/out.wav
+out=out.wav
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
 # hmstr="ap /"
@@ -176,7 +176,7 @@ do
     then arr0+=("${line:0:(-1)}"); arr1+=(true)
     else arr0+=("$line"); arr1+=(false)
     fi
-  done <<< "$(ls -p "$path")"
+  done <<< "$(ls -pL "$path")"
   last=$((${#arr0[*]}-1))
   shpage
   while true #:cline
@@ -189,17 +189,37 @@ do
       elif [ "$num" == "e" ]; then exit 0
       elif [ "$num" == "h" ]; then aqhelp
       else
-        act1=${num:0:1}; act2=${num:0:2}
-        if [ "$act1" == "c" ]
+        if [ ${#num} -gt 2 ]
         then
-          name=${arr0[${num:1}]}
-          ffmpeg -y -i "$path/$name" -acodec pcm_s32le "$out"
-          killap
-          echo -e "$yb play:$gb $num $gk $name$te"
-          ap "$out"
-        elif [ "$act1" == "v" ]; then vname=${arr0[${num:1}]}; vpath=$path/$vname; fview
-        elif [ "$path" == "$home" ] && ([ "$act2" == "ro" ] || [ "$act2" == "rw" ])
-        then vname=${arr0[${num:2}]}; vpath=$path/$vname; mount -o remount,$act2 $vpath; shpage
+          act1=${num:0:2}; act2=${num:2}
+          if [ -n "$act2" ] && [ "$act2" -eq "$act2" ] 2>/dev/null
+          then
+            if [ $act2 -lt ${#arr0[*]} ]
+            then
+              if [ "$path" == "$home" ] && ([ "$act1" == "ro" ] || [ "$act1" == "rw" ])
+              then vname=${arr0[$act2]}; vpath=$path/$vname; mount -o remount,$act1 $vpath; shpage
+              fi
+            fi
+          fi
+        fi
+        if [ ${#num} -gt 1 ]
+        then
+          act1=${num:0:1}; act2=${num:1}
+          if [ -n "$act2" ] && [ "$act2" -eq "$act2" ] 2>/dev/null
+          then
+            if [ $act2 -lt ${#arr0[*]} ]
+            then
+              if [ "$act1" == "c" ]
+              then
+                name=${arr0[$act2]}
+                killap
+                ffmpeg -y -i "$path/$name" -acodec pcm_s32le "$home/temp/$out"
+                echo -e "$yb play:$gb $num $gk $name$te"
+                ap "$home/temp/$out"
+              elif [ "$act1" == "v" ]; then vname=${arr0[$act2]}; vpath=$path/$vname; fview
+              fi
+            fi
+          fi
         fi
       fi
       if [ "$num" == "" ]; then num=$oldnum; fi
