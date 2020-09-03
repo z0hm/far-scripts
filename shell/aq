@@ -56,7 +56,7 @@ shpage(){
     then echo -e "$wb $i $rk ${arr0[$i]}$te"
     else
       if [ "$from" == "${arr0[$i]}" ]
-      then echo -e "$yr $i $wr ${arr0[$i]} $te"
+      then echo -e "$wb $i $wr ${arr0[$i]} $te"
       else
         if ${arr1[$i]}
         then echo -e "$wb $i $wk ${arr0[$i]}$te"
@@ -167,7 +167,7 @@ do
   then arr0[0]=$(echo -e "$yb[ EXIT ]$te")
   else
     if [ $id -lt 0 ]; then seekid; fi
-    echo -e "$yg $id $wg $folder/ $te"
+    echo -e "$yg $id $wg $folder $te"
     arr0[0]=$(echo -e "$wk..$te"); arr1[0]=true
   fi
   while read line

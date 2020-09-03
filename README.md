@@ -515,7 +515,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *8347 bytes, changed 2020-09-02 12:01*
+  *8346 bytes, changed 2020-09-03 04:34*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
