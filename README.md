@@ -16,7 +16,9 @@ a very wide range of tasks using the Far and Windows API's.
 ## A brief summary of scripts in the repository:
 
 
-## [CommandLineF4.lua](https://github.com/z0hm/far-scripts/blob/master/CommandLineF4.lua "CommandLineF4.lua")(#commandlinef4lua)
+[CommandLineF4.lua](#commandlinef4lua)
+
+## [CommandLineF4.lua](https://github.com/z0hm/far-scripts/blob/master/CommandLineF4.lua "CommandLineF4.lua")
 
   *v1.1.1 (2369 bytes, changed 2020-04-09 09:55)*
 
@@ -27,7 +29,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")(#dialogmaximizemoon)
+[Dialog.Maximize.moon](#dialogmaximizemoon)
+
+## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
   *v1.1.6 (11312 bytes, changed 2020-05-31 08:54)*
 
@@ -42,7 +46,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")(#editorcyrspacehighlightingmoon)
+[Editor.CyrSpaceHighlighting.moon](#editorcyrspacehighlightingmoon)
+
+## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")
 
   *v1.1.3.2 (5234 bytes, changed 2020-07-02 08:58)*
 
@@ -67,7 +73,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.FilterDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.FilterDuplicatesFileNames.lua "Editor.FilterDuplicatesFileNames.lua")(#editorfilterduplicatesfilenameslua)
+[Editor.FilterDuplicatesFileNames.lua](#editorfilterduplicatesfilenameslua)
+
+## [Editor.FilterDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.FilterDuplicatesFileNames.lua "Editor.FilterDuplicatesFileNames.lua")
 
   *v1.2.3 (11700 bytes, changed 2020-04-09 09:55)*
 
@@ -82,7 +90,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")(#editorlatcyrmixhighlightingmoon)
+[Editor.LatCyrMixHighlighting.moon](#editorlatcyrmixhighlightingmoon)
+
+## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")
 
   *v1.1.3.2 (5100 bytes, changed 2020-07-02 09:02)*
 
@@ -103,7 +113,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.Reload.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.Reload.lua "Editor.Reload.lua")(#editorreloadlua)
+[Editor.Reload.lua](#editorreloadlua)
+
+## [Editor.Reload.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.Reload.lua "Editor.Reload.lua")
 
   *v1.0 (863 bytes, changed 2020-06-09 09:02)*
 
@@ -112,7 +124,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")(#editorsearchlineswithminmaxlengthlua)
+[Editor.SearchLinesWithMinMaxLength.lua](#editorsearchlineswithminmaxlengthlua)
+
+## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")
 
   *v1.3.1 (2410 bytes, changed 2020-04-22 09:01)*
 
@@ -125,7 +139,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")(#editortaggotolua)
+[Editor.TagGoto.lua](#editortaggotolua)
+
+## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")
 
   *v1.1 (5924 bytes, changed 2020-04-09 09:55)*
 
@@ -138,7 +154,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")(#farupdatelua)
+[FarUpdate.lua](#farupdatelua)
+
+## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
   *v1.7.7 (11030 bytes, changed 2020-07-03 16:21)*
 
@@ -165,7 +183,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")(#messagexlua)
+[MessageX.lua](#messagexlua)
+
+## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")
 
   *v0.6.7.6 (8338 bytes, changed 2020-07-02 14:06)*
 
@@ -204,7 +224,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")(#panelcustomsortbyattributeslua)
+[Panel.CustomSortByAttributes.lua](#panelcustomsortbyattributeslua)
+
+## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")
 
   *v2.0.0.1 (10283 bytes, changed 2020-08-20 20:34)*
 
@@ -219,7 +241,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")(#panelcustomsortbynamelua)
+[Panel.CustomSortByName.lua](#panelcustomsortbynamelua)
+
+## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")
 
   *v1.1.0.1 (18132 bytes, changed 2020-08-20 20:39)*
 
@@ -374,7 +398,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.CustomSortOther.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortOther.lua "Panel.CustomSortOther.lua")(#panelcustomsortotherlua)
+[Panel.CustomSortOther.lua](#panelcustomsortotherlua)
+
+## [Panel.CustomSortOther.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortOther.lua "Panel.CustomSortOther.lua")
 
   *v1.0.0.1 (1008 bytes, changed 2020-08-20 20:43)*
 
@@ -385,7 +411,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")(#panelfiles2hex_ffilua)
+[Panel.Files2HEX_ffi.lua](#panelfiles2hex_ffilua)
+
+## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")
 
   *v1.0 (2690 bytes, changed 2020-05-21 13:50)*
 
@@ -398,7 +426,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.LYNX-motion.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.LYNX-motion.lua "Panel.LYNX-motion.lua")(#panellynx-motionlua)
+[Panel.LYNX-motion.lua](#panellynx-motionlua)
+
+## [Panel.LYNX-motion.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.LYNX-motion.lua "Panel.LYNX-motion.lua")
 
   *v1.0 (2687 bytes, changed 2020-04-09 09:55)*
 
@@ -411,7 +441,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")(#panelrad2m3ulua)
+[Panel.RAD2M3U.lua](#panelrad2m3ulua)
+
+## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")
 
   *v1.0.2 (1740 bytes, changed 2020-05-21 14:39)*
 
@@ -428,7 +460,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.SelectBOM.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectBOM.lua "Panel.SelectBOM.lua")(#panelselectbomlua)
+[Panel.SelectBOM.lua](#panelselectbomlua)
+
+## [Panel.SelectBOM.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectBOM.lua "Panel.SelectBOM.lua")
 
   *v1.3 (5653 bytes, changed 2020-05-21 07:09)*
 
@@ -441,7 +475,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")(#panelselectduplicatesfilenameslua)
+[Panel.SelectDuplicatesFileNames.lua](#panelselectduplicatesfilenameslua)
+
+## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")
 
   *v1.3.2.5 (11534 bytes, changed 2020-08-20 20:44)*
 
@@ -456,7 +492,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")(#panelshiftf56lua)
+[Panel.ShiftF[56].lua](#panelshiftf56lua)
+
+## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")
 
   *v1.3.2 (3080 bytes, changed 2020-05-21 07:09)*
 
@@ -469,7 +507,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")(#panelvisualcomparelua)
+[Panel.VisualCompare.lua](#panelvisualcomparelua)
+
+## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
   *v1.8.7 (7268 bytes, changed 2020-08-30 08:03)*
 
@@ -484,7 +524,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")(#researchgreplua)
+[RESearch.Grep.lua](#researchgreplua)
+
+## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")
 
   *v1.4.2 (3717 bytes, changed 2020-05-17 18:24)*
 
@@ -513,7 +555,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")(#aq)
+[aq](#aq)
+
+## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
   *8346 bytes, changed 2020-09-03 04:34*
 
@@ -524,7 +568,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")(#btpolicyxmllua)
+[btpolicy.xml.lua](#btpolicyxmllua)
+
+## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")
 
   *v1.0.1 (2992 bytes, changed 2020-06-20 09:14)*
 
@@ -535,7 +581,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")(#iptvlua)
+[iptv.lua](#iptvlua)
+
+## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")
 
   *v1.0.4 (2479 bytes, changed 2020-06-12 05:09)*
 
@@ -546,7 +594,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [moon2lua.lua](https://github.com/z0hm/far-scripts/blob/master/moon2lua.lua "moon2lua.lua")(#moon2lualua)
+[moon2lua.lua](#moon2lualua)
+
+## [moon2lua.lua](https://github.com/z0hm/far-scripts/blob/master/moon2lua.lua "moon2lua.lua")
 
   *v1.0 (627 bytes, changed 2020-06-05 16:35)*
 
