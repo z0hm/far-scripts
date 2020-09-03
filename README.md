@@ -16,7 +16,7 @@ a very wide range of tasks using the Far and Windows API's.
 ## A brief summary of scripts in the repository:
 
 
-#CommandLineF4.lua
+<a name="commandlinef4lua"></a>
 
 ## [CommandLineF4.lua](https://github.com/z0hm/far-scripts/blob/master/CommandLineF4.lua "CommandLineF4.lua")
 
@@ -29,7 +29,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Dialog.Maximize.moon
+<a name="dialogmaximizemoon"></a>
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
@@ -46,7 +46,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Editor.CyrSpaceHighlighting.moon
+<a name="editorcyrspacehighlightingmoon"></a>
 
 ## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")
 
@@ -73,7 +73,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Editor.FilterDuplicatesFileNames.lua
+<a name="editorfilterduplicatesfilenameslua"></a>
 
 ## [Editor.FilterDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.FilterDuplicatesFileNames.lua "Editor.FilterDuplicatesFileNames.lua")
 
@@ -90,7 +90,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Editor.LatCyrMixHighlighting.moon
+<a name="editorlatcyrmixhighlightingmoon"></a>
 
 ## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")
 
@@ -113,7 +113,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Editor.Reload.lua
+<a name="editorreloadlua"></a>
 
 ## [Editor.Reload.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.Reload.lua "Editor.Reload.lua")
 
@@ -124,7 +124,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Editor.SearchLinesWithMinMaxLength.lua
+<a name="editorsearchlineswithminmaxlengthlua"></a>
 
 ## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")
 
@@ -139,7 +139,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Editor.TagGoto.lua
+<a name="editortaggotolua"></a>
 
 ## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")
 
@@ -154,7 +154,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#FarUpdate.lua
+<a name="farupdatelua"></a>
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
@@ -183,7 +183,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#MessageX.lua
+<a name="messagexlua"></a>
 
 ## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")
 
@@ -224,7 +224,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.CustomSortByAttributes.lua
+<a name="panelcustomsortbyattributeslua"></a>
 
 ## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")
 
@@ -241,7 +241,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.CustomSortByName.lua
+<a name="panelcustomsortbynamelua"></a>
 
 ## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")
 
@@ -398,7 +398,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.CustomSortOther.lua
+<a name="panelcustomsortotherlua"></a>
 
 ## [Panel.CustomSortOther.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortOther.lua "Panel.CustomSortOther.lua")
 
@@ -411,7 +411,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.Files2HEX_ffi.lua
+<a name="panelfiles2hex_ffilua"></a>
 
 ## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")
 
@@ -426,7 +426,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.LYNX-motion.lua
+<a name="panellynx-motionlua"></a>
 
 ## [Panel.LYNX-motion.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.LYNX-motion.lua "Panel.LYNX-motion.lua")
 
@@ -441,7 +441,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.RAD2M3U.lua
+<a name="panelrad2m3ulua"></a>
 
 ## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")
 
@@ -460,7 +460,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.SelectBOM.lua
+<a name="panelselectbomlua"></a>
 
 ## [Panel.SelectBOM.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectBOM.lua "Panel.SelectBOM.lua")
 
@@ -475,7 +475,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.SelectDuplicatesFileNames.lua
+<a name="panelselectduplicatesfilenameslua"></a>
 
 ## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")
 
@@ -492,7 +492,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.ShiftF[56].lua
+<a name="panelshiftf56lua"></a>
 
 ## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")
 
@@ -507,7 +507,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#Panel.VisualCompare.lua
+<a name="panelvisualcomparelua"></a>
 
 ## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
@@ -524,7 +524,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#RESearch.Grep.lua
+<a name="researchgreplua"></a>
 
 ## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")
 
@@ -555,7 +555,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#aq
+<a name="aq"></a>
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
@@ -568,7 +568,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#btpolicy.xml.lua
+<a name="btpolicyxmllua"></a>
 
 ## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")
 
@@ -581,7 +581,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#iptv.lua
+<a name="iptvlua"></a>
 
 ## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")
 
@@ -594,7 +594,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-#moon2lua.lua
+<a name="moon2lualua"></a>
 
 ## [moon2lua.lua](https://github.com/z0hm/far-scripts/blob/master/moon2lua.lua "moon2lua.lua")
 
