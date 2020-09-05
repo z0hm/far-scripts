@@ -551,6 +551,9 @@ a very wide range of tasks using the Far and Windows API's.
 # [shell](https://github.com/z0hm/far-scripts/tree/master/shell "shell")
 
 
+linux shell scripts - sh, bash, dash, sash & etc.
+
+
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
   *8346 bytes, changed 2020-09-03 04:34*
