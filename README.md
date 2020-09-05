@@ -1,4 +1,4 @@
-# [far-scripts](https://github.com/z0hm/far-scripts/blob "far-scripts")
+# [far-scripts](https://github.com/z0hm/far-scripts "far-scripts")
 
 
 lua and moon scripts, macros repository for [Far Manager 3.0](https://farmanager.com/ "File Manager for Windows")
@@ -513,17 +513,6 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
-
-  *8346 bytes, changed 2020-09-03 04:34*
-
-  Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
-
-  Url: http://albumplayer.ru/linux/english.html
-
-
-
-
 ## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")
 
   *v1.0.1 (2992 bytes, changed 2020-06-20 09:14)*
@@ -555,5 +544,21 @@ a very wide range of tasks using the Far and Windows API's.
   copy to folder included Moonscript files and run it: lua:@moon2lua.lua
 
   all Moonscript files will be deleted after convert!
+
+
+
+
+# [shell](https://github.com/z0hm/far-scripts/tree/master/shell "shell")
+
+
+## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
+
+  *8346 bytes, changed 2020-09-03 04:34*
+
+  Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
+
+  Url: http://albumplayer.ru/linux/english.html
+
+
 
 
