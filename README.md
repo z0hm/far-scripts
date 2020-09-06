@@ -413,15 +413,15 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")
 
-  *v1.0.2 (1740 bytes, changed 2020-05-21 14:39)*
+  *v1.0.2 (1734 bytes, changed 2020-09-06 05:30)*
 
   [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad<=>FolderName.m3u
 
   Actions:
 
-  1. M3U: &#9679; Creating a playlist from rad files in a folder and subfolders
+  * M3U: creating a playlist from rad files in a folder and subfolders
 
-  2. RAD: &#9679; To create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>
+  * RAD: to create rad files with folders and subfolders from the playlist, place the cursor on the playlist and press <kbd>F2</kbd>
 
   Keys: <kbd>F2</kbd>
 
