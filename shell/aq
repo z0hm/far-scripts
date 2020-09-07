@@ -184,8 +184,8 @@ do
     prompt
     while read -p "$msg" num
     do
-      if [ ${#arr0[*]} -lt 2 ]; then num=0; oldnum=$num; break
-      elif [ ${#arr1[*]} -eq 2 ] && ${arr1[1]}
+      if   [ "$num" == "" ] && [ ${#arr0[*]} -eq 1 ]; then num=0; oldnum=$num; break
+      elif [ "$num" == "" ] && [ ${#arr1[*]} -eq 2 ] && ${arr1[1]}
       then if [ ${#jump[$((${#jump[*]}-2))]} -lt ${#jump[$((${#jump[*]}-1))]} ]; then num=1; else num=0; fi; oldnum=$num; break
       elif [ "$num" == "x" ]; then aqsave; exit 0
       elif [ "$num" == "e" ]; then exit 0
