@@ -172,9 +172,8 @@ do
   fi
   while read line
   do
-    if [ "${line:(-1)}" == "/" ]
-    then arr0+=("${line:0:(-1)}"); arr1+=(true)
-    else arr0+=("$line"); arr1+=(false)
+    if [ "${line:(-1)}" == "/" ]; then arr0+=("${line:0:(-1)}"); arr1+=(true)
+    elif [ "$line" != "" ]; then arr0+=("$line"); arr1+=(false)
     fi
   done <<< "$(ls -pL "$path")"
   last=$((${#arr0[*]}-1))
@@ -185,7 +184,8 @@ do
     prompt
     while read -p "$msg" num
     do
-      if [ "$num" == "x" ]; then aqsave; exit 0
+      if [ ${#arr0[*]} -lt 2 ]; then num=0; oldnum=$num; break
+      elif [ "$num" == "x" ]; then aqsave; exit 0
       elif [ "$num" == "e" ]; then exit 0
       elif [ "$num" == "h" ]; then aqhelp
       else
