@@ -14,9 +14,11 @@ exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
 # hmlen=${#hmstr}
 arr0=()  # array files in folder
 arr1=()  # array files type
+arr2=()  # array music files attribute
 jump=()  # jumps stack
 num=0
 oldnum=0
+lastnum=0
 page=0
 start=0
 finish=0
@@ -52,6 +54,7 @@ shpage(){
   if [ $finish -gt $last ]; then finish=$last; fi
   for ((i=start;i<=finish;i++))
   do
+    arr2[$i]=false
     if [ "$path" == "$home" ] && [ -w "$path/${arr0[$i]}" ]
     then echo -e "$wb $i $rk ${arr0[$i]}$te"
     else
@@ -68,7 +71,7 @@ shpage(){
             if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
           done
           if $res
-          then echo -e "$gb $i $gk ${arr0[$i]}$te"
+          then arr2[$i]=true; echo -e "$gb $i $gk ${arr0[$i]}$te"
           else
             if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo -e "$yb $i $yk ${arr0[$i]}$te"
             elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]
@@ -146,11 +149,29 @@ cdir(){
 }
 
 aqhelp(){
-  echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$gk s$wk  stop,$te nothing$wk  repeat last command$te"
+  echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
   echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
   echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>$te"
-  echo -e "$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
+  echo -e "$gk <num>$wk  play track <num>,$gk p$wk  play previous track,$gk n$wk  play next track$te"
+  echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
 }
+
+prevpl(){
+  if [ "$oldnum" == "p" ] || [ "$oldnum" == "n" ]; then num=$lastnum; else num=$oldnum; fi
+  oldnum="p"
+  if [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
+  then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; fi
+  fi
+}
+
+nextpl(){
+  if [ "$oldnum" == "n" ] || [ "$oldnum" == "p" ]; then num=$lastnum; else num=$oldnum; fi
+  oldnum="n"
+  if [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
+  then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; fi
+  fi
+}
+
 
 # Main()
 echo -e "$yr -=[ AP console quiet ]=- $te"
@@ -162,7 +183,7 @@ path=${jump[@]:(-1)}
 
 while true #:show
 do
-  unset arr0; arr0=(); unset arr1; arr1=()
+  unset arr0; arr0=(); unset arr1; arr1=(); unset arr2; arr2=()
   if [ "$path" == "$home" ]
   then arr0[0]=$(echo -e "$yb[ EXIT ]$te")
   else
@@ -180,11 +201,11 @@ do
   shpage
   while true #:cline
   do
-    if [ "$oldnum" != "r" ]; then oldnum=$num; fi
+    if [ "$oldnum" != "r" ] && [ "$oldnum" != "n" ] && [ "$oldnum" != "p" ]; then oldnum=$num; fi
     prompt
     while read -p "$msg" num
     do
-      if   [ "$num" == "" ] && [ ${#arr0[*]} -eq 1 ]; then num=0; oldnum=$num; break
+      if   [ "$num" == "" ] && [ ${#arr0[*]} -lt 2 ]; then num=0; oldnum=$num; break
       elif [ "$num" == "" ] && [ ${#arr1[*]} -eq 2 ] && ${arr1[1]}
       then if [ ${#jump[$((${#jump[*]}-2))]} -lt ${#jump[$((${#jump[*]}-1))]} ]; then num=1; else num=0; fi; oldnum=$num; break
       elif [ "$num" == "x" ]; then aqsave; exit 0
@@ -243,6 +264,8 @@ do
       elif [ "$num" == "l" ]; then shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then page=$(($page-1)); oldnum=$num; shpage
+      elif [ "$num" == "p" ]; then prevpl
+      elif [ "$num" == "n" ]; then nextpl
       elif [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
       then if [ $num -lt ${#arr0[*]} ]; then oldnum=$num; break; fi
       fi
