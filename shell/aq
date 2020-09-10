@@ -195,6 +195,7 @@ aqhelp(){
   echo -e "$gk c<num>$wk  convert <num> to /tmp/out.wav,$gk v<num>$wk  view content <num>$te"
   echo -e "$gk <num>$wk  play track <num>,$gk p$wk  play previous track,$gk n$wk  play next track$te"
   echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play track number <num> from min:sec$te"
+  echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
 }
 
