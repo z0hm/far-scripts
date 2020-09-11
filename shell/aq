@@ -94,7 +94,7 @@ shcue(){
   for ((i=1;i<=${#cuetm[*]};i++))
   do tmp="${cuenm[$i]}$strS"
     if [ $i -lt 10 ]; then tmp2=" "; else tmp2=""; fi
-    echo -e "$gb $i $wb$tmp2 ${tmp:0:$(($cuewd-1))} $yb ${cuetm[$i]} $te"
+    echo -e "$gb $i $wb$tmp2 ${tmp:0:$cuewd} $yb ${cuetm[$i]} $te"
   done
   echo -e "$wb================================================================================$te"
 }
