@@ -556,7 +556,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *12072 bytes, changed 2020-09-11 06:24*
+  *12089 bytes, changed 2020-09-11 08:13*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
