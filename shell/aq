@@ -28,6 +28,7 @@ path=""
 folder=""
 from=""
 msg=""
+strS="                                                                                 "
 
 # colors
 rk="\e[1;31;40m"
@@ -78,11 +79,11 @@ fview(){
 
 # read cue
 rdcue(){
-  unset cuenm; cuenm=(); unset cuetm; cuetm=(); track=0
+  unset cuenm; cuenm=(); unset cuetm; cuetm=(); cuewd=0; track=0
   while read line
   do
     if [[ $line =~ TRACK[' ']0([1-9])[' ']AUDIO ]] || [[ $line =~ TRACK[' ']([1-9][0-9])[' ']AUDIO ]]; then track=${BASH_REMATCH[1]}; fi
-    if [[ $line =~ TITLE[' ']\"(.+)\" ]]; then cuenm[$track]=${BASH_REMATCH[1]}; fi
+    if [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]; then cuenm[$track]=${BASH_REMATCH[1]}; if [ ${#BASH_REMATCH[1]} -gt $cuewd ]; then cuewd=${#BASH_REMATCH[1]}; fi; fi
     if [[ $line =~ INDEX[' ']01[' ']([0-9]+:[0-9]+) ]]; then cuetm[$track]=${BASH_REMATCH[1]}; fi
   done <<< "$(cat "$vpath")"
 }
@@ -91,7 +92,9 @@ shcue(){
   echo -e "$wb==================================$yb cue sheet $wb===================================$te"
   echo -e "$cb Album:  $wb${cuenm[0]} $te"
   for ((i=1;i<=${#cuetm[*]};i++))
-  do echo -e "$gb $i $wb ${cuenm[$i]} $yb ${cuetm[$i]} $te"
+  do tmp="${cuenm[$i]}$strS"
+    if [ $i -lt 10 ]; then tmp2=" "; else tmp2=""; fi
+    echo -e "$gb $i $wb$tmp2 ${tmp:0:$(($cuewd-1))} $yb ${cuetm[$i]} $te"
   done
   echo -e "$wb================================================================================$te"
 }
