@@ -265,8 +265,8 @@ do
       if   [ "$num" == "" ] && [ ${#arr0[*]} -lt 2 ]; then num=0; oldnum=$num; break
       elif [ "$num" == "" ] && [ ${#arr1[*]} -eq 2 ] && ${arr1[1]}
       then if [ ${#jump[$((${#jump[*]}-2))]} -lt ${#jump[$((${#jump[*]}-1))]} ]; then num=1; else num=0; fi; oldnum=$num; break
-      elif [ "$num" == "x" ]; then aqsave; exit 0
-      elif [ "$num" == "e" ]; then exit 0
+      elif [ "$num" == "x" ]; then aqsave; echo -e "\n$yb bye! $te"; exit 0
+      elif [ "$num" == "e" ]; then echo -e "\n$yb bye! $te"; exit 0
       elif [ "$num" == "h" ]; then aqhelp
       else
         if [ "$path" == "$home" ] && [[ $num =~ ^(r[ow])([1-9][0-9]*)$ ]]
@@ -311,7 +311,7 @@ do
           break
         else oldnum="xxx"; num="xxx"  # wrong command for re-query
         fi
-      elif [ "$num" == "s" ]; then echo -e "$yb stop $te"; killap
+      elif [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
       elif [ "$num" == "l" ]; then shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then page=$(($page-1)); oldnum=$num; shpage
@@ -327,7 +327,7 @@ do
     then  #cdup
       from=${path##*/}
       if [ "$path" == "$home" ]
-      then exit 0
+      then echo -e "\n$yb bye! $te"; exit 0
       else
         seekid
         page=$(($id/$pglen))
@@ -366,4 +366,5 @@ do
     fi
   done #goto cline
 done #goto show
+echo -e "\n$yb bye! $te"
 exit 0
