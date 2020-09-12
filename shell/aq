@@ -52,6 +52,7 @@ te="\e[0m"
 vname=""; vpath=""
 fview(){
   tmp1=$eb; tmp2=$te
+  if [[ $(cat "$vpath") =~ [^\000-\127] ]]; then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
   then
     if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]; then tmp1=$yb; tmp2=$yk
@@ -79,24 +80,34 @@ fview(){
 
 # read cue
 rdcue(){
-  unset cuenm; cuenm=(); unset cuetm; cuetm=(); cuewd=0; track=0
+  unset cuenm; cuenm=(); unset cuetm; cuetm=(); unset cueln; cueln=(); cuewd=0; track=0
   while read line
   do
     if [[ $line =~ TRACK[' ']0([1-9])[' ']AUDIO ]] || [[ $line =~ TRACK[' ']([1-9][0-9])[' ']AUDIO ]]; then track=${BASH_REMATCH[1]}; fi
     if [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]
-    then cuenm[$track]=${BASH_REMATCH[1]}; if [ $track -gt 0 ] && [ ${#BASH_REMATCH[1]} -gt $cuewd ]; then cuewd=${#BASH_REMATCH[1]}; fi
+    then cuenm[$track]=${BASH_REMATCH[1]}
+      if [ $track -gt 0 ]; then cueln[$track]=${#cuenm[$track]}; if [ ${cueln[$track]} -gt $cuewd ]; then cuewd=${cueln[$track]}; fi; fi
     fi
     if [[ $line =~ INDEX[' ']01[' ']([0-9]+:[0-9]+) ]]; then cuetm[$track]=${BASH_REMATCH[1]}; fi
   done <<< "$(cat "$vpath")"
+  if [[ $(cat "$vpath") =~ [^\000-\127] ]]
+  then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"
+    track=0
+    while read line
+    do
+      if [[ $line =~ TRACK[' ']0([1-9])[' ']AUDIO ]] || [[ $line =~ TRACK[' ']([1-9][0-9])[' ']AUDIO ]]; then track=${BASH_REMATCH[1]}; fi
+      if [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]; then cuenm[$track]=${BASH_REMATCH[1]}; fi
+    done <<< "$(cat "$vpath")"
+  fi
 }
 
 shcue(){
   echo -e "\n$wb==================================$yb cue sheet $wb==================================="
   echo -e "$cb Album:  $wb${cuenm[0]}"
   for ((i=1;i<=${#cuetm[*]};i++))
-  do tmp="${cuenm[$i]}$strS"
+  do
     if [ $i -lt 10 ]; then tmp2=" "; else tmp2=""; fi
-    echo -e "$gb $i $wb$tmp2 ${tmp:0:$cuewd} $yb ${cuetm[$i]}"
+    echo -e "$gb $i $wb$tmp2 ${cuenm[$i]}${strS:0:$(($cuewd-${cueln[$i]}))} $yb ${cuetm[$i]}"
   done
   echo -e "$wb================================================================================$te"
 }
