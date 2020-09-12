@@ -59,7 +59,7 @@ fview(){
     elif [ ${BASH_REMATCH[1]} == "TXT" -o ${BASH_REMATCH[1]} == "txt" ]; then tmp1=$cb; tmp2=$ck
     fi
   fi
-  echo -e "$yb view:$tmp1 $num $tmp2 $vname$te"
+  echo -e "\n$yb view:$tmp1 $num $tmp2 $vname$te"
   exec 6<&0  # save STDIN to descriptor #6
   local n=0
   while read -r line
@@ -166,10 +166,10 @@ killap(){
 
 # save state
 aqsave(){
-  echo "$page" > $aqpage
-  echo -n "$path" > $appath
+  echo "$page" > "$aqpage"
+  echo -n "$path" > "$appath"
   if [ -f $aqjump ]; then rm $aqjump; fi
-  for ((i=0;i<=$((${#jump[*]}-1));i++)); do echo "${jump[i]}" >> $aqjump; done
+  for ((i=0;i<=$((${#jump[*]}-1));i++)); do echo "${jump[i]}" >> "$aqjump"; done
 }
 
 cdir(){
@@ -219,7 +219,7 @@ do
   then arr0[0]=$(echo -e "$yb[ EXIT ]$te")
   else
     if [ $id -lt 0 ]; then seekid; fi
-    echo -e "$yg $id $wg $folder $te"
+    echo -e "\n$yg $id $wg $folder $te"
     arr0[0]=$(echo -e "$wk..$te"); arr1[0]=true
   fi
   while read line
@@ -263,13 +263,22 @@ do
         fi
         if [[ $num =~ ^c([1-9][0-9]*)$ ]]
         then
-          if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]}
-          then
-            name=${arr0[${BASH_REMATCH[1]}]}
-            killap
-            ffmpeg -y -i "$path/$name" -acodec pcm_s32le "$home/temp/$out"
-            echo -e "$yb play:$gb $num $gk $name$te"
-            ap "$home/temp/$out"
+          if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]
+          then vname=${arr0[${BASH_REMATCH[1]}]}
+            if ${arr2[${BASH_REMATCH[1]}]}
+            then
+              killap
+              ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "$home/temp/$out"
+              echo -e "$yb play:$gb $num $gk $vname$te"
+              ap "$home/temp/$out"
+            elif [[ $vname =~ ^.+\.([^\.]+)$ ]]
+            then
+              if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]
+              then vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$path/$vname" > "$vpath"; rdcue; shcue
+              elif [ ${BASH_REMATCH[1]} == "LOG" -o ${BASH_REMATCH[1]} == "log" ] || [ ${BASH_REMATCH[1]} == "TXT" -o ${BASH_REMATCH[1]} == "txt" ]
+              then vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$path/$vname" > "$vpath"; fview
+              fi
+            fi
           fi
         elif [[ $num =~ ^v([1-9][0-9]*)$ ]]
         then
@@ -332,7 +341,7 @@ do
         if $res
         then
           killap
-          echo -e "$yb play:$gb $num $gk ${arr0[$num]}$te"
+          echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
           ap "$path" $timeshift
         else
           vname=${arr0[$num]}; vpath=$path
