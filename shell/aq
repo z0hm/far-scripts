@@ -4,10 +4,9 @@
 
 # init
 home=/media
-aqpage=/tmp/aqpage
-aqjump=/tmp/aqjump
+aqpage=$home/temp/aqpage
+aqjump=$home/temp/aqjump
 appath=/usr/ap/path.txt
-out=out.wav
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
 # hmstr="ap /"
@@ -57,7 +56,8 @@ bye(){
 vname=""; vpath=""
 fview(){
   tmp1=$eb; tmp2=$te
-  if [[ $(cat "$vpath") =~ [^\000-\127] ]]; then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  read -r -N 3 line <<< "$(cat "$vpath")"
+  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]; then tmp=$vpath; vpath=$home/temp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
   then
     if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]; then tmp1=$yb; tmp2=$yk
@@ -97,8 +97,9 @@ rdcue(){
     if [[ $line =~ FILE[' ']\"[' ']*(.+)[' ']*\" ]]; then cuefl[$track]=${BASH_REMATCH[1]}; fi
     if [[ $line =~ INDEX[' ']01[' ']([0-9]+:[0-9]+) ]]; then cuetm[$track]=${BASH_REMATCH[1]}; fi
   done <<< "$(cat "$vpath")"
-  if [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"
+  read -r -N 3 line <<< "$(cat "$vpath")"
+  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
+  then tmp=$vpath; vpath=$home/temp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"
     track=0
     while read line
     do
@@ -111,7 +112,7 @@ rdcue(){
 }
 
 shcue(){
-  echo -e "\n$wb==================================$yb cue sheet $wb==================================="
+  echo -e "$wb==================================$yb cue sheet $wb==================================="
   echo -e "$yb Album: $cb${cuenm[0]}"
   echo -e "$yb Perf:  $cb${cuepf[0]}"
   echo -e "$yb File:  $cb${cuefl[0]}"
@@ -119,7 +120,7 @@ shcue(){
   do
     if [ $i -lt 10 ]; then tmp2=" "; else tmp2=""; fi
     echo -e "$gb $i $wb$tmp2 ${cuenm[$i]}${strS:0:$(($cuewd-${cueln[$i]}))} $yb ${cuetm[$i]}"
-    if [ "${cuepf[$i]}" != "${cuepf[$(($i-1))]}" ]; then echo -e "$yb Perf:  $cb${cuepf[$i]}"; fi
+    if [ "${cuepf[$i]}" != "${cuepf[$(($i-1))]}" ] && [ "${cuepf[$i]}" != "${cuenm[$i]}" ]; then echo -e "$yb Perf:  $cb${cuepf[$i]}"; fi
     if [ "${cuefl[$i]}" != "" ]; then echo -e "$yb File:  $cb${cuefl[$i]}"; fi
   done
   echo -e "$wb================================================================================$te"
@@ -160,7 +161,7 @@ shpage(){
       fi
     fi
   done
-  if [ ${#cue[*]} -eq 1 ] && [ ${#mus[*]} -eq 1 ]; then vname=${arr0[${cue[0]}]}; vpath=$path/$vname; rdcue; shcue; fi
+  if [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ]; then echo; vname=${arr0[${cue[0]}]}; vpath=$path/$vname; rdcue; shcue; fi
 }
 
 # seek folder and its id
@@ -221,11 +222,12 @@ nextpl(){
 aqhelp(){
   echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
   echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
-  echo -e "$gk c<num>$wk  convert <num> to /tmp/$out,$gk v<num>$wk  view content <num>$te"
+  echo -e "$gk c<num>$wk  convert file to $home/temp/out.wav,$gk v<num>$wk  view content of file$te"
   echo -e "$gk <num>$wk  play track <num>,$gk p$wk  play previous track,$gk n$wk  play next track$te"
   echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play track number <num> from min:sec$te"
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
+  echo -e "$gk cp<num>$wk  copy file to $home/flash/,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
 }
 
 # Main()
@@ -260,7 +262,7 @@ do
     prompt
     while read -p "$msg" num
     do
-      echo
+      tight=true; echo
       if [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]]
       then
         if [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
@@ -281,10 +283,10 @@ do
       then if [ ${#jump[$((${#jump[*]}-2))]} -lt ${#jump[$((${#jump[*]}-1))]} ]; then num=1; else num=0; fi; oldnum=$num; break
       elif [ "$num" == "x" ]; then aqsave; bye
       elif [ "$num" == "e" ]; then bye
-      elif [ "$num" == "h" ]; then aqhelp
+      elif [ "$num" == "h" ]; then aqhelp; tight=false
       else
         if [ "$path" == "$home" ] && [[ $num =~ ^(r[ow])([1-9][0-9]*)$ ]]
-        then if [ ${BASH_REMATCH[2]} -lt $((${#arr0[*]}-1)) ]; then vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o remount,${BASH_REMATCH[1]} $vpath; shpage; fi
+        then if [ ${BASH_REMATCH[2]} -lt $((${#arr0[*]}-1)) ]; then vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o remount,${BASH_REMATCH[1]} $vpath; shpage; tight=false; fi
         fi
         if [[ $num =~ ^c([1-9][0-9]*)$ ]]
         then
@@ -293,21 +295,16 @@ do
             if ${arr2[${BASH_REMATCH[1]}]}
             then
               killap
-              ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "$home/temp/$out"
+              ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "$home/temp/out.wav"
               echo -e "$yb play:$gb $num $gk $vname$te"
-              ap "$home/temp/$out"
-            elif [[ $vname =~ ^.+\.([^\.]+)$ ]]
-            then
-              if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]
-              then vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$path/$vname" > "$vpath"; rdcue; shcue
-              elif [ ${BASH_REMATCH[1]} == "LOG" -o ${BASH_REMATCH[1]} == "log" ] || [ ${BASH_REMATCH[1]} == "TXT" -o ${BASH_REMATCH[1]} == "txt" ]
-              then vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$path/$vname" > "$vpath"; fview
-              fi
+              ap "$home/temp/out.wav"
+              tight=false
             fi
           fi
-        elif [[ $num =~ ^v([1-9][0-9]*)$ ]]
-        then
-          if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; vpath=$path/$vname; fview; fi
+        elif [[ $num =~  ^v([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; vpath=$path/$vname; fview; tight=false; fi
+        elif [[ $num =~ ^cp([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; cp "$path/$vname" "$home/flash"; tight=false; fi
+        elif [[ $num =~ ^mv([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; mv "$path/$vname" "$home/flash"; tight=false; fi
+        elif [[ $num =~ ^rm([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; rm "$path/$vname"; tight=false; fi
         fi
       fi
       if [ "$num" == "" ]; then num=$oldnum; fi
@@ -334,6 +331,7 @@ do
       #elif [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
       elif [[ $num =~ ^[0-9]+$ ]]
       then if [ $num -lt ${#arr0[*]} ]; then oldnum=$num; break; fi
+      else if $tight; then echo -ne "\e[1A\e[1A\r"; fi
       fi
       prompt
     done
