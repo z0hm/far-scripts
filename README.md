@@ -556,7 +556,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *15360 bytes, changed 2020-09-21 11:53*
+  *15356 bytes, changed 2020-09-21 12:15*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
@@ -564,11 +564,11 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
   **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
 
-  **l** - list files in folder, **a** - show previous 100 files, **z** - show next 100 files
+  **l** - list files in folder, **a**/**z** - show *previous*/*next* 100 files
 
   **c&lt;num&gt;** - convert file to **/media/temp/out.wav**, **v&lt;num&gt;** - view content of file
 
-  **&lt;num&gt;** - play file &lt;num&gt;, **p**/**n** - play previous/next file, after **Enter** **Enter** ...
+  **&lt;num&gt;** - play file &lt;num&gt;, **p**/**n** - play *previous*/*next* file, after **Enter** **Enter** ...
 
   **&lt;num&gt;.&lt;num&gt;:&lt;num&gt;** or **&lt;num&gt;:&lt;num&gt;** - play file number &lt;num&gt; from min:sec
 
@@ -576,9 +576,9 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
   **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
 
-  **ro&lt;num&gt;**/**rw&lt;num&gt;** - remount FAT partition as read only/writable, available in /media folder only
+  **ro&lt;num&gt;**/**rw&lt;num&gt;** - remount *FAT* partition as *read only*/*writable*, available in */media* folder only
 
-  **cp&lt;num&gt;** - copy file to **/media/flash**, **mv&lt;num&gt;** - move file, **rm&lt;num&gt;** - remove file
+  **cp&lt;num&gt;** - copy file to */media/flash*, **mv&lt;num&gt;** - move file, **rm&lt;num&gt;** - remove file
 
   Url: http://albumplayer.ru/linux/english.html
 
