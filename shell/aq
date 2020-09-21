@@ -1,5 +1,15 @@
 #!/bin/bash
 # Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
+# Commands:
+# **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
+# **l** - list files in folder, **a** - show previous 100 files, **z** - show next 100 files
+# **c<num>** - convert file to **/media/temp/out.wav**, **v<num>** - view content of file
+# **<num>** - play file <num>, **p**/**n** - play previous/next file, after **Enter** **Enter** ...
+# **<num>.<num>:<num>** or **<num>:<num>** - play file number <num> from min:sec
+# **<num>.<num>** or **.<num>** - play file <num> from track number <num>, if cue sheet loaded
+# **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
+# **ro<num>**/**rw<num>** - remount FAT partition as read only/writable, available in /media folder only
+# **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
@@ -223,11 +233,11 @@ aqhelp(){
   echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
   echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
   echo -e "$gk c<num>$wk  convert file to $home/temp/out.wav,$gk v<num>$wk  view content of file$te"
-  echo -e "$gk <num>$wk  play track <num>,$gk p$wk  play previous track,$gk n$wk  play next track$te"
-  echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play track number <num> from min:sec$te"
+  echo -e "$gk <num>$wk  play file <num>,$gk p$wk  play previous file,$gk n$wk  play next file$te"
+  echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play file number <num> from min:sec$te"
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
-  echo -e "$gk cp<num>$wk  copy file to $home/flash/,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
+  echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
 }
 
 # Main()
