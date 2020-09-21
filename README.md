@@ -566,19 +566,19 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
   **l** - list files in folder, **a** - show previous 100 files, **z** - show next 100 files
 
-  **c<num>** - convert file to **/media/temp/out.wav**, **v<num>** - view content of file
+  **c&lt;num&gt;** - convert file to **/media/temp/out.wav**, **v&lt;num&gt;** - view content of file
 
-  **<num>** - play file <num>, **p**/**n** - play previous/next file, after **Enter** **Enter** ...
+  **&lt;num&gt;** - play file &lt;num&gt;, **p**/**n** - play previous/next file, after **Enter** **Enter** ...
 
-  **<num>.<num>:<num>** or **<num>:<num>** - play file number <num> from min:sec
+  **&lt;num&gt;.&lt;num&gt;:&lt;num&gt;** or **&lt;num&gt;:&lt;num&gt;** - play file number &lt;num&gt; from min:sec
 
-  **<num>.<num>** or **.<num>** - play file <num> from track number <num>, if cue sheet loaded
+  **&lt;num&gt;.&lt;num&gt;** or **.&lt;num&gt;** - play file &lt;num&gt; from track number &lt;num&gt;, if cue sheet loaded
 
   **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
 
-  **ro<num>**/**rw<num>** - remount FAT partition as read only/writable, available in /media folder only
+  **ro&lt;num&gt;**/**rw&lt;num&gt;** - remount FAT partition as read only/writable, available in /media folder only
 
-  **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
+  **cp&lt;num&gt;** - copy file to **/media/flash**, **mv&lt;num&gt;** - move file, **rm&lt;num&gt;** - remove file
 
   Url: http://albumplayer.ru/linux/english.html
 
