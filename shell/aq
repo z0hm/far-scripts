@@ -69,7 +69,9 @@ vname=""; vpath=""
 fview(){
   tmp1=$eb; tmp2=$te
   read -r -N 3 line <<< "$(cat "$vpath")"
-  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]; then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
+  then tmp=$vpath; vpath=/tmp/$vname; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  fi
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
   then
     if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]; then tmp1=$yb; tmp2=$yk
@@ -97,7 +99,7 @@ fview(){
 
 # read cue
 rdcue(){
-  unset cuenm; cuenm=(); unset cuetm; cuetm=(); unset cueln; cueln=(); unset cuefl; cuefl=(); unset cuepf; cuepf=(); cuewd=0; track=0
+  track=0; unset cuenm; cuenm=(); unset cuepf; cuepf=(); unset cuefl; cuefl=(); unset cuetm; cuetm=(); unset cueln; cueln=(); cuewd=0
   while read line
   do
     if [[ $line =~ TRACK[' ']([0-9][0-9])[' ']AUDIO ]]; then track=$(($track+1)); fi
@@ -111,8 +113,8 @@ rdcue(){
   done <<< "$(cat "$vpath")"
   read -r -N 3 line <<< "$(cat "$vpath")"
   if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"
-    track=0
+  then tmp=$vpath; vpath=/tmp/$vname; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+    track=0; unset cuenm; cuenm=(); unset cuepf; cuepf=(); unset cuefl; cuefl=()
     while read line
     do
       if [[ $line =~ TRACK[' ']([0-9][0-9])[' ']AUDIO ]]; then track=$(($track+1)); fi
@@ -132,7 +134,7 @@ shcue(){
   do
     if [ $i -lt 10 ]; then tmp2=" "; else tmp2=""; fi
     echo -e "$gb $i $wb$tmp2 ${cuenm[$i]}${strS:0:$(($cuewd-${cueln[$i]}))} $yb ${cuetm[$i]}"
-    if [ "${cuepf[$i]}" != "${cuepf[$(($i-1))]}" ] && [ "${cuepf[$i]}" != "${cuenm[$i]}" ]; then echo -e "$yb Perf:  $cb${cuepf[$i]}"; fi
+    if [ "${cuepf[$i]}" != "" ] && [ "${cuepf[$i]}" != "${cuepf[$(($i-1))]}" ] && [ "${cuepf[$i]}" != "${cuenm[$i]}" ]; then echo -e "$yb Perf:  $cb${cuepf[$i]}"; fi
     if [ "${cuefl[$i]}" != "" ]; then echo -e "$yb File:  $cb${cuefl[$i]}"; fi
   done
   echo -e "$wb================================================================================$te"
