@@ -556,7 +556,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *15616 bytes, changed 2020-09-21 19:58*
+  *15567 bytes, changed 2020-09-22 12:11*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
@@ -570,7 +570,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
   **l** - list files in folder, **a**/**z** - show **previous**/**next** 100 files
 
-  **c&lt;num&gt;** - convert file to **/media/temp/out.wav**, **v&lt;num&gt;** - view content of file
+  **c&lt;num&gt;** - convert file to **/tmp/out.wav**, **v&lt;num&gt;** - view content of file
 
   **&lt;num&gt;** - play file &lt;num&gt;, **p**/**n** - play **previous**/**next** file, after **Enter** **Enter** ...
 

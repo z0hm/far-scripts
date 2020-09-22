@@ -5,7 +5,7 @@
 # Commands:
 # **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
 # **l** - list files in folder, **a**/**z** - show **previous**/**next** 100 files
-# **c<num>** - convert file to **/media/temp/out.wav**, **v<num>** - view content of file
+# **c<num>** - convert file to **/tmp/out.wav**, **v<num>** - view content of file
 # **<num>** - play file <num>, **p**/**n** - play **previous**/**next** file, after **Enter** **Enter** ...
 # **<num>.<num>:<num>** or **<num>:<num>** - play file number <num> from min:sec
 # **<num>.<num>** or **.<num>** - play file <num> from track number <num>, if cue sheet loaded
@@ -16,8 +16,8 @@
 
 # init
 home=/media
-aqpage=$home/temp/aqpage
-aqjump=$home/temp/aqjump
+aqpage=/tmp/aqpage
+aqjump=/tmp/aqjump
 appath=/usr/ap/path.txt
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
@@ -69,7 +69,7 @@ vname=""; vpath=""
 fview(){
   tmp1=$eb; tmp2=$te
   read -r -N 3 line <<< "$(cat "$vpath")"
-  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]; then tmp=$vpath; vpath=$home/temp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]; then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
   then
     if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]; then tmp1=$yb; tmp2=$yk
@@ -111,7 +111,7 @@ rdcue(){
   done <<< "$(cat "$vpath")"
   read -r -N 3 line <<< "$(cat "$vpath")"
   if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then tmp=$vpath; vpath=$home/temp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"
+  then tmp=$vpath; vpath=/tmp/$vname; iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"
     track=0
     while read line
     do
@@ -234,7 +234,7 @@ nextpl(){
 aqhelp(){
   echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
   echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
-  echo -e "$gk c<num>$wk  convert file to $home/temp/out.wav,$gk v<num>$wk  view content of file$te"
+  echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk  view content of file$te"
   echo -e "$gk <num>$wk  play file <num>,$gk p$wk  play previous file,$gk n$wk  play next file$te"
   echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play file number <num> from min:sec$te"
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
@@ -307,9 +307,9 @@ do
             if ${arr2[${BASH_REMATCH[1]}]}
             then
               killap
-              ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "$home/temp/out.wav"
+              ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
               echo -e "$yb play:$gb $num $gk $vname$te"
-              ap "$home/temp/out.wav"
+              ap "/tmp/out.wav"
               tight=false
             fi
           fi
