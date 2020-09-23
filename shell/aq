@@ -220,7 +220,7 @@ cdir(){
 prevpl(){
   if [ "$oldnum" == "p" ] || [ "$oldnum" == "n" ]; then num=$lastnum; else num=$oldnum; fi
   oldnum="p"
-  if [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
+  if [[ $num =~ ^[0-9]+$ ]]
   then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; fi
   fi
 }
@@ -228,7 +228,7 @@ prevpl(){
 nextpl(){
   if [ "$oldnum" == "n" ] || [ "$oldnum" == "p" ]; then num=$lastnum; else num=$oldnum; fi
   oldnum="n"
-  if [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
+  if [[ $num =~ ^[0-9]+$ ]]
   then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; fi
   fi
 }
@@ -337,11 +337,10 @@ do
       elif [ "$num" == "l" ]; then echo; shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
-      elif [ "$num" == "p" ]; then echo; prevpl
-      elif [ "$num" == "n" ]; then echo; nextpl
-      #elif [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
-      elif [[ $num =~ ^[0-9]+$ ]]
-      then if [ $num -lt ${#arr0[*]} ]; then oldnum=$num; break; fi
+      elif [ "$num" == "p" ]; then prevpl
+      elif [ "$num" == "n" ]; then nextpl
+      elif [[ $num =~ ^[0-9]+$ ]] && [ $num -lt ${#arr0[*]} ]
+      then oldnum=$num; break
       else if $tight; then echo -ne "\e[1A\r"; fi
       fi
       prompt
