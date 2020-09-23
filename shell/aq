@@ -193,7 +193,7 @@ prompt(){
   if [ $finish -lt $last ]; then key_z="$wk,$gk z"; else key_z=""; fi
   if [ ${#jump[*]} -gt 1 ]; then key_r="$wk,$gk r"; else key_r=""; fi
   if [ "$path" == "$home" ]; then key_rw="$wk,$gk ro<num>$wk,$gk rw<num>"; else key_rw=""; fi
-  msg=$(echo -e "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk: $te")
+  msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk: $te")
 }
 
 # kill ap
@@ -259,7 +259,7 @@ do
   then arr0[0]=$(echo -e "$yb[ EXIT ]$te")
   else
     if [ $id -lt 0 ]; then seekid; fi
-    echo -e "$yg $id $wg $folder $te"
+    echo -e "$yg $id $wg $folder $te\n"
     arr0[0]=$(echo -e "$wk..$te"); arr1[0]=true
   fi
   while read line
@@ -276,7 +276,7 @@ do
     prompt
     while read -p "$msg" num
     do
-      tight=true; echo
+      tight=true
       if [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]]
       then
         if [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
@@ -292,34 +292,31 @@ do
       elif [[ $num =~ ^[0-9]+:[0-9]+$ ]] && [ ${#mus[*]} -eq 1 ]; then timeshift=${BASH_REMATCH[0]}; num=${mus[0]}; oldnum=$num; break
       fi
       timeshift=0
-      if   [ "$num" == "" ] && [ ${#arr0[*]} -lt 2 ]; then num=0; oldnum=$num; break
-      elif [ "$num" == "" ] && [ ${#arr1[*]} -eq 2 ] && ${arr1[1]}
+      if   [ "$num" == "" ] && [ ${#arr0[*]} -lt 2 ] && [ "$oldnum" != "r" ]; then num=0; oldnum=$num; break
+      elif [ "$num" == "" ] && [ ${#arr1[*]} -eq 2 ] && ${arr1[1]} && [ "$oldnum" != "r" ]
       then if [ ${#jump[$((${#jump[*]}-2))]} -lt ${#jump[$((${#jump[*]}-1))]} ]; then num=1; else num=0; fi; oldnum=$num; break
-      elif [ "$num" == "x" ]; then aqsave; bye
-      elif [ "$num" == "e" ]; then bye
-      elif [ "$num" == "h" ]; then aqhelp; tight=false
-      else
-        if [ "$path" == "$home" ] && [[ $num =~ ^(r[ow])([1-9][0-9]*)$ ]]
-        then if [ ${BASH_REMATCH[2]} -lt $((${#arr0[*]}-1)) ]; then vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o remount,${BASH_REMATCH[1]} $vpath; shpage; tight=false; fi
-        fi
-        if [[ $num =~ ^c([1-9][0-9]*)$ ]]
-        then
-          if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]
-          then vname=${arr0[${BASH_REMATCH[1]}]}
-            if ${arr2[${BASH_REMATCH[1]}]}
-            then
-              killap
-              ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
-              echo -e "$yb play:$gb $num $gk $vname$te"
-              ap "/tmp/out.wav"
-              tight=false
-            fi
+      elif [ "$num" == "x" ]; then echo; aqsave; bye
+      elif [ "$num" == "e" ]; then echo; bye
+      elif [ "$num" == "h" ]; then echo; aqhelp; tight=false
+      elif [ "$path" == "$home" ] && [[ $num =~ ^(r[ow])([1-9][0-9]*)$ ]]
+      then if [ ${BASH_REMATCH[2]} -lt $((${#arr0[*]}-1)) ]; then echo; vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o remount,${BASH_REMATCH[1]} $vpath; shpage; tight=false; fi
+      elif [[ $num =~ ^c([1-9][0-9]*)$ ]]
+      then
+        if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]
+        then vname=${arr0[${BASH_REMATCH[1]}]}
+          if ${arr2[${BASH_REMATCH[1]}]}
+          then echo
+            killap
+            ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
+            echo -e "$yb play:$gb $num $gk $vname$te"
+            ap "/tmp/out.wav"
+            tight=false
           fi
-        elif [[ $num =~  ^v([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; vpath=$path/$vname; fview; tight=false; fi
-        elif [[ $num =~ ^cp([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; cp "$path/$vname" "$home/flash"; tight=false; fi
-        elif [[ $num =~ ^mv([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; mv "$path/$vname" "$home/flash"; tight=false; fi
-        elif [[ $num =~ ^rm([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; rm "$path/$vname"; tight=false; fi
         fi
+      elif [[ $num =~  ^v([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath=$path/$vname; fview; tight=false; fi
+      elif [[ $num =~ ^cp([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; cp "$path/$vname" "$home/flash"; tight=false; fi
+      elif [[ $num =~ ^mv([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; mv "$path/$vname" "$home/flash"; tight=false; fi
+      elif [[ $num =~ ^rm([1-9][0-9]*)$ ]]; then if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; rm "$path/$vname"; tight=false; fi
       fi
       if [ "$num" == "" ]; then num=$oldnum; fi
       if [ "$num" == "r" ]
@@ -334,21 +331,22 @@ do
           else curpath=$path; path=$newpath; seekid; num=$id; path=$curpath
           fi
           break
-        else oldnum="xxx"; num="xxx"  # wrong command for re-query
+        else oldnum="xxx"; num="xxx"; echo -ne "\e[1A\r"  # wrong command for re-query
         fi
-      elif [ "$num" == "s" ]; then echo -e "$yb stop $te"; killap
-      elif [ "$num" == "l" ]; then shpage
-      elif [ "$num" == "z" -a $finish -lt $last ]; then page=$(($page+1)); oldnum=$num; shpage
-      elif [ "$num" == "a" -a $page -gt 0 ]; then page=$(($page-1)); oldnum=$num; shpage
-      elif [ "$num" == "p" ]; then prevpl
-      elif [ "$num" == "n" ]; then nextpl
+      elif [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
+      elif [ "$num" == "l" ]; then echo; shpage
+      elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
+      elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
+      elif [ "$num" == "p" ]; then echo; prevpl
+      elif [ "$num" == "n" ]; then echo; nextpl
       #elif [ -n "$num" ] && [ "$num" -eq "$num" ] 2>/dev/null
       elif [[ $num =~ ^[0-9]+$ ]]
       then if [ $num -lt ${#arr0[*]} ]; then oldnum=$num; break; fi
-      else if $tight; then echo -ne "\e[1A\e[1A\r"; fi
+      else if $tight; then echo -ne "\e[1A\r"; fi
       fi
       prompt
     done
+    echo
     if [ $num -eq 0 ]
     then  #cdup
       from=${path##*/}
