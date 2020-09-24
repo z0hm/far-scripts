@@ -39,7 +39,7 @@ path=""
 folder=""
 from=""
 msg=""
-strS="                                                                                 "
+strS="                                                                                "
 
 # colors
 rk="\e[1;31;40m"
@@ -105,7 +105,11 @@ rdcue(){
     if [[ $line =~ TRACK[' ']([0-9][0-9])[' ']AUDIO ]]; then track=$(($track+1)); fi
     if [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]
     then cuenm[$track]=${BASH_REMATCH[1]}
-      if [ $track -gt 0 ]; then cueln[$track]=${#cuenm[$track]}; if [ ${cueln[$track]} -gt $cuewd ]; then cuewd=${cueln[$track]}; fi; fi
+      if [ $track -gt 0 ]
+      then cueln[$track]=${#cuenm[$track]}
+        if [ ${cueln[$track]} -gt $cuewd ]; then cuewd=${cueln[$track]}; fi
+        if [ ${cueln[$track]} -gt 64 ]; then cuewd=67; fi
+      fi
     fi
     if [[ $line =~ PERFORMER[' ']\"[' ']*(.+)[' ']*\" ]]; then cuepf[$track]=${BASH_REMATCH[1]}; fi
     if [[ $line =~ FILE[' ']\"[' ']*(.+)[' ']*\" ]]; then cuefl[$track]=${BASH_REMATCH[1]}; fi
