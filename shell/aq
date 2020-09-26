@@ -12,7 +12,7 @@
 # **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
 # **ro<num>**/**rw<num>** - remount **FAT** partition as **read only**/**writable**, available in **/media** folder only
 # **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
-# **ap** - show active player, **apm** -  automatic or manual player switching
+# **ap** - show active player, **apm** -  automatic or manual player switching, **i** - show played file
 # **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
 # Url: http://albumplayer.ru/linux/english.html
 
@@ -208,6 +208,23 @@ prompt(){
   msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk: $te")
 }
 
+# playback info
+infopl(){
+  local id=0
+  while read line
+  do
+    if [[ $line =~ ^ap[" "](/.+)/([^/]+)[" "][0-9\.:]+$ ]]
+    then
+      local n=0
+      while read line
+      do n=$(($n+1)); if [ "$line" == "${BASH_REMATCH[2]}" ]; then id=$n; break; fi
+      done <<< "$(ls "${BASH_REMATCH[1]}")"
+      echo -e "\n$yb play:$gb $n $gk ${BASH_REMATCH[2]}$te"
+    fi
+  done <<< "$(ps -o args)"
+  if [ $id -eq 0 ]; then lnup; fi
+}
+
 # kill ap
 killap(){
   while read line
@@ -254,8 +271,8 @@ aqhelp(){
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
   echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
-  echo -e "$gk ap$wk  show active player,$gk apm$wk  automatic or manual player switching$te"
-  echo -e "$gk ap0$wk  use the ap0 player without timeshift,$gk ap1$wk  use the ap1 player with timeshift$te"
+  echo -e "$gk ap$wk  show active player,$gk apm$wk  auto/manual player switching,$gk i$wk  show played file$te"
+  echo -e "$gk ap0$wk"/"$gk"ap1"$wk  use the ap0/ap1 player without/with timeshift$te"
 }
 
 # Main()
@@ -292,7 +309,8 @@ do
     while read -p "$msg" num
     do
       tight=true
-      if   [ "$num" == "ap" ]; then if [ $apmode -eq 0 ]; then tmp="auto"; else tmp=$apex; fi; tight=false; echo -e "\n$yb use player:$wb $tmp $te"
+      if   [ "$num" == "i" ]; then infopl; tight=false
+      elif [ "$num" == "ap" ]; then if [ $apmode -eq 0 ]; then tmp="auto"; else tmp=$apex; fi; tight=false; echo -e "\n$yb use player:$wb $tmp $te"
       elif [ "$num" == "apm" ]; then apmode=$((! $apmode)); if [ $apmode -eq 0 ]; then tmp="automatic"; else tmp="manual"; fi; tight=false; echo -e "\n$yb mode:$wb $tmp player switching $te"
       elif [[ $num =~ ^ap[01]$ ]]; then apex=${BASH_REMATCH[0]}; ln -f /usr/ap/$apex /usr/ap/ap; tight=false; echo -e "\n$yb use:$wb $apex $te"
       elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]]
