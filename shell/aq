@@ -344,7 +344,7 @@ do
           then echo
             killap
             ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
-            echo -e "$yb play:$gb $num $gk $vname$te"
+            echo -e "\n$yb play:$gb $num $gk $vname$te"
             ap "/tmp/out.wav"
             tight=false
           fi
