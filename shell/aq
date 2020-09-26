@@ -12,6 +12,7 @@
 # **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
 # **ro<num>**/**rw<num>** - remount **FAT** partition as **read only**/**writable**, available in **/media** folder only
 # **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
+# **ap** - show active player, **apm** -  automatic or manual player switching
 # **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
 # Url: http://albumplayer.ru/linux/english.html
 

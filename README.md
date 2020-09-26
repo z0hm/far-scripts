@@ -556,7 +556,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *16962 bytes, changed 2020-09-26 06:30*
+  *17041 bytes, changed 2020-09-26 06:57*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
@@ -583,6 +583,8 @@ linux shell scripts - sh, bash, dash, sash & etc.
   **ro&lt;num&gt;**/**rw&lt;num&gt;** - remount **FAT** partition as **read only**/**writable**, available in **/media** folder only
 
   **cp&lt;num&gt;** - copy file to **/media/flash**, **mv&lt;num&gt;** - move file, **rm&lt;num&gt;** - remove file
+
+  **ap** - show active player, **apm** -  automatic or manual player switching
 
   **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
 
