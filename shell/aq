@@ -63,6 +63,10 @@ ck="\e[1;36;40m"
 te="\e[0m"
 
 
+lnup(){
+  echo -ne "\e[1A\r"
+}
+
 bye(){
   echo -e "$yb bye! $te\n"
   exit 0
@@ -229,7 +233,7 @@ prevpl(){
   if [ "$oldnum" == "p" ] || [ "$oldnum" == "n" ]; then num=$lastnum; else num=$oldnum; fi
   oldnum="p"
   if [[ $num =~ ^[0-9]+$ ]]
-  then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; fi
+  then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; else lnup; fi
   fi
 }
 
@@ -237,7 +241,7 @@ nextpl(){
   if [ "$oldnum" == "n" ] || [ "$oldnum" == "p" ]; then num=$lastnum; else num=$oldnum; fi
   oldnum="n"
   if [[ $num =~ ^[0-9]+$ ]]
-  then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; fi
+  then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; else lnup; fi
   fi
 }
 
@@ -289,7 +293,7 @@ do
     do
       tight=true
       if   [ "$num" == "ap" ]; then if [ $apmode -eq 0 ]; then tmp="auto"; else tmp=$apex; fi; tight=false; echo -e "\n$yb use player:$wb $tmp $te"
-      elif [ "$num" == "apm" ]; then apmode=$((! $apmode)); if [ $apmode -eq 0 ]; then tmp="automatic"; else tmp="manual"; fi; tight=false; echo -e "\n$yb mode:$wb $tmp player switching$te"
+      elif [ "$num" == "apm" ]; then apmode=$((! $apmode)); if [ $apmode -eq 0 ]; then tmp="automatic"; else tmp="manual"; fi; tight=false; echo -e "\n$yb mode:$wb $tmp player switching $te"
       elif [[ $num =~ ^ap[01]$ ]]; then apex=${BASH_REMATCH[0]}; ln -f /usr/ap/$apex /usr/ap/ap; tight=false; echo -e "\n$yb use:$wb $apex $te"
       elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]]
       then
@@ -345,7 +349,7 @@ do
           else curpath=$path; path=$newpath; seekid; num=$id; path=$curpath
           fi
           break
-        else oldnum="xxx"; num="xxx"; echo -ne "\e[1A\r"  # wrong command for re-query
+        else oldnum="xxx"; num="xxx"; lnup  # wrong command for re-query
         fi
       elif [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
       elif [ "$num" == "l" ]; then echo; shpage
@@ -355,13 +359,13 @@ do
       elif [ "$num" == "n" ]; then nextpl
       elif [[ $num =~ ^[0-9]+$ ]] && [ $num -lt ${#arr0[*]} ]
       then oldnum=$num; break
-      else if $tight; then echo -ne "\e[1A\r"; fi
+      else if $tight; then lnup; fi
       fi
       prompt
     done
-    echo
     if [ $num -eq 0 ]
     then  #cdup
+      echo
       from=${path##*/}
       if [ "$path" == "$home" ]
       then bye
@@ -377,7 +381,7 @@ do
       folder=${arr0[$num]}
       from=""
       path="$path/${arr0[$num]}"
-      if ${arr1[$num]}; then page=0; cdir
+      if ${arr1[$num]}; then echo; page=0; cdir
       elif [ -f "$path" ]
       then
         ext=""; res=false
@@ -389,7 +393,7 @@ do
         if $res
         then
           killap
-          echo -e "$yb play:$gb $num $gk ${arr0[$num]}$te"
+          echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
           if [ $apmode -eq 0 ]
           then
             if   [ "$timeshift" == "0" ] && [ "$apex" != "ap0" ]; then apex="ap0"; ln -f /usr/ap/$apex /usr/ap/ap
@@ -399,8 +403,10 @@ do
           ap "$path" $timeshift
         else
           vname=${arr0[$num]}; vpath=$path
-          if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then rdcue; shcue; aqsave; fi
-          if [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]; then fview; fi
+          if   [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo; rdcue; shcue; aqsave
+          elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]; then echo; fview
+          else lnup
+          fi
         fi
         path=${jump[@]:(-1)}
         seekid
