@@ -12,9 +12,12 @@
 # **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
 # **ro<num>**/**rw<num>** - remount **FAT** partition as **read only**/**writable**, available in **/media** folder only
 # **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
+# **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
+apex=ap0  # use ap0 default
+apmode=0  # automatic player switching
 home=/media
 aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
@@ -246,9 +249,12 @@ aqhelp(){
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
   echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
+  echo -e "$gk ap$wk  show active player,$gk apm$wk  automatic or manual player switching$te"
+  echo -e "$gk ap0$wk  use the ap0 player without timeshift,$gk ap1$wk  use the ap1 player with timeshift$te"
 }
 
 # Main()
+ln -f /usr/ap/$apex /usr/ap/ap
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
 echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te\n"
 # load settings
@@ -281,7 +287,10 @@ do
     while read -p "$msg" num
     do
       tight=true
-      if [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]]
+      if   [ "$num" == "ap" ]; then if [ $apmode -eq 0 ]; then tmp="auto"; else tmp=$apex; fi; tight=false; echo -e "\n$yb use player:$wb $tmp $te"
+      elif [ "$num" == "apm" ]; then apmode=$((! $apmode)); if [ $apmode -eq 0 ]; then tmp="automatic"; else tmp="manual"; fi; tight=false; echo -e "\n$yb mode:$wb $tmp player switching$te"
+      elif [[ $num =~ ^ap[01]$ ]]; then apex=${BASH_REMATCH[0]}; ln -f /usr/ap/$apex /usr/ap/ap; tight=false; echo -e "\n$yb use:$wb $apex $te"
+      elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]]
       then
         if [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
         then num=${BASH_REMATCH[1]}; timeshift=${cuetm[${BASH_REMATCH[2]}]}; oldnum=$num; break
@@ -380,6 +389,12 @@ do
         then
           killap
           echo -e "$yb play:$gb $num $gk ${arr0[$num]}$te"
+          if [ $apmode -eq 0 ]
+          then
+            if   [ "$timeshift" == "0" ] && [ "$apex" != "ap0" ]; then apex="ap0"; ln -f /usr/ap/$apex /usr/ap/ap
+            elif [ "$timeshift" != "0" ] && [ "$apex" != "ap1" ]; then apex="ap1"; ln -f /usr/ap/$apex /usr/ap/ap
+            fi
+          fi
           ap "$path" $timeshift
         else
           vname=${arr0[$num]}; vpath=$path
