@@ -14,6 +14,7 @@
 # **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
 # **ap** - show active player, **apm** -  automatic or manual player switching, **i** - show played file
 # **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
+# **i** - show name played file and info about it, **i<num>** - show info about file
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
@@ -211,18 +212,21 @@ prompt(){
 # playback info
 infopl(){
   local id=0
+  local vpath=""
+  local vname=""
   while read line
   do
     if [[ $line =~ ^ap[" "](/.+)/([^/]+)[" "][0-9\.:]+$ ]]
     then
       local n=0
+      vpath=${BASH_REMATCH[1]}
+      vname=${BASH_REMATCH[2]}
       while read line
-      do n=$(($n+1)); if [ "$line" == "${BASH_REMATCH[2]}" ]; then id=$n; break; fi
-      done <<< "$(ls "${BASH_REMATCH[1]}")"
-      echo -e "\n$yb play:$gb $n $gk ${BASH_REMATCH[2]}$te"
+      do n=$(($n+1)); if [ "$line" == "$vname" ]; then id=$n; break; fi
+      done <<< "$(ls "$vpath")"
     fi
   done <<< "$(ps -o args)"
-  if [ $id -eq 0 ]; then lnup; fi
+  if [ $id -eq 0 ]; then lnup; else echo -e "\n$yb play:$gb $n $gk $vname$te\n"; ffmpeg -hide_banner -i "$vpath/$vname"; fi
 }
 
 # kill ap
@@ -263,6 +267,7 @@ nextpl(){
 }
 
 aqhelp(){
+  echo -e "$yb Help:$wb available commands $te"
   echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
   echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
   echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk  view content of file$te"
@@ -273,6 +278,7 @@ aqhelp(){
   echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
   echo -e "$gk ap$wk  show active player,$gk apm$wk  auto/manual player switching,$gk i$wk  show played file$te"
   echo -e "$gk ap0$wk"/"$gk"ap1"$wk  use the ap0/ap1 player without/with timeshift$te"
+  echo -e "$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
 }
 
 # Main()
@@ -336,6 +342,17 @@ do
       elif [ "$num" == "h" ]; then echo; aqhelp; tight=false
       elif [ "$path" == "$home" ] && [[ $num =~ ^(r[ow])([1-9][0-9]*)$ ]]
       then if [ ${BASH_REMATCH[2]} -lt $((${#arr0[*]}-1)) ]; then echo; vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o remount,${BASH_REMATCH[1]} $vpath; shpage; tight=false; fi
+      elif [[ $num =~ ^i([1-9][0-9]*)$ ]]
+      then
+        if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]
+        then vname=${arr0[${BASH_REMATCH[1]}]}
+          if ${arr2[${BASH_REMATCH[1]}]}
+          then
+            echo -e "\n$yb file:$gb $n $gk $vname$te\n"
+            ffmpeg -hide_banner -i "$path/$vname"
+            tight=false
+          fi
+        fi
       elif [[ $num =~ ^c([1-9][0-9]*)$ ]]
       then
         if [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]
@@ -343,7 +360,7 @@ do
           if ${arr2[${BASH_REMATCH[1]}]}
           then echo
             killap
-            ffmpeg -y -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
+            ffmpeg -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
             echo -e "\n$yb play:$gb $num $gk $vname$te"
             ap "/tmp/out.wav"
             tight=false

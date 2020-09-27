@@ -556,7 +556,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *17625 bytes, changed 2020-09-26 19:48*
+  *18334 bytes, changed 2020-09-27 08:27*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
@@ -587,6 +587,8 @@ linux shell scripts - sh, bash, dash, sash & etc.
   **ap** - show active player, **apm** -  automatic or manual player switching, **i** - show played file
 
   **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
+
+  **i** - show name played file and info about it, **i&lt;num&gt;** - show info about file
 
   Url: http://albumplayer.ru/linux/english.html
 
