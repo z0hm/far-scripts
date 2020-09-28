@@ -331,7 +331,7 @@ do
       elif [ "$num" == "e" ]; then echo; bye
       elif [ "$num" == "h" ]; then echo; aqhelp; tight=false
       elif [ "$path" == "$home" ] && [[ $num =~ ^(r[ow])([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[2]} -lt $((${#arr0[*]}-1)) ]
-      then echo; vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o remount,${BASH_REMATCH[1]} $vpath; shpage; tight=false
+      then echo; vname=${arr0[${BASH_REMATCH[2]}]}; vpath=$path/$vname; mount -o noatime,nodiratime,remount,${BASH_REMATCH[1]} $vpath; shpage; tight=false
       elif [[ $num =~ ^([ci])([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[2]} -lt ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[2]}]}
       then vname=${arr0[${BASH_REMATCH[2]}]}
         if   [ "${BASH_REMATCH[1]}" == "i" ]
@@ -410,6 +410,7 @@ do
         then
           killap
           echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
+          if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
           if [ $apmode -eq 0 ]
           then
             if   [ "$timeshift" == "0" ] && [ "$apex" != "ap0" ]; then apex="ap0"; ln -f /usr/ap/$apex /usr/ap/ap
