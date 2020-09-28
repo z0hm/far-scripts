@@ -251,19 +251,14 @@ cdir(){
   break #goto show
 }
 
-prevpl(){
-  if [ "$oldnum" == "p" ] || [ "$oldnum" == "n" ]; then num=$lastnum; else num=$oldnum; fi
-  oldnum="p"
+steppl(){
+  local tmp=$num
+  if [[ $oldnum =~ ^[np]$ ]]; then num=$lastnum; else num=$oldnum; fi
   if [[ $num =~ ^[0-9]+$ ]]
-  then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; else lnup; fi
-  fi
-}
-
-nextpl(){
-  if [ "$oldnum" == "n" ] || [ "$oldnum" == "p" ]; then num=$lastnum; else num=$oldnum; fi
-  oldnum="n"
-  if [[ $num =~ ^[0-9]+$ ]]
-  then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; else lnup; fi
+  then oldnum=$tmp
+    if   [ "$tmp" == "p" ]; then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; else lnup; fi
+    elif [ "$tmp" == "n" ]; then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; else lnup; fi
+    fi
   fi
 }
 
@@ -377,8 +372,7 @@ do
       elif [ "$num" == "l" ]; then echo; shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
-      elif [ "$num" == "p" ]; then prevpl
-      elif [ "$num" == "n" ]; then nextpl
+      elif [[ $num =~ ^[np]$ ]]; then steppl
       elif [[ $num =~ ^[0-9]+$ ]] && [ $num -lt ${#arr0[*]} ]
       then oldnum=$num; break
       else if $tight; then lnup; fi
