@@ -210,6 +210,22 @@ prompt(){
   msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk: $te")
 }
 
+# info line
+infoln(){
+  local txt=""
+  local log="/tmp/ffmpeg.log"
+  ffmpeg -hide_banner -i "$path" 2> $log
+  while read line
+  do
+    if [[ $line =~ ^.*Duration:[' ']0([0-9]):([0-9][0-9]):([0-9][0-9]) ]]
+    then txt="$((${BASH_REMATCH[1]}*60+${BASH_REMATCH[2]})):${BASH_REMATCH[3]}"
+    elif [[ $line =~ ^.+Audio:[' '](.+)$ ]]
+    then txt="$wb audio: $cb${BASH_REMATCH[1]} $wb length: $yb$txt $te"; break
+    fi
+  done <<< "$(cat $log)"
+  if [ "$txt" != "" ]; then echo -e "$txt"; fi
+}
+
 # playback info
 infopl(){
   local id=0
@@ -343,7 +359,7 @@ do
         then
           killap
           echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
-          ffmpeg -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
+          ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
           echo -e "\n$yb play:$gb $num $gk $vname$te"
           ap "/tmp/out.wav" 0
           tight=false
@@ -410,6 +426,7 @@ do
         then
           killap
           echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
+          infoln
           if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
           if [ $apmode -eq 0 ]
           then
