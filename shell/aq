@@ -12,14 +12,12 @@
 # **s** - stop playback, **r** - return on jump history, after **Enter** **Enter** ...
 # **ro<num>**/**rw<num>** - remount **FAT** partition as **read only**/**writable**, available in **/media** folder only
 # **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
-# **ap** - show active player, **apm** -  automatic or manual player switching, **i** - show played file
-# **ap0** - use the ap0 player without timeshift, **ap1** - use the ap1 player with timeshift
+# **ap** - show active player, **ap0** - use auto select player, **ap1**/**ap2** - use player without/with timeshift
 # **i** - show name played file and info about it, **i<num>** - show info about file
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
-apex=ap0  # use ap0 default
-apmode=0  # automatic player switching
+apex=0  # use auto select player
 home=/media
 aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
@@ -284,10 +282,12 @@ aqhelp(){
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
   echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
-  echo -e "$gk ap$wk  show active player,$gk apm$wk  auto/manual player switching,$gk i$wk  show played file$te"
-  echo -e "$gk ap0$wk"/"$gk"ap1"$wk  use the ap0/ap1 player without/with timeshift$te"
+  echo -e "$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
+  echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
   echo -e "$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
 }
+
+apinfo(){ local tmp="auto"; if [ $apex -gt 0 ]; then tmp="ap$apex"; fi; echo -e "\n$yb use player:$wb $tmp $te"; }
 
 # Main()
 ln -f /usr/ap/$apex /usr/ap/ap
@@ -324,9 +324,8 @@ do
     do
       tight=true
       if   [ "$num" == "i" ]; then infopl; tight=false
-      elif [ "$num" == "ap" ]; then if [ $apmode -eq 0 ]; then tmp="auto"; else tmp=$apex; fi; tight=false; echo -e "\n$yb use player:$wb $tmp $te"
-      elif [ "$num" == "apm" ]; then apmode=$((! $apmode)); if [ $apmode -eq 0 ]; then tmp="automatic"; else tmp="manual"; fi; tight=false; echo -e "\n$yb mode:$wb $tmp player switching $te"
-      elif [[ $num =~ ^ap[01]$ ]]; then apex=${BASH_REMATCH[0]}; ln -f /usr/ap/$apex /usr/ap/ap; tight=false; echo -e "\n$yb use:$wb $apex $te"
+      elif [ "$num" == "ap" ]; then apinfo; tight=false
+      elif [[ $num =~ ^ap([0-2])$ ]]; then apex=${BASH_REMATCH[1]}; if [ $apex -gt 0 ]; then ln -f /usr/ap/ap$apex /usr/ap/ap; fi; apinfo; tight=false
       elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
       then num=${BASH_REMATCH[1]}; timeshift=${cuetm[${BASH_REMATCH[2]}]}; oldnum=$num; break
       elif [[ $num =~ ^\.([1-9][0-9]*)$ ]] && [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ] && [ ${mus[0]} -lt ${#arr0[*]} ] && ${arr2[${mus[0]}]} && [ ${BASH_REMATCH[1]} -le ${#cuetm[*]} ]
@@ -424,10 +423,10 @@ do
           echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
           infoln
           if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
-          if [ $apmode -eq 0 ]
+          if [ $apex -eq 0 ]
           then
-            if   [ "$timeshift" == "0" ] && [ "$apex" != "ap0" ]; then apex="ap0"; ln -f /usr/ap/$apex /usr/ap/ap
-            elif [ "$timeshift" != "0" ] && [ "$apex" != "ap1" ]; then apex="ap1"; ln -f /usr/ap/$apex /usr/ap/ap
+            if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; ln -f /usr/ap/ap$apex /usr/ap/ap
+            elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; ln -f /usr/ap/ap$apex /usr/ap/ap
             fi
           fi
           ap "$path" $timeshift
