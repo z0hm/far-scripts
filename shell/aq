@@ -17,7 +17,8 @@
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
-apex=0  # use auto select player
+apmode=true  # use auto select player
+apex=1  # use ap1
 home=/media
 aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
@@ -287,10 +288,20 @@ aqhelp(){
   echo -e "$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
 }
 
-apinfo(){ local tmp="auto"; if [ $apex -gt 0 ]; then tmp="ap$apex"; fi; echo -e "\n$yb use player:$wb $tmp $te"; }
+apinfo(){ local tmp="auto"; if ! $apmode; then tmp="ap$apex"; fi; echo -e "\n$yb use player:$wb $tmp $te"; }
+
+apset(){
+  if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
+  if $apmode
+  then
+    if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; ln -f /usr/ap/ap$apex /usr/ap/ap
+    elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; ln -f /usr/ap/ap$apex /usr/ap/ap
+    fi
+  fi
+}
 
 # Main()
-ln -f /usr/ap/$apex /usr/ap/ap
+ln -f /usr/ap/ap$apex /usr/ap/ap
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
 echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te\n"
 # load settings
@@ -325,7 +336,8 @@ do
       tight=true
       if   [ "$num" == "i" ]; then infopl; tight=false
       elif [ "$num" == "ap" ]; then apinfo; tight=false
-      elif [[ $num =~ ^ap([0-2])$ ]]; then apex=${BASH_REMATCH[1]}; if [ $apex -gt 0 ]; then ln -f /usr/ap/ap$apex /usr/ap/ap; fi; apinfo; tight=false
+      elif [ "$num" == "ap0" ]; then apmode=true; apinfo; tight=false
+      elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; ln -f /usr/ap/ap$apex /usr/ap/ap; apinfo; tight=false
       elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
       then num=${BASH_REMATCH[1]}; timeshift=${cuetm[${BASH_REMATCH[2]}]}; oldnum=$num; break
       elif [[ $num =~ ^\.([1-9][0-9]*)$ ]] && [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ] && [ ${mus[0]} -lt ${#arr0[*]} ] && ${arr2[${mus[0]}]} && [ ${BASH_REMATCH[1]} -le ${#cuetm[*]} ]
@@ -356,7 +368,7 @@ do
           echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
           ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
           echo -e "\n$yb play:$gb $num $gk $vname$te"
-          ap "/tmp/out.wav" 0
+          apset; ap "/tmp/out.wav" 0
           tight=false
         fi
       elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath=$path/$vname; fview; tight=false
@@ -421,15 +433,7 @@ do
         then
           killap
           echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
-          infoln
-          if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
-          if [ $apex -eq 0 ]
-          then
-            if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; ln -f /usr/ap/ap$apex /usr/ap/ap
-            elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; ln -f /usr/ap/ap$apex /usr/ap/ap
-            fi
-          fi
-          ap "$path" $timeshift
+          infoln; apset; ap "$path" $timeshift
         else
           vname=${arr0[$num]}; vpath=$path
           if   [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo; rdcue; shcue; aqsave
