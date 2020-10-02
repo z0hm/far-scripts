@@ -22,13 +22,15 @@ apex=1  # use ap1
 home=/media
 aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
+aqjptr=/tmp/aqjptr
+aqjdir=/tmp/aqjdir
 appath=/usr/ap/path.txt
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
 # hmstr="ap /"
 # hmlen=${#hmstr}
 arr0=()  # array files in folder
-arr1=()  # array files type
+arr1=()  # array files type: directory=true
 arr2=()  # array music files attribute
 jump=()  # jumps stack
 num=0
@@ -40,7 +42,6 @@ finish=0
 last=0
 id=-1
 path=""
-folder=""
 from=""
 msg=""
 strS="                                                                                "
@@ -74,7 +75,7 @@ vname=""; vpath=""
 fview(){
   read -r -N 3 line <<< "$(cat "$vpath")"
   if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then local tmp=$vpath; vpath=/tmp/$vname; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  then local tmp="$vpath"; vpath="/tmp/$vname"; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
   fi
   local tmp1=$eb; local tmp2=$te
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
@@ -122,7 +123,7 @@ rdcue(){
   done <<< "$(cat "$vpath")"
   read -r -N 3 line <<< "$(cat "$vpath")"
   if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then local tmp=$vpath; vpath=/tmp/$vname; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  then local tmp="$vpath"; vpath="/tmp/$vname"; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
     track=0; unset cuenm; cuenm=(); unset cuepf; cuepf=(); unset cuefl; cuefl=()
     while read line
     do
@@ -176,22 +177,21 @@ shpage(){
           done
           if $res
           then arr2[$i]=true; mus+=($i); echo -e "$gb $i $gk ${arr0[$i]}$te"
-          else
-            if [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then cue+=($i); echo -e "$yb $i $yk ${arr0[$i]}$te"
-            elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]
-            then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
+          else ext=${ext,,}
+            if   [ "$ext" == ".cue" ]; then cue+=($i); echo -e "$yb $i $yk ${arr0[$i]}$te"
+            elif [ "$ext" == ".txt" -o "$ext" == ".log" ]; then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
             fi
           fi
         fi
       fi
     fi
   done
-  if [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ]; then echo; vname=${arr0[${cue[0]}]}; vpath=$path/$vname; rdcue; shcue; fi
+  if [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ]; then echo; vname="${arr0[${cue[0]}]}"; vpath="$path/$vname"; rdcue; shcue; fi
 }
 
 # seek folder and its id
 seekid(){
-  folder=${path##*/}
+  local folder="${path##*/}"
   local n=0
   while read line
   do n=$(($n+1)); if [ "$line" == "$folder" ]; then id=$n; break; fi
@@ -231,8 +231,8 @@ infopl(){
     if [[ $line =~ ^ap[' '](/.+)/([^/]+)[' '][0-9\.:]+$ ]]
     then
       local n=0
-      vpath=${BASH_REMATCH[1]}
-      vname=${BASH_REMATCH[2]}
+      vpath="${BASH_REMATCH[1]}"
+      vname="${BASH_REMATCH[2]}"
       while read line
       do n=$(($n+1)); if [ "$line" == "$vname" ]; then id=$n; break; fi
       done <<< "$(ls "$vpath")"
@@ -251,14 +251,21 @@ killap(){
 # save state
 aqsave(){
   echo "$page" > "$aqpage"
+  echo "$jptr" > "$aqjptr"
+  echo "$jdir" > "$aqjdir"
   echo -n "$path" > "$appath"
-  if [ -f $aqjump ]; then rm $aqjump; fi
+  if [ -f "$aqjump" ]; then rm "$aqjump"; fi
   for ((i=0;i<=$((${#jump[*]}-1));i++)); do echo "${jump[i]}" >> "$aqjump"; done
 }
 
 cdir(){
   cd "$path"
-  if [ "$oldnum" != "r" ]; then jump+=("$path"); fi
+  if [ "$oldnum" != "r" ]
+  then
+    if   [ $jdir -ne 0 ]; then jump=("${jump[@]:0:$(($jptr+1))}" "$path"); jptr=$((${#jump[*]}-1))
+    elif [ $jdir -eq 0 ]; then jump=("$path" "${jump[@]:$jptr}"); jptr=0
+    fi
+  fi
   break #goto :show
 }
 
@@ -300,6 +307,22 @@ apset(){
   fi
 }
 
+jhis(){
+  newpath="${jump[$jptr]}"
+  if [ ${#newpath} -lt ${#path} ]
+  then num=0
+  else curpath=$path; path="$newpath"; seekid; num=$id; path="$curpath"
+  fi
+  break
+}
+
+setjptr(){
+  if   [ $jdir -ne 0 ] && [ $jptr -lt $((${#jump[*]}-1)) ]; then jptr=$(($jptr+1)); jhis
+  elif [ $jdir -eq 0 ] && [ $jptr -gt 0 ]; then jptr=$(($jptr-1)); jhis
+  else oldnum="xxx"; num="xxx"  # wrong command for re-query num
+  fi
+}
+
 # Main()
 ln -f /usr/ap/ap$apex /usr/ap/ap
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
@@ -307,7 +330,10 @@ echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te\n"
 # load settings
 if [ -s "$aqpage" ]; then page=$(<$aqpage); fi
 if [ -s "$aqjump" ]; then while read line; do jump+=("$line"); done <<< "$(cat "$aqjump")"; else jump[0]="$home"; fi
-path=${jump[@]:(-1)}
+if [ -s "$aqjptr" ]; then jptr=$(<$aqjptr); else jptr=$((${#jump[*]}-1)); fi
+if [ -s "$aqjdir" ]; then jdir=$(<$aqjdir); else jdir=1; fi
+#path=${jump[@]:(-1)}
+path=${jump[$jptr]}
 
 while true #:show
 do
@@ -316,7 +342,7 @@ do
   then arr0[0]=$(echo -e "$yb[ EXIT ]$te")
   else
     if [ $id -lt 0 ]; then seekid; fi
-    echo -e "$yg $id $wg $folder $te\n"
+    echo -e "$yg $id $wg ${path##*/} $te\n"
     arr0[0]=$(echo -e "$wk..$te"); arr1[0]=true
   fi
   while read line
@@ -371,27 +397,16 @@ do
           apset; ap "/tmp/out.wav" 0
           tight=false
         fi
-      elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath=$path/$vname; fview; tight=false
+      elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; fview; tight=false
       elif [[ $num =~ ^cp([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; cp "$path/$vname" "$home/flash"; tight=false
       elif [[ $num =~ ^mv([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; mv "$path/$vname" "$home/flash"; tight=false
       elif [[ $num =~ ^rm([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; rm "$path/$vname"; tight=false
       fi
-      if [ "$num" == "" ]; then num=$oldnum; fi
-      if [ "$num" == "r" ]
-      then
-        oldnum=$num
-        if [ ${#jump[*]} -gt 1 ]
-        then
-          unset jump[$((${#jump[*]}-1))]
-          newpath=${jump[@]:(-1)}
-          if [ ${#newpath} -lt ${#path} ]
-          then num=0
-          else curpath=$path; path=$newpath; seekid; num=$id; path=$curpath
-          fi
-          break
-        else oldnum="xxx"; num="xxx"; lnup  # wrong command for re-query
-        fi
-      elif [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
+      if   [ "$oldnum" != "r" ] && [ "$num" == "" ]; then num=$oldnum
+      elif [ "$oldnum" == "r" ] && [ "$num" == "" ]; then setjptr
+      elif [ "$num" == "r" ]; then oldnum=$num; ((jdir=!jdir)); setjptr
+      fi
+      if [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
       elif [ "$num" == "l" ]; then echo; shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
@@ -405,7 +420,7 @@ do
     if [ $num -eq 0 ]
     then  #cdup
       echo
-      from=${path##*/}
+      from="${path##*/}"
       if [ "$path" == "$home" ]
       then bye
       else
@@ -416,33 +431,23 @@ do
         cdir
       fi
     else  #cddn
-      id=$num
-      folder=${arr0[$num]}
       from=""
-      path="$path/${arr0[$num]}"
-      if ${arr1[$num]}; then echo; page=0; cdir
-      elif [ -f "$path" ]
+      vpath="$path/${arr0[$num]}"
+      if ${arr1[$num]}; then echo; page=0; id=$num; path="$vpath"; cdir
+      elif [ -f "$vpath" ]
       then
-        ext=""; res=false
-        for v in ${exts[@]}
-        do
-          ext=${arr0[$num]:(-$((${#v}+1)))}
-          if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
-        done
-        if $res
+        if ${arr2[$num]}
         then
           killap
           echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
-          infoln; apset; ap "$path" $timeshift
+          infoln; apset; ap "$vpath" $timeshift
         else
-          vname=${arr0[$num]}; vpath=$path
-          if   [ "$ext" == ".CUE" -o "$ext" == ".cue" ]; then echo; rdcue; shcue; aqsave
-          elif [ "$ext" == ".TXT" -o "$ext" == ".txt" ] || [ "$ext" == ".LOG" -o "$ext" == ".log" ]; then echo; fview
+          vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext,,}"
+          if   [ "$ext" == ".cue" ]; then echo; rdcue; shcue; aqsave
+          elif [ "$ext" == ".txt" -o "$ext" == ".log" ]; then echo; fview
           else lnup
           fi
         fi
-        path=${jump[@]:(-1)}
-        seekid
         # continue #goto :cline
       fi
     fi
