@@ -323,6 +323,14 @@ setjptr(){
   fi
 }
 
+tmshow(){
+  unset tm; tm=()
+  if [[ $(date +%T) =~ ([0-2][0-9]):([0-5][0-9]):([0-5][0-9]) ]]
+  then tm[0]=${BASH_REMATCH[0]}; tm[1]=${BASH_REMATCH[1]}; tm[2]=${BASH_REMATCH[2]}; tm[3]=${BASH_REMATCH[3]}; tm[4]=$((3600*${tm[1]}+60*${tm[2]}+${tm[3]}))
+  fi
+}
+
+
 # Main()
 ln -f /usr/ap/ap$apex /usr/ap/ap
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
@@ -393,7 +401,8 @@ do
           killap
           echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
           ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
-          echo -e "\n$yb play:$gb $num $gk $vname$te"
+          tmshow
+          echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
           apset; ap "/tmp/out.wav" 0
           tight=false
         fi
@@ -438,8 +447,8 @@ do
       then
         if ${arr2[$num]}
         then
-          killap
-          echo -e "\n$yb play:$gb $num $gk ${arr0[$num]}$te"
+          killap; tmshow
+          echo -e "\n$yb ${tm[0]} play:$gb $num $gk ${arr0[$num]}$te"
           infoln; apset; ap "$vpath" $timeshift
         else
           vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext,,}"
