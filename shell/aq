@@ -215,7 +215,7 @@ infoln(){
   while read line
   do
     if [[ $line =~ Duration:[' ']0([0-9]):([0-9][0-9]):([0-9][0-9]) ]]
-    then txt="$((${BASH_REMATCH[1]}*60+${BASH_REMATCH[2]})):${BASH_REMATCH[3]}"
+    then txt="$((10#${BASH_REMATCH[1]}*60+10#${BASH_REMATCH[2]})):${BASH_REMATCH[3]}"
     elif [[ $line =~ Audio:[' '](.+)$ ]]
     then txt="$wb audio: $cb${BASH_REMATCH[1]} $wb length: $yb$txt $te"; break
     fi
@@ -326,7 +326,22 @@ setjptr(){
 tmshow(){
   unset tm; tm=()
   if [[ $(date +%T) =~ ([0-2][0-9]):([0-5][0-9]):([0-5][0-9]) ]]
-  then tm[0]=${BASH_REMATCH[0]}; tm[1]=${BASH_REMATCH[1]}; tm[2]=${BASH_REMATCH[2]}; tm[3]=${BASH_REMATCH[3]}; tm[4]=$((3600*${tm[1]}+60*${tm[2]}+${tm[3]}))
+  then tm[0]=${BASH_REMATCH[0]}; tm[1]=${BASH_REMATCH[1]}; tm[2]=${BASH_REMATCH[2]}; tm[3]=${BASH_REMATCH[3]}; tm[4]=$((3600*10#${tm[1]}+60*10#${tm[2]}+10#${tm[3]}))
+  fi
+}
+
+tmdiff(){
+  diff=""; local t1=()
+  if [[ -v tm ]]
+  then
+    t1[0]=${tm[0]}; t1[1]=${tm[1]}; t1[2]=${tm[2]}; t1[3]=${tm[3]}; t1[4]=${tm[4]}
+    tmshow; df=$((${tm[4]}-${t1[4]}))
+    if [ $df -lt 0 ]; then df=$(($df+86400)); fi
+    local m=$(($df/60)); if [ $m -lt 10 ]; then m="0$m"; fi
+    local s=$(($df%60)); if [ $s -lt 10 ]; then s="0$s"; fi
+    df=" $wb diff:$yb $m:$s"
+    tm[0]=${t1[0]}; tm[1]=${t1[1]}; tm[2]=${t1[2]}; tm[3]=${t1[3]}; tm[4]=${t1[4]}
+  else tmshow; df="${tm[0]}"; unset tm
   fi
 }
 
@@ -416,12 +431,13 @@ do
       elif [ "$num" == "r" ]; then oldnum=$num; ((jdir=!jdir)); setjptr
       fi
       if [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
+      elif [ "$num" == "t" ]; then tmdiff; echo -e "\n$wb time:$yb ${tm[0]}$df $te"
       elif [ "$num" == "l" ]; then echo; shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
       elif [[ $num =~ ^[np]$ ]]; then steppl
       elif [[ $num =~ ^[0-9]+$ ]] && [ $num -lt ${#arr0[*]} ]
-      then oldnum=$num; break
+      then oldnum=$((10#$num)); break
       else if $tight; then lnup; fi
       fi
       prompt
