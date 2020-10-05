@@ -14,6 +14,7 @@
 # **cp<num>** - copy file to **/media/flash**, **mv<num>** - move file, **rm<num>** - remove file
 # **ap** - show active player, **ap0** - use auto select player, **ap1**/**ap2** - use player without/with timeshift
 # **i** - show name played file and info about it, **i<num>** - show info about file
+# **t** - show time and playing time, **tr** - reset playback time
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
@@ -293,6 +294,7 @@ aqhelp(){
   echo -e "$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
   echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
   echo -e "$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
+  echo -e "$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
 }
 
 apinfo(){ local tmp="auto"; if ! $apmode; then tmp="ap$apex"; fi; echo -e "\n$yb use player:$wb $tmp $te"; }
@@ -430,8 +432,9 @@ do
       elif [ "$oldnum" == "r" ] && [ "$num" == "" ]; then setjptr
       elif [ "$num" == "r" ]; then oldnum=$num; ((jdir=!jdir)); setjptr
       fi
-      if [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
-      elif [ "$num" == "t" ]; then tmdiff; echo -e "\n$wb time:$yb ${tm[0]}$df $te"
+      if   [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
+      elif [ "$num" == "t" ]; then oldnum=$num; tmdiff; echo -e "\n$wb time:$yb ${tm[0]}$df $te"
+      elif [ "$num" == "tr" ]; then tmshow; echo -e "\n$wb time:$yb ${tm[0]} $wb diff:$yb 00:00 $te"
       elif [ "$num" == "l" ]; then echo; shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
