@@ -127,7 +127,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")
 
-  *v1.1 (5924 bytes, changed 2020-04-09 09:55)*
+  *v1.1.1 (5835 bytes, changed 2020-10-08 13:03)*
 
   Tag navigation in files opened in the editor: [dgmsx]?html?, xslt?, [xy]ml
 

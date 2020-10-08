@@ -1,5 +1,5 @@
 ﻿-- Editor.TagGoto.lua
--- v1.1
+-- v1.1.1
 -- Tag navigation in files opened in the editor: [dgmsx]?html?, xslt?, [xy]ml
 -- Required: plugin LFSearch (LuaFAR Search) by Shmuel
 -- Keys: <kbd>Alt[JKL]</kbd>
@@ -151,11 +151,7 @@ local Proc=function(eid,X1,Y1,X2,Y2)
 end
 
 local LFS_Guid="8E11EA75-0303-4374-AC60-D1E38F865449"
-local cond=function()
-  local exts={"[dgmsx]?html?","xslt?","[xy]ml"}
-  local ext=Editor.FileName:match"%.([^%.]+)$"
-  for _,v in pairs(exts) do if ext:find(v) then return true end end
-end
+local cond=function() return regex.new"/\\.([dgmsx]?html?|xslt?|[xy]ml)$/i":find(Editor.FileName) end
 
 Macro {
   description="TagGoto: <=> Begin/End";
