@@ -1,5 +1,5 @@
 ﻿-- Editor.SearchLinesWithMinMaxLength.lua
--- v1.3.1
+-- v1.3.2
 -- Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
 -- Required: MessageX.lua in the modules folder
 -- Keys: F3
@@ -25,9 +25,11 @@ Macro {
       else break
       end
     end
-    local MinBytes,MaxBytes
+    local MaxLen,MinPf,MaxPf,MinBytes,MaxBytes = 2000,"",""
+    if MinSymbols>MaxLen then MinText=MinText:sub(0,MaxLen) MinPf=">" end
+    if MaxSymbols>MaxLen then MaxText=MaxText:sub(0,MaxLen) MaxPf=">" end
     if CodePage>=1200 and CodePage<=1201
-    then MinBytes,MaxBytes = MinSymbols*2,MaxSymbols*2
+    then MinBytes,MaxBytes,MinPf,MaxPf = MinSymbols*2,MaxSymbols*2,"",""
     else MinBytes,MaxBytes = #win.WideCharToMultiByte(MinText,CodePage),#win.WideCharToMultiByte(MaxText,CodePage)
     end
     MinText=win.Utf16ToUtf8(MinText)
@@ -46,8 +48,8 @@ Macro {
     MaxText=show(MaxText)
     ttime=far.FarClock()-ttime
     local res=MessageX(
-      '   MinLine: <#1s>'..MinNumber..'<#rs>   Symbols: <#1s>'..MinSymbols..'<#rs>   Bytes: <#1s>'..MinBytes..'<#rs>\n'..MinText..'   \n\n'..
-      '   MaxLine: <#1s>'..MaxNumber..'<#rs>   Symbols: <#1s>'..MaxSymbols..'<#rs>   Bytes: <#1s>'..MaxBytes..'<#rs>\n'..MaxText..'   \n\nTime: <#9s>'..ttime..'<#rs> mcs',
+      '   MinLine: <#1s>'..MinNumber..'<#rs>   Symbols: <#1s>'..MinSymbols..'<#rs>   Bytes: <#1s>'..MinPf..MinBytes..'<#rs>\n'..MinText..'   \n\n'..
+      '   MaxLine: <#1s>'..MaxNumber..'<#rs>   Symbols: <#1s>'..MaxSymbols..'<#rs>   Bytes: <#1s>'..MaxPf..MaxBytes..'<#rs>\n'..MaxText..'   \n\nTime: <#9s>'..ttime..'<#rs> mcs',
       'Search Lines with MinMax Lengths',
       'Min;Max;Cancel','c'
     )

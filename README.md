@@ -114,7 +114,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")
 
-  *v1.3.1 (2410 bytes, changed 2020-04-22 09:01)*
+  *v1.3.2 (2624 bytes, changed 2020-10-17 08:51)*
 
   Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
 
@@ -127,7 +127,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")
 
-  *v1.1.1 (5835 bytes, changed 2020-10-08 13:03)*
+  *v1.1.1 (5835 bytes, changed 2020-10-12 11:30)*
 
   Tag navigation in files opened in the editor: [dgmsx]?html?, xslt?, [xy]ml
 
