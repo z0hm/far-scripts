@@ -1,6 +1,8 @@
 ﻿-- Editor.SearchLinesWithMinMaxLength.lua
 -- v1.3.2
 -- Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
+-- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/2fbf64356c455c4f73c6c7a9a79e075c/1602930317/34080/1401072/293632020_10_17_132412.png)
+-- Press the [ Min ] or [ Max ] button for to go to this line
 -- Required: MessageX.lua in the modules folder
 -- Keys: F3
 
