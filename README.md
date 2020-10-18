@@ -114,7 +114,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")
 
-  *v1.3.2 (2624 bytes, changed 2020-10-17 08:51)*
+  *v1.3.2 (2835 bytes, changed 2020-10-17 10:36)*
 
   Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
 
@@ -560,7 +560,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *19799 bytes, changed 2020-10-05 08:25*
+  *20282 bytes, changed 2020-10-18 14:37*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 

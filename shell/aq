@@ -25,6 +25,7 @@ aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
 aqjptr=/tmp/aqjptr
 aqjdir=/tmp/aqjdir
+app=/usr/ap
 appath=/usr/ap/path.txt
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
@@ -226,7 +227,7 @@ infoln(){
 
 # playback info
 infopl(){
-  local id=0; local vpath=""; local vname=""
+  id=0; vpath=""; vname=""
   while read line
   do
     if [[ $line =~ ^ap[' '](/.+)/([^/]+)[' '][0-9\.:]+$ ]]
@@ -239,7 +240,7 @@ infopl(){
       done <<< "$(ls "$vpath")"
     fi
   done <<< "$(ps -o args)"
-  if [ $id -eq 0 ]; then lnup; else echo -e "\n$yb play:$gb $n $gk $vname$te\n"; ffmpeg -hide_banner -i "$vpath/$vname"; fi
+  if [ $id -eq 0 ]; then lnup; else echo -e "\n$yb play:$gb $id $gk $vname$te\n"; fi
 }
 
 # kill ap
@@ -297,7 +298,19 @@ aqhelp(){
   echo -e "$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
 }
 
-apinfo(){ local tmp="auto"; if ! $apmode; then tmp="ap$apex"; fi; echo -e "\n$yb use player:$wb $tmp $te"; }
+apinfo(){
+  local tmp="auto"
+  local ap=0
+  if ! $apmode; then tmp="ap$apex"; fi
+  while read line
+  do
+    if   [[ $line =~ ^[rwx-]+[' ']+([12])[' '].+[' ']ap$ ]]; then ap=${BASH_REMATCH[1]}
+    elif [[ $line =~ ^[rwx-]+[' ']+([12])[' '].+[' ']ap([12])$ ]]; then if [ ${BASH_REMATCH[1]} -eq $ap ]; then ap=${BASH_REMATCH[2]}; break; fi
+    fi
+  done <<< "$(ls -l "$app")"
+  tmp="$tmp  $yb active player:$wb ap$ap"
+  echo -e "\n$yb selected:$wb $tmp $te"
+}
 
 apset(){
   if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
@@ -321,7 +334,7 @@ jhis(){
 setjptr(){
   if   [ $jdir -ne 0 ] && [ $jptr -lt $((${#jump[*]}-1)) ]; then jptr=$(($jptr+1)); jhis
   elif [ $jdir -eq 0 ] && [ $jptr -gt 0 ]; then jptr=$(($jptr-1)); jhis
-  else oldnum="xxx"; num="xxx"  # wrong command for re-query num
+  else num="xxx"; oldnum=$num  # wrong command for re-query num
   fi
 }
 
@@ -385,7 +398,7 @@ do
     while read -p "$msg" num
     do
       tight=true
-      if   [ "$num" == "i" ]; then infopl; tight=false
+      if   [ "$num" == "i" ]; then infopl; ffmpeg -hide_banner -i "$vpath/$vname"; tight=false
       elif [ "$num" == "ap" ]; then apinfo; tight=false
       elif [ "$num" == "ap0" ]; then apmode=true; apinfo; tight=false
       elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; ln -f /usr/ap/ap$apex /usr/ap/ap; apinfo; tight=false
@@ -395,7 +408,12 @@ do
       then num=${mus[0]}; timeshift=${cuetm[${BASH_REMATCH[1]}]}; oldnum=$num; break
       elif [[ $num =~ ^([0-9]+)\.([0-9]+[\.:][0-9]+)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]}
       then num=${BASH_REMATCH[1]}; timeshift=${BASH_REMATCH[2]}; oldnum=$num; break
-      elif [[ $num =~ ^[0-9]+:[0-9]+$ ]] && [ ${#mus[*]} -eq 1 ]; then timeshift=${BASH_REMATCH[0]}; num=${mus[0]}; oldnum=$num; break
+      elif [[ $num =~ ^[0-9]+:[0-9]+$ ]]
+      then timeshift=${BASH_REMATCH[0]}
+        if [ ${#mus[*]} -eq 1 ]
+        then num=${mus[0]}; oldnum=$num; break
+        else infopl; if [ $id -gt 0 ]; then num=$id; oldnum=$num; break; else num="xxx"; oldnum=$num; fi
+        fi
       fi
       timeshift=0
       if   [ "$num" == "" ] && [ ${#arr0[*]} -lt 2 ] && [ "$oldnum" != "r" ]; then num=0; oldnum=$num; break
