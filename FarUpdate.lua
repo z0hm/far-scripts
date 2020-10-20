@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.7
+-- v1.7.8
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -48,11 +48,11 @@ local FarUpdateBat=tmp..'FarUpdate.bat'
 
 -- Create FarUpdate.bat
 local FarUpdate=function(FileName)
-  fwrite(tmp..'FarUpdExc.txt','*.map\n*.pdb\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*')
   local s=WaitCloseFar
   if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
   s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'..StartFar()
   fwrite(FarUpdateBat,s)
+  fwrite(tmp..'FarUpdExc.txt','*.map\n*.pdb\n*spa.lng\n*sky.lng\n*Ger.lng\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*')
 end
 
 local GetFileList=function(page,items)
@@ -212,15 +212,10 @@ action=function()
     if FileName then
       local url
       for _,v in pairs(FileList) do if v[1]==FileName then url,FileName = v[2],v[4] break end end
-      local function Download(tmp,FileName)
-        if not win.GetFileInfo(tmp..FileName) or far.Message("Download it again?","WARNING! File exist",";YesNo","w")==1
-        then panel.GetUserScreen() win.system('curl.exe -g -L --location-trusted "'..url..'" -o "'..tmp..FileName..'"') panel.SetUserScreen()
-        end
+      if not win.GetFileInfo(tmp..FileName) or far.Message("Download it again?","WARNING! File exist",";YesNo","w")==1
+      then panel.GetUserScreen() win.system('curl.exe -g -L --location-trusted "'..url..'" -o "'..tmp..FileName..'"') panel.SetUserScreen()
       end
-      if res==#items-1 then
-        Download(tmp,FileName)
-      elseif res==#items-2 then
-        Download(tmp,FileName)
+      if res==#items-2 then
         FarUpdate(FileName)
         panel.GetUserScreen() win.system('start /MIN '..FarUpdateBat) panel.SetUserScreen()
       end
