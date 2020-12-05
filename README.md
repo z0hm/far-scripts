@@ -560,7 +560,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *20282 bytes, changed 2020-10-18 14:37*
+  *21534 bytes, changed 2020-12-05 13:08*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
@@ -569,6 +569,8 @@ linux shell scripts - sh, bash, dash, sash & etc.
   ![aq script](http://i.piccy.info/i9/b978141af12e993afff139bb461039db/1600717816/39618/1397248/946922020_09_21_223718.png)
 
   Commands:
+
+  **.** - play all music files in folder
 
   **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
 

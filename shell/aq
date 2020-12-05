@@ -3,6 +3,7 @@
 # ![aq script](http://i.piccy.info/i9/ce0b78c019db240a75a21f00089bfd7a/1600717787/7655/1397248/2020_09_21_221429.png)
 # ![aq script](http://i.piccy.info/i9/b978141af12e993afff139bb461039db/1600717816/39618/1397248/946922020_09_21_223718.png)
 # Commands:
+# **.** - play all music files in folder
 # **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
 # **l** - list files in folder, **a**/**z** - show **previous**/**next** 100 files
 # **c<num>** - convert file to **/tmp/out.wav**, **v<num>** - view content of file
@@ -26,7 +27,8 @@ aqjump=/tmp/aqjump
 aqjptr=/tmp/aqjptr
 aqjdir=/tmp/aqjdir
 app=/usr/ap
-appath=/usr/ap/path.txt
+appath=$app/path.txt
+applay=$app/play.txt
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
 # hmstr="ap /"
@@ -81,10 +83,9 @@ fview(){
   fi
   local tmp1=$eb; local tmp2=$te
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
-  then
-    if   [ ${BASH_REMATCH[1]} == "CUE" -o ${BASH_REMATCH[1]} == "cue" ]; then tmp1=$yb; tmp2=$yk
-    elif [ ${BASH_REMATCH[1]} == "LOG" -o ${BASH_REMATCH[1]} == "log" ]; then tmp1=$cb; tmp2=$ck
-    elif [ ${BASH_REMATCH[1]} == "TXT" -o ${BASH_REMATCH[1]} == "txt" ]; then tmp1=$cb; tmp2=$ck
+  then tmp="${BASH_REMATCH[1]}"; tmp="${tmp^^}"
+    if   [ "$tmp" == "CUE" ]; then tmp1=$yb; tmp2=$yk
+    elif [ "$tmp" == "TXT" -o "$tmp" == "LOG" ]; then tmp1=$cb; tmp2=$ck
     fi
   fi
   echo -e "$yb view:$tmp1 $num $tmp2 $vname$te\n"
@@ -174,14 +175,14 @@ shpage(){
           ext=""; res=false
           for v in ${exts[@]}
           do
-            ext=${arr0[$i]:(-$((${#v}+1)))}
-            if [ "$ext" == ".$v" -o "$ext" == ".${v,,}" ]; then res=true; break; fi
+            ext=${arr0[$i]:(-$((${#v}+1)))}; ext="${ext^^}"
+            if [ "$ext" == ".$v" ]; then res=true; break; fi
           done
           if $res
           then arr2[$i]=true; mus+=($i); echo -e "$gb $i $gk ${arr0[$i]}$te"
-          else ext=${ext,,}
-            if   [ "$ext" == ".cue" ]; then cue+=($i); echo -e "$yb $i $yk ${arr0[$i]}$te"
-            elif [ "$ext" == ".txt" -o "$ext" == ".log" ]; then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
+          else
+            if   [ "$ext" == ".CUE" ]; then cue+=($i); echo -e "$yb $i $yk ${arr0[$i]}$te"
+            elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
             fi
           fi
         fi
@@ -230,7 +231,16 @@ infopl(){
   id=0; vpath=""; vname=""
   while read line
   do
-    if [[ $line =~ ^ap[' '](/.+)/([^/]+)[' '][0-9\.:]+$ ]]
+    if   [[ $line =~ ^ap$ ]]
+    then
+      if [ -f "$applay" ] && [[ $(cat "$applay") =~ ^([0-9]+):(/.+)/([^/]+)$ ]]
+      then
+        id=${BASH_REMATCH[1]}
+        vpath="${BASH_REMATCH[2]}"
+        vname="${BASH_REMATCH[3]}"
+      fi
+      break
+    elif [[ $line =~ ^ap[' '](/.+)/([^/]+?\.[A-Za-z]+)([' '][0-9\.:]+)?$ ]]
     then
       local n=0
       vpath="${BASH_REMATCH[1]}"
@@ -246,7 +256,7 @@ infopl(){
 # kill ap
 killap(){
   while read line
-  do if [ "${line:0:4}" == "ap /" ]; then killall -q ap; sleep 1s; break; fi
+  do if [[ $line =~ ^ap([' ']/.+)?$ ]]; then killall ap; sleep 1s; break; fi
   done <<< "$(ps -o args)"
 }
 
@@ -283,19 +293,21 @@ steppl(){
 }
 
 aqhelp(){
-  echo -e "$yb Help:$wb available commands $te"
-  echo -e "$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
-  echo -e "$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
-  echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk  view content of file$te"
+  echo -e "$yb Help: $te"
+  echo -e "\n$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
+  echo -e "\n$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
+  echo -e "$gk r$wk  return to previous folder$te"
+  echo -e "\n$gk .$wk  play all music files in folder,$gk s$wk  stop playback$te"
   echo -e "$gk <num>$wk  play file <num>,$gk p$wk  play previous file,$gk n$wk  play next file$te"
   echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play file number <num> from min:sec$te"
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
-  echo -e "$gk s$wk  stop track,$gk r$wk  return, remount $gk ro<num>$wk, remount $gk rw<num>$te"
-  echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
-  echo -e "$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
+  echo -e "\n$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
+  echo -e "\n$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
+  echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk  view content of file$te"
+  echo -e "\n$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
   echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
-  echo -e "$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
-  echo -e "$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
+  echo -e "\n$gk ro<num>$wk  remount partition as RO,$gk rw<num>$wk  remount partition as RW$te"
+  echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
 }
 
 apinfo(){
@@ -316,8 +328,8 @@ apset(){
   if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
   if $apmode
   then
-    if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; ln -f /usr/ap/ap$apex /usr/ap/ap
-    elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; ln -f /usr/ap/ap$apex /usr/ap/ap
+    if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; ln -f $app/ap$apex $app/ap
+    elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; ln -f $app/ap$apex $app/ap
     fi
   fi
 }
@@ -360,9 +372,15 @@ tmdiff(){
   fi
 }
 
+plist(){
+  if [ -f "$appath" ]; then rm "$appath"; fi
+  # echo "$'\xEF\xBB\xBF'" > "$appath"
+  for ((i=0;i<=$((${#mus[*]}-1));i++)); do echo "$path/${arr0[${mus[$i]}]}" >> "$appath"; done
+}
+
 
 # Main()
-ln -f /usr/ap/ap$apex /usr/ap/ap
+ln -f $app/ap$apex $app/ap
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
 echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te\n"
 # load settings
@@ -398,10 +416,19 @@ do
     while read -p "$msg" num
     do
       tight=true
-      if   [ "$num" == "i" ]; then infopl; ffmpeg -hide_banner -i "$vpath/$vname"; tight=false
+      if   [ "$num" == "." -a ${#mus[*]} -gt 0 ]
+      then killap; tmshow
+        echo -e "\n$yb ${tm[0]} play:$wb 1/${#mus[*]}$gb ${mus[0]} $gk ${arr0[${mus[0]}]}$te"
+        cd "$app"
+        if [ ${#mus[*]} -eq 1 ]
+        then if [ $apex -ne 1 ]; then apex=1; ln -f $app/ap$apex $app/ap; fi; ap "$path/${arr0[${mus[0]}]}" 0
+        else if [ $apex -ne 2 ]; then apex=2; ln -f $app/ap$apex $app/ap; fi; plist; ap
+        fi
+        tight=false; break
+      elif [ "$num" == "i" ]; then infopl; ffmpeg -hide_banner -i "$vpath/$vname"; tight=false
       elif [ "$num" == "ap" ]; then apinfo; tight=false
       elif [ "$num" == "ap0" ]; then apmode=true; apinfo; tight=false
-      elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; ln -f /usr/ap/ap$apex /usr/ap/ap; apinfo; tight=false
+      elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; ln -f $app/ap$apex $app/ap; apinfo; tight=false
       elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
       then num=${BASH_REMATCH[1]}; timeshift=${cuetm[${BASH_REMATCH[2]}]}; oldnum=$num; break
       elif [[ $num =~ ^\.([1-9][0-9]*)$ ]] && [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ] && [ ${mus[0]} -lt ${#arr0[*]} ] && ${arr2[${mus[0]}]} && [ ${BASH_REMATCH[1]} -le ${#cuetm[*]} ]
@@ -433,13 +460,21 @@ do
           tight=false
         elif [ "${BASH_REMATCH[1]}" == "c" ]
         then
-          killap
-          echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
-          ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
-          tmshow
-          echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
-          apset; ap "/tmp/out.wav" 0
-          tight=false
+          ext="${vname:(-7)}"; ext="${ext^^}"
+          if [ "$ext" == ".ISO.WV" ]
+          then
+            umount /tmp/iso > /dev/null 2>&1
+            mount -t iso9660 -o loop "$path/$vname" /tmp/iso
+            tight=false
+          else
+            killap
+            echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
+            ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
+            tmshow
+            echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
+            apset; cd "$app"; ap "/tmp/out.wav" 0
+            tight=false
+          fi
         fi
       elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; fview; tight=false
       elif [[ $num =~ ^cp([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; cp "$path/$vname" "$home/flash"; tight=false
@@ -463,7 +498,8 @@ do
       fi
       prompt
     done
-    if [ $num -eq 0 ]
+    if [ "$num" == "." ]; then :
+    elif [ $num -eq 0 ]
     then  #cdup
       echo
       from="${path##*/}"
@@ -486,11 +522,11 @@ do
         then
           killap; tmshow
           echo -e "\n$yb ${tm[0]} play:$gb $num $gk ${arr0[$num]}$te"
-          infoln; apset; ap "$vpath" $timeshift
+          infoln; apset; cd "$app"; ap "$vpath" $timeshift
         else
-          vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext,,}"
-          if   [ "$ext" == ".cue" ]; then echo; rdcue; shcue; aqsave
-          elif [ "$ext" == ".txt" -o "$ext" == ".log" ]; then echo; fview
+          vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext^^}"
+          if   [ "$ext" == ".CUE" ]; then echo; rdcue; shcue; aqsave
+          elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo; fview
           else lnup
           fi
         fi
