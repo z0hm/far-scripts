@@ -425,7 +425,7 @@ do
         else if [ $apex -ne 2 ]; then apex=2; ln -f $app/ap$apex $app/ap; fi; plist; ap
         fi
         tight=false; break
-      elif [ "$num" == "i" ]; then infopl; ffmpeg -hide_banner -i "$vpath/$vname"; tight=false
+      elif [ "$num" == "i" ]; then infopl; if [ $id -gt 0 ]; then ffmpeg -hide_banner -i "$vpath/$vname"; fi; tight=false
       elif [ "$num" == "ap" ]; then apinfo; tight=false
       elif [ "$num" == "ap0" ]; then apmode=true; apinfo; tight=false
       elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; ln -f $app/ap$apex $app/ap; apinfo; tight=false
