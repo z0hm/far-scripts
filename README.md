@@ -210,13 +210,15 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")
 
-  *v2.0.0.1 (10283 bytes, changed 2020-08-20 20:34)*
+  *v2.0.1 (11945 bytes, changed 2021-01-16 12:09)*
 
   Panel files sorting by attributes
 
   ![Panel.CustomSortByAttributes](http://i.piccy.info/i9/e4a7f377afa812d28e195dbae27e802b/1585895856/14743/1370861/2020_04_03_093318.png)
 
   Keys: <kbd>CtrlShiftF3</kbd> or from Menu "Sort by"
+
+  Tip: In the dialog all elements have prompts, press <kbd>F1</kbd> for help
 
   Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2240#16
 
@@ -530,7 +532,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")
 
-  *v1.0.4 (2479 bytes, changed 2020-06-12 05:09)*
+  *v1.0.4 (2479 bytes, changed 2021-01-09 09:17)*
 
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 
@@ -560,7 +562,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *21561 bytes, changed 2020-12-06 12:15*
+  *21561 bytes, changed 2021-01-09 09:11*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
