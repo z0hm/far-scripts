@@ -33,7 +33,7 @@ local Items = {
 --[[03]] {F.DI_TEXT,      5,3, 18,0, 0, 0,0, 0, "Attributes:"},
 --[[04]] {F.DI_EDIT,      17,3, 35,0, 0, "CustomSortByAttributes_Attributes",0, edtFlags, ""},
 --[[05]] {F.DI_BUTTON,    38,3, 54,0, 0, 0,0, 0, "[ Get from &File ]"},
---[[06]] {F.DI_BUTTON,    56,3, 62,0, 0, 0,0, 0, "[ Set ]"},
+--[[06]] {F.DI_BUTTON,    56,3, 62,0, 0, 0,0, 0, "[ Set &M ]"},
 --[[07]] {F.DI_TEXT,     -1,4,  0,0, 0, 0,0, F.DIF_SEPARATOR,""},
 --[[08]] {F.DI_CHECKBOX,  5,5,  30,0, 0, 0,0, 0, "&Read only"},
 --[[09]] {F.DI_CHECKBOX,  5,6,  30,0, 0, 0,0, 0, "&Archive"},
@@ -213,10 +213,8 @@ Macro {
         report = report.."\nPrev count: "..count0.."  mcs: "..ttime0.."\nDifference:"..string.format("%+"..(string.len(tostring(count0))+1).."d",count-count0).."  mcs:"..string.format("%+"..(string.len(tostring(ttime0))+1).."d",ttime-ttime0)
       end
       count0,ttime0 = count,ttime
-      if xReport then
-        panel.RedrawPanel(nil,1)
-        far.Message(report,"Report",nil,"l")
-      end
+      panel.RedrawPanel(nil,1)
+      if xReport then far.Message(report,"Report",nil,"l") end
     end
     if kbd and type(kbd)=="number" and kbd~=0x0409 then Far.KbdLayout(kbd) end
   end;
