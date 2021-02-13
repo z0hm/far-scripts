@@ -144,7 +144,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.7.8 (10871 bytes, changed 2020-10-20 05:37)*
+  *v1.7.8 (10911 bytes, changed 2021-02-06 08:06)*
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -562,7 +562,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *21561 bytes, changed 2021-01-09 09:11*
+  *21782 bytes, changed 2021-02-11 18:38*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
@@ -578,7 +578,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
   **l** - list files in folder, **a**/**z** - show **previous**/**next** 100 files
 
-  **c&lt;num&gt;** - convert file to **/tmp/out.wav**, **v&lt;num&gt;** - view content of file
+  **c&lt;num&gt;** - convert file to **/tmp/out.wav**, **v&lt;num&gt;**/**u&lt;num&gt;** - view ansi/utf-8 file
 
   **&lt;num&gt;** - play file &lt;num&gt;, **p**/**n** - play **previous**/**next** file, after **Enter** **Enter** ...
 

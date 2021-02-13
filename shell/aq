@@ -6,7 +6,7 @@
 # **.** - play all music files in folder
 # **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
 # **l** - list files in folder, **a**/**z** - show **previous**/**next** 100 files
-# **c<num>** - convert file to **/tmp/out.wav**, **v<num>** - view content of file
+# **c<num>** - convert file to **/tmp/out.wav**, **v<num>**/**u<num>** - view ansi/utf-8 file
 # **<num>** - play file <num>, **p**/**n** - play **previous**/**next** file, after **Enter** **Enter** ...
 # **<num>.<num>:<num>** or **<num>:<num>** - play file number <num> from min:sec
 # **<num>.<num>** or **.<num>** - play file <num> from track number <num>, if cue sheet loaded
@@ -49,6 +49,7 @@ path=""
 from=""
 msg=""
 strS="                                                                                "
+utf=true
 
 # colors
 rk="\e[1;31;40m"
@@ -78,9 +79,8 @@ bye(){ echo -e "$yb bye! $te\n"; exit 0; }
 vname=""; vpath=""
 fview(){
   read -r -N 3 line <<< "$(cat "$vpath")"
-  if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then local tmp="$vpath"; vpath="/tmp/$vname"; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
-  fi
+  if [[ ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ]]; then utf=true; fi
+  if ! $utf; then local tmp="$vpath"; vpath="/tmp/$vname"; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi; fi
   local tmp1=$eb; local tmp2=$te
   if [[ $vname =~ ^.+\.([^\.]+)$ ]]
   then tmp="${BASH_REMATCH[1]}"; tmp="${tmp^^}"
@@ -303,7 +303,7 @@ aqhelp(){
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "\n$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
   echo -e "\n$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
-  echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk  view content of file$te"
+  echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk/${gk}u<num>$wk  view ansi/utf-8 file$te"
   echo -e "\n$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
   echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
   echo -e "\n$gk ro<num>$wk  remount partition as RO,$gk rw<num>$wk  remount partition as RW$te"
@@ -476,7 +476,8 @@ do
             tight=false
           fi
         fi
-      elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; fview; tight=false
+      elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; utf=false; fview; tight=false
+      elif [[ $num =~  ^u([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; utf=true; fview; tight=false
       elif [[ $num =~ ^cp([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; cp "$path/$vname" "$home/flash"; tight=false
       elif [[ $num =~ ^mv([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; mv "$path/$vname" "$home/flash"; tight=false
       elif [[ $num =~ ^rm([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; rm "$path/$vname"; tight=false
@@ -526,7 +527,7 @@ do
         else
           vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext^^}"
           if   [ "$ext" == ".CUE" ]; then echo; rdcue; shcue; aqsave
-          elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo; fview
+          elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo; utf=true; fview
           else lnup
           fi
         fi
