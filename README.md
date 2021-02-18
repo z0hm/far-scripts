@@ -477,13 +477,19 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
-  *v1.8.7 (7268 bytes, changed 2020-08-30 08:03)*
+  *v1.9.0 (9112 bytes, changed 2021-02-18 18:01)*
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 
   Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 
   Keys: <kbd>CtrlAltC</kbd>
+
+  The Exchange of lines between files
+
+  Keys: <kbd>Ins</kbd> / <kbd>Del</kbd> - insert / delete line in active file, <kbd>F5</kbd> / <kbd>F6</kbd> - copying with insertion / substitution line
+
+  Keys: <kbd>AltLeft</kbd> / <kbd>AltRight</kbd> - copy line from right file to left file and vice versa
 
   Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2080#6
 

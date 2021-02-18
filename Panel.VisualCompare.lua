@@ -1,8 +1,11 @@
 ﻿-- Panel.VisualCompare.lua
--- v1.8.7
+-- v1.9.0
 -- Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 -- Note: if more than two files are selected on the active panel for comparison, the AdvCmpEx plugin will be called.
 -- Keys: CtrlAltC
+-- The Exchange of lines between files
+-- Keys: Ins / Del - insert / delete line in active file, F5 / F6 - copying with insertion / substitution line
+-- Keys: AltLeft / AltRight - copy line from right file to left file and vice versa
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2080#6
 
 local ffi = require("ffi")
@@ -73,7 +76,7 @@ File compare modes by priority order:
    At Passive panel will be used selected file or file under cursor ]]
 
 Macro {
-description="VC: Визуальное сравнение файлов"; area="Shell"; key="CtrlAltC";
+description="VC: Visual file comparison"; area="Shell"; key="CtrlAltC";
 condition = function()
   local tPanelInfo1 = panel.GetPanelInfo(nil,1)
   local tPanelInfo0 = panel.GetPanelInfo(nil,0)
@@ -154,5 +157,48 @@ action = function()
       end
     end
   end
+end
+}
+
+
+local BackUP,BackFL = true,{}
+
+Macro {
+description="VC: Exchange of lines between files"; area="Dialog"; key="Del Ins F5 F6 AltLeft AltRight";
+condition = function() return Area.Dialog and Dlg.Id=="78DBDD6F-74A0-41E4-91FC-DE5707CF63F5" end;
+action = function()
+  local key=akey(1,1)
+  local LFile=Dlg.CurPos==4
+  local Info,ret = {}
+  local DelLine=function() Keys("F4 Home") Info=editor.GetInfo() editor.DeleteString(Info.EditorID) end
+  local InsLine=function() Keys("F4 Home") Info=editor.GetInfo() editor.InsertString(Info.EditorID) end
+  local CopyLine=function()
+    if ret then Keys("Tab F4 Home") else Keys("F4 Home") end
+    Info=editor.GetInfo()
+    local StringText=editor.GetStringW(Info.EditorID,Info.CurLine,0).StringText
+    editor.Quit(Info.EditorID)
+    ret=not ret
+    Keys("Tab F4 Home")
+    Info=editor.GetInfo()
+    if key=="F5" then
+      if Info.CurLine==Info.TotalLines-1 then Keys("End") Info.CurLine=Info.TotalLines end
+      editor.InsertString(Info.EditorID)
+    end
+    editor.SetStringW(Info.EditorID,Info.CurLine,StringText)
+  end
+
+  if key=="Del" then DelLine()
+  elseif key=="Ins" then InsLine()
+  elseif key=="F5" or key=="F6" then CopyLine()
+  else
+    if LFile and (key=="AltLeft") or not LFile and (key=="AltRight") then ret=not ret end
+    key="F6"
+    CopyLine()
+  end
+  for _,v in ipairs(BackFL) do if v==Info.FileName then BackUP=false break end end
+  if BackUP then win.CopyFile(Info.FileName,Info.FileName.."_") table.insert(BackFL,Info.FileName) end
+  editor.SaveFile(Info.EditorID)
+  editor.Quit(Info.EditorID)
+  if ret then Keys("Tab") end
 end
 }
