@@ -608,7 +608,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-[&nbsp;](#user-content-aq)
+[&nbsp;](#user-content-shell)
 
 # [shell](https://github.com/z0hm/far-scripts/tree/master/shell "shell")
 
