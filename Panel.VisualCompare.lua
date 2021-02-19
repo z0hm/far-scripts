@@ -161,7 +161,7 @@ end
 }
 
 
-local BackUP,BackFL = true,{}
+local BackUP={}
 
 Macro {
 description="VC: Exchange of lines between files"; area="Dialog"; key="Del Ins F5 F6 AltLeft AltRight";
@@ -195,8 +195,9 @@ action = function()
     key="F6"
     CopyLine()
   end
-  for _,v in ipairs(BackFL) do if v==Info.FileName then BackUP=false break end end
-  if BackUP then win.CopyFile(Info.FileName,Info.FileName.."_") table.insert(BackFL,Info.FileName) end
+  local bkp=true
+  for _,v in ipairs(BackUP) do if v==Info.FileName then bkp=false break end end
+  if bkp then win.CopyFile(Info.FileName,Info.FileName.."_") table.insert(BackUP,Info.FileName) end
   editor.SaveFile(Info.EditorID)
   editor.Quit(Info.EditorID)
   if ret then Keys("Tab") end
