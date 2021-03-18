@@ -162,7 +162,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.7.8 (10911 bytes, changed 2021-02-06 08:06)*
+  *v1.7.9 (10990 bytes, changed 2021-03-18 21:56)*
 
   Opening changelog and updating Far Manager to any version available on the site
 

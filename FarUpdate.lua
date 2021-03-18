@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.8
+-- v1.7.9
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -52,7 +52,9 @@ local FarUpdate=function(FileName)
   if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
   s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'..StartFar()
   fwrite(FarUpdateBat,s)
-  fwrite(tmp..'FarUpdExc.txt','*.map\n*.pdb\n*Spa.lng\n*Sky.lng\n*Sky.hlf\n*Ger.lng\n*Ger.hlf\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Cze.hlf\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*\n*Lit.lng')
+  local l='*Spa.lng\n*Sky.lng\n*Sky.hlf\n*Ger.lng\n*Ger.hlf\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Cze.hlf\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*\n*Lit.lng'
+  if not string.find(FileName,'%.pdb%.[^%.]+$') then l=l..'\n*.map\n*.pdb' end
+  fwrite(tmp..'FarUpdExc.txt',l)
 end
 
 local GetFileList=function(page,items)
