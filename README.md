@@ -502,7 +502,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectFolders.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectFolders.lua "Panel.SelectFolders.lua")
 
-  *v1.0 (2158 bytes, changed 2021-05-03 15:28)*
+  *v1.0 (2153 bytes, changed 2021-05-03 16:38)*
 
   Extend Select Folders/Files Dialog
 

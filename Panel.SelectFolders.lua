@@ -14,13 +14,12 @@ Macro {
   condition = function() return hDlg and (Dlg.Id==Grey.plus or Dlg.Id==Grey.minus) end;
   action = function()
     local gkey=Dlg.Id==Grey.plus
-    far.SendDlgMessage(hDlg,F.DM_CLOSE,-1,0) hDlg=nil
+    far.SendDlgMessage(hDlg,F.DM_CLOSE,-1,0) far.DialogFree(hDlg) hDlg=nil
     cmd=panel.GetCmdLine(nil)
     panel.SetCmdLine(nil,"@far:config")
     mf.postmacro(Keys,"Enter")
     mf.postmacro(Menu.Select,"Panel.SelectFolders",1)
-    mf.postmacro(Keys,"Enter Esc")
-    mf.postmacro(Keys,gkey and "ADD" or "SUBTRACT")
+    mf.postmacro(Keys,"Enter Esc "..(gkey and "ADD" or "SUBTRACT"))
   end;
 }
 
@@ -36,7 +35,7 @@ return Event({
         local item = far.GetDlgItem(hDlg,1)
         item[10] = (id==uGrey.plus and "Select" or "Deselect").." ["..(Far.GetConfig("Panel.SelectFolders") and "x" or " ").."] Folders [ "..key.." ]"
         far.SetDlgItem(hDlg,1,item)
-        if mask then far.SendDlgMessage(param.hDlg,F.DM_SETTEXT,2,mask) end
+        if mask then far.SendDlgMessage(hDlg,F.DM_SETTEXT,2,mask) end
       end
     elseif event==F.DE_DLGPROCEND and param.Msg==F.DN_CLOSE then
       local id = far.SendDlgMessage(param.hDlg,F.DM_GETDIALOGINFO)
