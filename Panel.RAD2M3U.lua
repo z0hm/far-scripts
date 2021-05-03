@@ -18,7 +18,7 @@ Macro {
     local function fixlink(link) link=string.gsub(link,"[%z\1-\32]+$","") return link end
 
     if string.sub(apc,-4,-1)==".m3u" then
-      for fname,link in fread(app.."\\"..apc):gmatch("#EXTINF:(%C-)%c%c-(%C+)") do
+      for fname,link in fread(app.."\\"..apc):gmatch("#EXTINF:%-1,(%C-)%c%c-(%C+)") do
         if string.sub(fname,-4,-1)==".rad" then
           win.CreateDir(fname:gsub("\\[^\\]+$",""))
           fwrite(fixlink(link),app.."\\"..fname)
@@ -32,7 +32,7 @@ Macro {
         function(item,fullpath)
           if not item.FileAttributes:find("d") then
             local link=fread(fullpath)
-            m3u=m3u.."\n#EXTINF:"..string.sub(fullpath,offset,-1).."\n"..fixlink(link)
+            m3u=m3u.."\n#EXTINF:-1,"..string.sub(fullpath,offset,-1).."\n"..fixlink(link)
           end
         end,
         7

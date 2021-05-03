@@ -162,7 +162,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.7.9 (10990 bytes, changed 2021-03-18 21:56)*
+  *v1.7.9 (11063 bytes, changed 2021-04-10 06:17)*
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -451,7 +451,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")
 
-  *v1.0.2 (1734 bytes, changed 2020-09-06 05:30)*
+  *v1.0.2 (1741 bytes, changed 2021-04-16 19:10)*
 
   [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad<=>FolderName.m3u
 
@@ -498,6 +498,21 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
+[&nbsp;](#user-content-panelselectfolderslua)
+
+## [Panel.SelectFolders.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectFolders.lua "Panel.SelectFolders.lua")
+
+  *v1.0 (2158 bytes, changed 2021-05-03 15:28)*
+
+  Extend Select Folders/Files Dialog
+
+  ![changelog](http://i.piccy.info/i9/9de5c58f6ba15652d9ef22cb7ea4e945/1620055603/2539/1427619/2021_05_03_182332.png)
+
+  Keys: <kbd>Grey+</kbd> <kbd>Grey-</kbd> <kbd>CtrlF</kbd>
+
+
+
+
 [&nbsp;](#user-content-panelshiftf[56]lua)
 
 ## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")
@@ -517,7 +532,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.VisualCompare.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.VisualCompare.lua "Panel.VisualCompare.lua")
 
-  *v1.9.0 (9110 bytes, changed 2021-02-19 05:33)*
+  *v1.9.0 (9194 bytes, changed 2021-03-31 17:17)*
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 

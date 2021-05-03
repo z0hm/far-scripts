@@ -65,6 +65,7 @@ local GetFileList=function(page,items)
     if page==0 then
       local urlh='https://farmanager.com/nightly'
       local text=GetPage(urlh..'.php')
+      fwrite(tmp..'nightly.php',text)
       -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
       for fname,build,xx,year,month,day,ext in text:gmatch('"nightly%/(Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d)%.([^"]-))"') do
         table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname})
@@ -188,11 +189,12 @@ area="Common"; flags=""; description="! FarUpdate";
 action=function()
   local changelog="Far.changelog"
   local f=tmp..changelog
-  if #FileList==0 then
+  --if #FileList==0 then
     --fwrite(f,GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'))
+    FileList=nil FileList={}
     fwrite(f,GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'))
     GetFileList(0)
-  end
+  --end
   editor.Editor(f,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_USEEXISTING),1,1,nil)
   EGI=editor.GetInfo()
   if EGI then
