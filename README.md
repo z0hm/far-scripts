@@ -158,6 +158,23 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
+[&nbsp;](#user-content-farexitlua)
+
+## [FarExit.lua](https://github.com/z0hm/far-scripts/blob/master/FarExit.lua "FarExit.lua")
+
+  *v1.0 (2936 bytes, changed 2021-05-05 07:48)*
+
+  Extend Quit Far Dialog
+
+  ![changelog](http://i.piccy.info/i9/896aa3267322510366b180e6094fc9ad/1620198573/7251/1427832/2021_05_05_100733.png)
+
+  Required: MessageX.lua in the modules folder
+
+  Keys: <kbd>F10</kbd>
+
+
+
+
 [&nbsp;](#user-content-farupdatelua)
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
@@ -191,7 +208,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")
 
-  *v0.6.7.6 (8338 bytes, changed 2020-07-02 14:06)*
+  *v0.6.7.6 (8338 bytes, changed 2021-05-05 07:40)*
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 
