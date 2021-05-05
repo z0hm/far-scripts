@@ -38,7 +38,7 @@ return Event({
         ss=ss.."Do you want to quit FAR?"
         if edmod>0 then ss=ss.."\n\n<#es>1<#rs> <#sa>Save modified Editors and Exit<#sr>\n<#es>2<#rs> <#sc>Exit without saving Editors   <#sr>\n<#es>3<#rs> Do not Exit                   " end
         _G.FarExitCode=MessageX(ss,"Quit",edmod>0 and "!&1 Save && Exit;&2 Exit;&3 Cancel" or "!&Yes;&No","c","","")
-        if edmod==0 then _G.FarExitCode=_G.FarExitCode+1 end
+        if edmod==0 and (_G.FarExitCode==bSAVE or _G.FarExitCode==bEXIT) then _G.FarExitCode=_G.FarExitCode+1 end
         if _G.FarExitCode==bSAVE or _G.FarExitCode==bEXIT then
           for ii=1,windows do
             local info=far.AdvControl(F.ACTL_GETWINDOWINFO,ii,0)
