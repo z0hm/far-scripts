@@ -9,12 +9,12 @@ local F = far.Flags
 local uGuidEditAskSaveId = win.Uuid(far.Guids.EditAskSaveId)
 local uGuidFarAskQuitId  = win.Uuid(far.Guids.FarAskQuitId)
 local bYES,bNO,bCANCEL,bSAVE,bEXIT = 4,5,6,1,2
+local FarExitCode
 
 return Event({
   group = "DialogEvent",
   description = "Extend Quit Dialog",
   action = function(event, param)
-    _G.FarExitCode=nil
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG then
       local id=far.SendDlgMessage(param.hDlg,F.DM_GETDIALOGINFO)
       id = id and id.Id or ""
@@ -37,22 +37,22 @@ return Event({
         end
         ss=ss.."Do you want to quit FAR?"
         if edmod>0 then ss=ss.."\n\n<#es>1<#rs> <#sa>Save modified Editors and Exit<#sr>\n<#es>2<#rs> <#sc>Exit without saving Editors   <#sr>\n<#es>3<#rs> Do not Exit                   " end
-        _G.FarExitCode=MessageX(ss,"Quit",edmod>0 and "!&1 Save && Exit;&2 Exit;&3 Cancel" or "!&Yes;&No","c","","")
-        if edmod==0 and (_G.FarExitCode==bSAVE or _G.FarExitCode==bEXIT) then _G.FarExitCode=_G.FarExitCode+1 end
-        if _G.FarExitCode==bSAVE or _G.FarExitCode==bEXIT then
+        FarExitCode=MessageX(ss,"Quit",edmod>0 and "!&1 Save && Exit;&2 Exit;&3 Cancel" or "!&Yes;&No","c","","")
+        if edmod==0 and (FarExitCode==bSAVE or FarExitCode==bEXIT) then FarExitCode=FarExitCode+1 end
+        if FarExitCode==bSAVE or FarExitCode==bEXIT then
           for ii=1,windows do
             local info=far.AdvControl(F.ACTL_GETWINDOWINFO,ii,0)
             if info then
               if info.Type==F.WTYPE_EDITOR then
-                if _G.FarExitCode==bSAVE and bit64.band(info.Flags,F.WIF_MODIFIED)==F.WIF_MODIFIED then editor.SaveFile(info.EditorID) end
+                if FarExitCode==bSAVE and bit64.band(info.Flags,F.WIF_MODIFIED)==F.WIF_MODIFIED then editor.SaveFile(info.EditorID) end
                 editor.Quit(info.EditorID)
               elseif info.Type==F.WTYPE_VIEWER then viewer.Quit(info.ViewerID)
               end
             end
           end
         end
-        far.SendDlgMessage(param.hDlg,F.DM_CLOSE,(_G.FarExitCode==bSAVE or _G.FarExitCode==bEXIT) and bYES or bNO)
-      elseif id==uGuidEditAskSaveId and (_G.FarExitCode==bSAVE or _G.FarExitCode==bEXIT) then far.SendDlgMessage(param.hDlg,F.DM_CLOSE,_G.FarExitCode==bSAVE and bYES or (_G.FarExitCode==bEXIT and bNO or bCANCEL))
+        far.SendDlgMessage(param.hDlg,F.DM_CLOSE,(FarExitCode==bSAVE or FarExitCode==bEXIT) and bYES or bNO)
+      elseif id==uGuidEditAskSaveId and (FarExitCode==bSAVE or FarExitCode==bEXIT) then far.SendDlgMessage(param.hDlg,F.DM_CLOSE,FarExitCode==bSAVE and bYES or (FarExitCode==bEXIT and bNO or bCANCEL),0)
       end
     end
     return false

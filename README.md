@@ -162,7 +162,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarExit.lua](https://github.com/z0hm/far-scripts/blob/master/FarExit.lua "FarExit.lua")
 
-  *v1.0 (2989 bytes, changed 2021-05-05 11:15)*
+  *v1.0 (2944 bytes, changed 2021-05-05 17:49)*
 
   Extend Quit Far Dialog
 
