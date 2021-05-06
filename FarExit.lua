@@ -1,5 +1,5 @@
 -- FarExit.lua
--- v1.1
+-- v1.1.0.1
 -- Extend Quit Far Dialog
 -- ![changelog](http://i.piccy.info/i9/c30733a554949540a04b6ec94d7c20b8/1620285331/7939/1427986/FarExit.png)
 -- Required: MessageX.lua in the modules folder
@@ -13,8 +13,34 @@ local uGuidFarExitId     = win.Uuid(GuidFarExitId)
 local bYES,bNO,bCANCEL,bSAVE,bEXIT = 4,5,6,1,2
 local FarExitFlag,FarExitCode,hDlg = true
 local key,desc = "0","Extend Quit Dialog"
+local viewers,editors,edmod = 0,0,0
 
 local function Title() return "Quit ["..(FarExitFlag and "x" or " ").."]" end
+
+local function Message()
+  local s,ss = "",""
+  if viewers>0 or editors>0 then
+    if viewers>0 then ss=ss.." Opened Viewer(s): "..viewers.."\n" end
+    if editors>0 then ss=ss.." Opened Editor(s): "..editors.."\n"
+      if edmod>0 then ss=ss.."<#ec>Unsaved Editor(s): "..edmod.."<#rr>\n" end
+    end
+    ss=ss.."\n"
+  end
+  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR?" else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
+  if viewers==0 and editors==0 then ss=ss.."\n" else ss=ss.."\n\n<#es>0<#rs> Quit or not" if edmod>0 then ss=ss.."                    " end end
+  if edmod>0 then ss=ss.."\n<#es>1<#rs> <#sa>Save modified Editors and "..s.."<#sr>\n<#es>2<#rs> <#sc>"..(FarExitFlag and "Exit without saving Editors" or "Close Editors without saving").."   <#sr>\n<#es>3<#rs> Cancel                         " end
+  return ss
+end
+
+local function Buttons()
+  local b1,b2,b3
+  if edmod==0 then b1,b2,b3 = "&Yes","&No"
+  else
+    local s=FarExitFlag and "Exit" or "Close"
+    b1,b2,b3 = "&1 Save and "..s,"&2 "..s,"&3 Cancel"
+  end
+  return "!"..b1..";"..b2..(b3 and ";"..b3 or "")
+end
 
 return Event({
   group = "DialogEvent",
@@ -25,7 +51,7 @@ return Event({
       id = id and id.Id or ""
       if id==uGuidFarAskQuitId then
         local windows=far.AdvControl(F.ACTL_GETWINDOWCOUNT,0,0)
-        local viewers,editors,edmod,ss = 0,0,0,""
+        viewers,editors,edmod = 0,0,0
         for ii=1,windows do
           local info=far.AdvControl(F.ACTL_GETWINDOWINFO,ii,0)
           if info and F.WTYPE_VIEWER==info.Type then viewers=viewers+1 end
@@ -33,17 +59,8 @@ return Event({
             if bit64.band(info.Flags,F.WIF_MODIFIED)==F.WIF_MODIFIED then edmod=edmod+1 end
           end
         end
-        if viewers>0 or editors>0 then
-          if viewers>0 then ss=ss.." Opened Viewer(s): "..viewers.."\n" end
-          if editors>0 then ss=ss.." Opened Editor(s): "..editors.."\n"
-            if edmod>0 then ss=ss.."<#ec>Unsaved Editor(s): "..edmod.."<#rr>\n" end
-          end
-          ss=ss.."\n"
-        end
-        ss=ss.."Do you want to quit FAR?"
-        if viewers==0 and editors==0 then ss=ss.."\n" else ss=ss.."\n\n<#es>0<#rs> Quit or not                    " end
-        if edmod>0 then ss=ss.."\n<#es>1<#rs> <#sa>Save modified Editors and Close<#sr>\n<#es>2<#rs> <#sc>Close Editors without saving   <#sr>\n<#es>3<#rs> Do not Exit                    " end
-        FarExitCode=MessageX(ss,Title(),edmod>0 and "!&1 Save && Exit;&2 Exit;&3 Cancel" or "!&Yes;&No","c","",uGuidFarExitId)
+        if viewers==0 and editors==0 then FarExitFlag=true end
+        FarExitCode=MessageX(Message(),Title(),Buttons(),"c","",uGuidFarExitId)
         if edmod==0 and (FarExitCode==bSAVE or FarExitCode==bEXIT) then FarExitCode=FarExitCode+1 end
         if FarExitCode==bSAVE or FarExitCode==bEXIT then
           for ii=windows,1,-1 do
@@ -73,7 +90,7 @@ return Event({
         local name=far.InputRecordToName(param.Param2)
         if Area.Dialog and Dlg.Id==GuidFarExitId and hDlg and (name==key or name=="Alt"..key) then 
           FarExitFlag=not FarExitFlag
-          far.SendDlgMessage(hDlg,F.DM_SETTEXT,1,Title())
+          mf.postmacro(Keys,"F10 F10")
         end
       end
     end

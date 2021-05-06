@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6.7.6
+-- v0.6.7.7
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
 -- Support delay execution in seconds (**ExecDelay**:integer)
@@ -89,7 +89,7 @@ local function CreateButtons(line,Buttons)
     butnum=butnum+1
     if def=="!" then butdef=butnum end
     table.insert(tButtons,{F.DI_BUTTON,0,line,0,0,0,0,0,bFlags,button})
-    butlen=butlen+button:gsub("&",""):len()+4
+    butlen=butlen+button:gsub("&&"," "):gsub("&",""):len()+4
   end
   if butdef==0 then butdef=1 end
   tButtons[butdef][9]=bFlags+F.DIF_DEFAULTBUTTON
