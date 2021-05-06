@@ -1,5 +1,5 @@
 -- Panel.SelectFolders.lua
--- v1.0
+-- v1.0.0.1
 -- Extend Select Folders/Files Dialog
 -- ![changelog](http://i.piccy.info/i9/9de5c58f6ba15652d9ef22cb7ea4e945/1620055603/2539/1427619/2021_05_03_182332.png)
 -- Keys: Grey+ Grey- CtrlF
@@ -32,9 +32,7 @@ return Event({
       id = id and id.Id or ""
       if id==uGrey.plus or id==uGrey.minus then
         hDlg=param.hDlg
-        local item = far.GetDlgItem(hDlg,1)
-        item[10] = (id==uGrey.plus and "Select" or "Deselect").." ["..(Far.GetConfig("Panel.SelectFolders") and "x" or " ").."] Folders [ "..key.." ]"
-        far.SetDlgItem(hDlg,1,item)
+        far.SendDlgMessage(hDlg,F.DM_SETTEXT,1,(id==uGrey.plus and "Select" or "Deselect").." ["..(Far.GetConfig("Panel.SelectFolders") and "x" or " ").."] Folders [ "..key.." ]")
         if mask then far.SendDlgMessage(hDlg,F.DM_SETTEXT,2,mask) end
       end
     elseif event==F.DE_DLGPROCEND and param.Msg==F.DN_CLOSE then

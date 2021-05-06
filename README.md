@@ -162,11 +162,11 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarExit.lua](https://github.com/z0hm/far-scripts/blob/master/FarExit.lua "FarExit.lua")
 
-  *v1.0 (2944 bytes, changed 2021-05-05 17:49)*
+  *v1.1 (4124 bytes, changed 2021-05-06 07:15)*
 
   Extend Quit Far Dialog
 
-  ![changelog](http://i.piccy.info/i9/896aa3267322510366b180e6094fc9ad/1620198573/7251/1427832/2021_05_05_100733.png)
+  ![changelog](http://i.piccy.info/i9/c30733a554949540a04b6ec94d7c20b8/1620285331/7939/1427986/FarExit.png)
 
   Required: MessageX.lua in the modules folder
 
@@ -519,7 +519,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectFolders.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectFolders.lua "Panel.SelectFolders.lua")
 
-  *v1.0 (2153 bytes, changed 2021-05-03 16:38)*
+  *v1.0.0.1 (2104 bytes, changed 2021-05-06 07:21)*
 
   Extend Select Folders/Files Dialog
 
