@@ -26,7 +26,7 @@ local function Message()
     end
     ss=ss.."\n"
   end
-  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR?" else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
+  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR? " else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
   if viewers==0 and editors==0 then ss=ss.."\n" else ss=ss.."\n\n<#es>0<#rs> Quit or not" if edmod>0 then ss=ss.."                    " end end
   if edmod>0 then ss=ss.."\n<#es>1<#rs> <#sa>Save modified Editors and "..s.."<#sr>\n<#es>2<#rs> <#sc>"..(FarExitFlag and "Exit without saving Editors" or "Close Editors without saving").."   <#sr>\n<#es>3<#rs> Cancel                         " end
   return ss
