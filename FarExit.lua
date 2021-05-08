@@ -36,7 +36,7 @@ end
 
 local function Buttons()
   local b1,b2,b3
-  if edmod==0 then b1,b2,b3 = "&Yes","&No"
+  if edmod==0 then b1,b2 = "&Yes","&No"
   else
     local s=FarExitFlag and "Exit" or "Close"
     b1,b2,b3 = "&1 Save and "..s,"&2 "..s,"&3 Cancel"
