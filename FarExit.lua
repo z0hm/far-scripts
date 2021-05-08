@@ -1,5 +1,5 @@
 -- FarExit.lua
--- v1.1.0.1
+-- v1.1.0.2
 -- Extend Quit Far Dialog
 -- ![changelog](http://i.piccy.info/i9/c30733a554949540a04b6ec94d7c20b8/1620285331/7939/1427986/FarExit.png)
 -- Required: MessageX.lua in the modules folder
@@ -15,10 +15,12 @@ local FarExitFlag,FarExitCode,hDlg = true
 local key,desc = "0","Extend Quit Dialog"
 local viewers,editors,edmod = 0,0,0
 
-local function Title() return "Quit ["..(FarExitFlag and "x" or " ").."]" end
+local MessageX=require'MessageX'
+
+local function Title() return viewers==0 and editors==0 and "Quit" or "Quit ["..(FarExitFlag and "x" or " ").."]" end
 
 local function Message()
-  local s,ss = "",""
+  local ss,s = ""
   if viewers>0 or editors>0 then
     if viewers>0 then ss=ss.." Opened Viewer(s): "..viewers.."\n" end
     if editors>0 then ss=ss.." Opened Editor(s): "..editors.."\n"
@@ -26,7 +28,7 @@ local function Message()
     end
     ss=ss.."\n"
   end
-  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR? " else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
+  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR?"..(viewers==0 and editors==0 and "" or " ") else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
   if viewers==0 and editors==0 then ss=ss.."\n" else ss=ss.."\n\n<#es>0<#rs> Quit or not" if edmod>0 then ss=ss.."                    " end end
   if edmod>0 then ss=ss.."\n<#es>1<#rs> <#sa>Save modified Editors and "..s.."<#sr>\n<#es>2<#rs> <#sc>"..(FarExitFlag and "Exit without saving Editors" or "Close Editors without saving").."   <#sr>\n<#es>3<#rs> Cancel                         " end
   return ss
@@ -85,10 +87,10 @@ return Event({
       elseif id==uGuidEditAskSaveId and (FarExitCode==bSAVE or FarExitCode==bEXIT) then far.SendDlgMessage(param.hDlg,F.DM_CLOSE,FarExitCode==bSAVE and bYES or (FarExitCode==bEXIT and bNO or bCANCEL),0)
       elseif id==uGuidFarExitId then hDlg=param.hDlg
       end
-    elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT then
+    elseif hDlg and (viewers>0 or editors>0) and Area.Dialog and Dlg.Id==GuidFarExitId and event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT then
       if param.Param2.EventType==F.KEY_EVENT then
         local name=far.InputRecordToName(param.Param2)
-        if Area.Dialog and Dlg.Id==GuidFarExitId and hDlg and (name==key or name=="Alt"..key) then 
+        if name==key or name=="Alt"..key then
           FarExitFlag=not FarExitFlag
           mf.postmacro(Keys,"F10 F10")
         end
