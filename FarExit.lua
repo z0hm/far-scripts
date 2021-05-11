@@ -53,7 +53,7 @@ return Event({
       id = id and id.Id or ""
       if id==uGuidFarAskQuitId then
         local windows=far.AdvControl(F.ACTL_GETWINDOWCOUNT,0,0)
-        viewers,editors,edmod = 0,0,0
+        viewers,editors,edmod,FarExitCode = 0,0,0,nil
         for ii=1,windows do
           local info=far.AdvControl(F.ACTL_GETWINDOWINFO,ii,0)
           if info and F.WTYPE_VIEWER==info.Type then viewers=viewers+1 end
@@ -84,7 +84,9 @@ return Event({
           end
         end
         far.SendDlgMessage(param.hDlg,F.DM_CLOSE,FarExitFlag and (FarExitCode==bSAVE or FarExitCode==bEXIT) and bYES or bNO)
-      elseif id==uGuidEditAskSaveId and (FarExitCode==bSAVE or FarExitCode==bEXIT) then far.SendDlgMessage(param.hDlg,F.DM_CLOSE,FarExitCode==bSAVE and bYES or (FarExitCode==bEXIT and bNO or bCANCEL),0)
+      elseif id==uGuidEditAskSaveId and (FarExitCode==bSAVE or FarExitCode==bEXIT) then
+        hDlg=param.hDlg
+        far.SendDlgMessage(hDlg,F.DM_CLOSE,FarExitCode==bSAVE and bYES or (FarExitCode==bEXIT and bNO or bCANCEL),0)
       elseif id==uGuidFarExitId then hDlg=param.hDlg
       end
     elseif hDlg and (viewers>0 or editors>0) and Area.Dialog and Dlg.Id==GuidFarExitId and event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT then
