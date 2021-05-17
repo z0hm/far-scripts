@@ -1,4 +1,4 @@
--- FarExit.lua
+﻿-- FarExit.lua
 -- v1.1.0.2
 -- Extend Quit Far Dialog
 -- ![changelog](http://i.piccy.info/i9/c30733a554949540a04b6ec94d7c20b8/1620285331/7939/1427986/FarExit.png)

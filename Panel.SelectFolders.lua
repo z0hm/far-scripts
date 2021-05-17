@@ -1,4 +1,4 @@
--- Panel.SelectFolders.lua
+﻿-- Panel.SelectFolders.lua
 -- v1.0.0.1
 -- Extend Select Folders/Files Dialog
 -- ![changelog](http://i.piccy.info/i9/9de5c58f6ba15652d9ef22cb7ea4e945/1620055603/2539/1427619/2021_05_03_182332.png)

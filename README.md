@@ -162,7 +162,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarExit.lua](https://github.com/z0hm/far-scripts/blob/master/FarExit.lua "FarExit.lua")
 
-  *v1.1.0.2 (4803 bytes, changed 2021-05-11 09:40)*
+  *v1.1.0.2 (4806 bytes, changed 2021-05-17 11:28)*
 
   Extend Quit Far Dialog
 
@@ -200,6 +200,19 @@ a very wide range of tasks using the Far and Windows API's.
   Keys: launch from Macro Browser alt.
 
   Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=700#19
+
+
+
+
+[&nbsp;](#user-content-html-xmloneline-multilinelua)
+
+## [HTML-XML.OneLine-MultiLine.lua](https://github.com/z0hm/far-scripts/blob/master/HTML-XML.OneLine-MultiLine.lua "HTML-XML.OneLine-MultiLine.lua")
+
+  *v1.0 (1409 bytes, changed 2021-05-17 11:22)*
+
+  Visual improvement of HTML-XML code, creates a new file name~2.ext
+
+  Keys: launch from Macro Browser alt.
 
 
 
@@ -519,7 +532,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectFolders.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectFolders.lua "Panel.SelectFolders.lua")
 
-  *v1.0.0.1 (2104 bytes, changed 2021-05-06 07:21)*
+  *v1.0.0.1 (2107 bytes, changed 2021-05-17 11:28)*
 
   Extend Select Folders/Files Dialog
 
