@@ -3,6 +3,7 @@
 -- author Shmuel, 28.05.2020
 -- copy to folder included Moonscript files and run it: lua:@moon2lua.lua
 -- all Moonscript files will be deleted after convert!
+
 local to_lua = (require"moonscript.base").to_lua
 far.RecursiveSearch(far.GetCurrentDirectory(),"*.moon",
   function(item,fullpath)
