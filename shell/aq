@@ -3,8 +3,8 @@
 # ![aq script](http://i.piccy.info/i9/ce0b78c019db240a75a21f00089bfd7a/1600717787/7655/1397248/2020_09_21_221429.png)
 # ![aq script](http://i.piccy.info/i9/b978141af12e993afff139bb461039db/1600717816/39618/1397248/946922020_09_21_223718.png)
 # Commands:
-# **.** - play all music files in folder
-# **e** - exit, **x** - exit with save path, just **Enter** - repeat last command
+# **h** - help, **e** - exit, **x** - exit with save path
+# **.** - play all music files in folder, just **Enter** - repeat last command
 # **l** - list files in folder, **a**/**z** - show **previous**/**next** 100 files
 # **c<num>** - convert file to **/tmp/out.wav**, **v<num>**/**u<num>** - view ansi/utf-8 file
 # **<num>** - play file <num>, **p**/**n** - play **previous**/**next** file, after **Enter** **Enter** ...
@@ -31,8 +31,6 @@ appath=$app/path.txt
 applay=$app/play.txt
 pglen=100
 exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
-# hmstr="ap /"
-# hmlen=${#hmstr}
 arr0=()  # array files in folder
 arr1=()  # array files type: directory=true
 arr2=()  # array music files attribute
@@ -208,7 +206,7 @@ prompt(){
   if [ $finish -lt $last ]; then key_z="$wk,$gk z"; fi
   if [ ${#jump[*]} -gt 1 ]; then key_r="$wk,$gk r"; fi
   if [ "$path" == "$home" ]; then key_rw="$wk,$gk ro<num>$wk,$gk rw<num>"; fi
-  msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk: $te")
+  msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk [$oldnum]: $te")
 }
 
 # info line
@@ -294,9 +292,9 @@ steppl(){
 
 aqhelp(){
   echo -e "$yb Help: $te"
-  echo -e "\n$gk e$wk  exit,$gk x$wk  exit with save path,$te nothing$wk  repeat last command$te"
+  echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te"
   echo -e "\n$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
-  echo -e "$gk r$wk  return to previous folder$te"
+  echo -e "$te nothing$wk  repeat last command,$gk r$wk  return to previous folder$te"
   echo -e "\n$gk .$wk  play all music files in folder,$gk s$wk  stop playback$te"
   echo -e "$gk <num>$wk  play file <num>,$gk p$wk  play previous file,$gk n$wk  play next file$te"
   echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play file number <num> from min:sec$te"
@@ -443,9 +441,8 @@ do
         fi
       fi
       timeshift=0
-      if   [ "$num" == "" ] && [ ${#arr0[*]} -lt 2 ] && [ "$oldnum" != "r" ]; then num=0; oldnum=$num; break
-      elif [ "$num" == "" ] && [ ${#arr1[*]} -eq 2 ] && ${arr1[1]} && [ "$oldnum" != "r" ]
-      then if [ ${#jump[$((${#jump[*]}-2))]} -lt ${#jump[$((${#jump[*]}-1))]} ]; then num=1; else num=0; fi; oldnum=$num; break
+      if   [ "$num" == "" ] && [[ $oldnum =~ ^[0-9]+$ ]] &&  [ ${#arr0[*]} -lt 2 ]; then num=0; oldnum=$num; break
+      elif [ "$num" == "" ] && [[ $oldnum =~ ^[0-9]+$ ]] &&  [ ${#arr0[*]} -eq 2 ] && ${arr1[1]}; then if [ $oldnum -eq 0 ]; then num=0; else num=1; fi; oldnum=$num; break
       elif [ "$num" == "x" ]; then echo; aqsave; bye
       elif [ "$num" == "e" ]; then echo; bye
       elif [ "$num" == "h" ]; then echo; aqhelp; tight=false
