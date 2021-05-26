@@ -206,7 +206,7 @@ prompt(){
   if [ $finish -lt $last ]; then key_z="$wk,$gk z"; fi
   if [ ${#jump[*]} -gt 1 ]; then key_r="$wk,$gk r"; fi
   if [ "$path" == "$home" ]; then key_rw="$wk,$gk ro<num>$wk,$gk rw<num>"; fi
-  msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk l$key_r$wk,$gk s$wk,$gk x$key_a$key_z$key_rw$wk, or$te nothing$wk [$oldnum]: $te")
+  msg=$(echo -ne "\naq>$wk enter$gk 0$wk..$gk$last$wk or$gk h$wk,$gk l$key_r$key_a$key_z$key_rw$wk, or$te nothing$wk [ $gk$oldnum$wk ]: $te")
 }
 
 # info line
@@ -344,7 +344,7 @@ jhis(){
 setjptr(){
   if   [ $jdir -ne 0 ] && [ $jptr -lt $((${#jump[*]}-1)) ]; then jptr=$(($jptr+1)); jhis
   elif [ $jdir -eq 0 ] && [ $jptr -gt 0 ]; then jptr=$(($jptr-1)); jhis
-  else num="xxx"; oldnum=$num  # wrong command for re-query num
+  else num=$oldnum; ((jdir=!jdir))
   fi
 }
 
@@ -437,7 +437,7 @@ do
       then timeshift=${BASH_REMATCH[0]}
         if [ ${#mus[*]} -eq 1 ]
         then num=${mus[0]}; oldnum=$num; break
-        else infopl; if [ $id -gt 0 ]; then num=$id; oldnum=$num; break; else num="xxx"; oldnum=$num; fi
+        else infopl; if [ $id -gt 0 ]; then num=$id; oldnum=$num; break; else num=$oldnum; fi
         fi
       fi
       timeshift=0
