@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.9
+-- v1.7.10
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -23,13 +23,15 @@ local items={
  --[[02]] {F.DI_BUTTON,       2,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &1 Far ]"},
  --[[03]] {F.DI_BUTTON,      12,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &2 x86 ]"},
  --[[04]] {F.DI_BUTTON,      22,1,  0,1, 0, 0,0, F.DIF_BTNNOCLOSE, "[ &3 7z  ]"},
- --[[05]] {F.DI_COMBOBOX,     2,2, 29,2,{}, 0,0, F.DIF_DROPDOWNLIST, ""},
- --[[06]] {F.DI_TEXT,         0,3,  0,0, 0, 0,0, F.DIF_SEPARATOR,""},
- --[[07]] {F.DI_CHECKBOX,     8,3,  0,3, 0, 0,0, 0,"&Profile BackUp"},
- --[[08]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Update"},
- --[[09]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&Yes"},
- --[[10]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP,"&No"}
+ --[[05]] {F.DI_TEXT,         1,2,  1,2, 0, 0,0, 0, " "},
+ --[[06]] {F.DI_COMBOBOX,     2,2, 30,2,{}, 0,0, F.DIF_DROPDOWNLIST, ""},
+ --[[07]] {F.DI_TEXT,         0,3,  0,0, 0, 0,0, F.DIF_SEPARATOR, ""},
+ --[[08]] {F.DI_CHECKBOX,     8,3,  0,3, 0, 0,0, 0,"&Profile BackUp"},
+ --[[09]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP, "&Update"},
+ --[[10]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP, "&Yes"},
+ --[[11]] {F.DI_BUTTON,       0,4,  0,0, 0, 0,0, F.DIF_CENTERGROUP, "&No"}
 }
+local mark=string.char(24) -- 
 local tmp=win.GetEnv("TEMP").."\\"
 local farhome=win.GetEnv("FARHOME")
 local farprofile=win.GetEnv("FARPROFILE")
@@ -47,7 +49,7 @@ local FarProfileBackUpBat=tmp..'FarProfileBackUp.bat'
 local FarUpdateBat=tmp..'FarUpdate.bat'
 
 -- Create FarUpdate.bat
-local FarUpdate=function(FileName)
+local function FarUpdate(FileName)
   local s=WaitCloseFar
   if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
   s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'..StartFar()
@@ -57,7 +59,7 @@ local FarUpdate=function(FileName)
   fwrite(tmp..'FarUpdExc.txt',l)
 end
 
-local GetFileList=function(page,items)
+local function GetFileList(page,items)
   local brk
   if not page then page=box[1] and 0 or 1 end
   for _,v in pairs(pages) do if page==v then brk=true break end end
@@ -65,7 +67,7 @@ local GetFileList=function(page,items)
     if page==0 then
       local urlh='https://farmanager.com/nightly'
       local text=GetPage(urlh..'.php')
-      fwrite(tmp..'nightly.php',text)
+      -- fwrite(tmp..'nightly.php',text)
       -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
       for fname,build,xx,year,month,day,ext in text:gmatch('"nightly%/(Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d)%.([^"]-))"') do
         table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname})
@@ -91,26 +93,26 @@ local GetFileList=function(page,items)
 end
 
 local ListT,PosProtect = {}
-local DlgProc=function(hDlg,Msg,Param1,Param2)
+local function DlgProc(hDlg,Msg,Param1,Param2)
   local function BoxUpdate()
     hDlg:send(F.DM_SETTEXT,2,box[1] and '[ &1 Far ]' or '[ &1 Git ]')
     hDlg:send(F.DM_SETTEXT,3,box[2] and '[ &2 x64 ]' or '[ &2 x86 ]')
     hDlg:send(F.DM_SETTEXT,4,box[3] and '[ &3 7z  ]' or '[ &3 msi ]')
   end
   local function RefreshList()
-    local ListInfo=hDlg:send(F.DM_LISTINFO,5)
+    local ListInfo=hDlg:send(F.DM_LISTINFO,6)
     local LastPos=ListInfo.ItemsNumber
-    hDlg:send(F.DM_LISTDELETE,5,{StartIndex=1,Count=LastPos}) ListT={}
+    hDlg:send(F.DM_LISTDELETE,6,{StartIndex=1,Count=LastPos}) ListT={}
     for i=1,#FileList do
       if FileList[i][4]:find('^Far'..(box[1] and '30b%d-%.' or '%.')..(box[2] and 'x64' or 'x86')..'%..+%.'..(box[3] and '7z' or 'msi'))
-      then hDlg:send(F.DM_LISTADD,5,{{Text=FileList[i][1]}}) table.insert(ListT,{FileList[i][1],FileList[i][3]})
+      then hDlg:send(F.DM_LISTADD,6,{{Text=FileList[i][1]}}) table.insert(ListT,{FileList[i][1],FileList[i][3]})
       end
     end
     if box[1]
-    then hDlg:send(F.DM_LISTADD,5,{{Text=ListActions[2]}}) table.insert(ListT,ListActions[2])
+    then hDlg:send(F.DM_LISTADD,6,{{Text=ListActions[2]}}) table.insert(ListT,ListActions[2])
     else
       for i=1,#ListActions do
-        hDlg:send(F.DM_LISTADD,5,{{Text=ListActions[i]}}) table.insert(ListT,ListActions[i])
+        hDlg:send(F.DM_LISTADD,6,{{Text=ListActions[i]}}) table.insert(ListT,ListActions[i])
       end
     end
     if build then
@@ -120,15 +122,15 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
         if ans then RealPos=PosProtect and RealPos or i PosProtect=false break end
       end
     end
-    hDlg:send(F.DM_LISTSETCURPOS,5,{SelectPos=RealPos})
-    FileName=tostring(hDlg:send(F.DM_GETTEXT,5))
-    hDlg:send(F.DM_SETFOCUS,5)
+    hDlg:send(F.DM_LISTSETCURPOS,6,{SelectPos=RealPos})
+    FileName=tostring(hDlg:send(F.DM_GETTEXT,6))
+    hDlg:send(F.DM_SETFOCUS,6)
   end
   local function RemoveListActions(pos)
     for i=pos,pos-#ListActions-1,-1 do
-      local FarListItem=hDlg:send(F.DM_LISTGETITEM,5,i)
+      local FarListItem=hDlg:send(F.DM_LISTGETITEM,6,i)
       if FarListItem and FarListItem.Text:sub(1,1)=="*" then
-        hDlg:send(F.DM_LISTDELETE,5,{StartIndex=i,Count=1})
+        hDlg:send(F.DM_LISTDELETE,6,{StartIndex=i,Count=1})
         table.remove(ListT,i)
       else break
       end
@@ -137,12 +139,13 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
   if Msg==F.DN_INITDIALOG then
     BoxUpdate()
     RefreshList()
-    hDlg:send(F.DM_SETCHECK,7,box[4] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-  elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==5 then
-    local ListInfo=hDlg:send(F.DM_LISTINFO,5)
+    hDlg:send(F.DM_SETTEXT,5,RealPos>1 and mark or ' ')
+    hDlg:send(F.DM_SETCHECK,8,box[4] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+  elseif (Msg==F.DN_EDITCHANGE or Msg==F.DN_LISTCHANGE) and Param1==6 then
+    local ListInfo=hDlg:send(F.DM_LISTINFO,6)
     local LastPos=ListInfo.ItemsNumber
     local SelectPos=ListInfo.SelectPos
-    local str=tostring(hDlg:send(F.DM_GETTEXT,5))
+    local str=tostring(hDlg:send(F.DM_GETTEXT,6))
     RealPos=SelectPos==0 and RealPos or SelectPos
     if Msg==F.DN_EDITCHANGE and str and str:sub(1,1)=="*"
     then
@@ -168,18 +171,19 @@ local DlgProc=function(hDlg,Msg,Param1,Param2)
       RefreshList()
     else FileName=str
     end
+    hDlg:send(F.DM_SETTEXT,5,RealPos>1 and mark or ' ')
   elseif Msg==F.DN_BTNCLICK and Param1>=2 and Param1<=4 then   -- [ Far ]  [ x86 ]  [ 7z  ]
     box[Param1-1]=not box[Param1-1]
     BoxUpdate()
-    local ListInfo=hDlg:send(F.DM_LISTINFO,5)
+    local ListInfo=hDlg:send(F.DM_LISTINFO,6)
     local LastPos=ListInfo.ItemsNumber
-    local str=tostring(hDlg:send(F.DM_GETTEXT,5))
+    local str=tostring(hDlg:send(F.DM_GETTEXT,6))
     build=str:match("^%d+")
     RemoveListActions(LastPos)
     if Param1==2 then GetFileList() end
     RealPos=1
     RefreshList()
-  elseif Msg==F.DN_BTNCLICK and Param1==7 then   -- [ ] Profile BackUp
+  elseif Msg==F.DN_BTNCLICK and Param1==8 then   -- [ ] Profile BackUp
     box[4]=not box[4]
   end
 end
@@ -189,12 +193,9 @@ area="Common"; flags=""; description="! FarUpdate";
 action=function()
   local changelog="Far.changelog"
   local f=tmp..changelog
-  --if #FileList==0 then
-    --fwrite(f,GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'))
-    FileList=nil FileList={}
-    fwrite(f,GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'))
-    GetFileList(0)
-  --end
+  --fwrite(f,GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'))
+  fwrite(f,GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'))
+  GetFileList()
   editor.Editor(f,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_USEEXISTING),1,1,nil)
   EGI=editor.GetInfo()
   if EGI then
