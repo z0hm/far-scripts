@@ -481,7 +481,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")
 
-  *v1.0.3 (3110 bytes, changed 2021-06-07 09:18)*
+  *v1.0.3 (3225 bytes, changed 2021-06-08 06:43)*
 
   [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad,*m3u<=>FolderName.m3u
 

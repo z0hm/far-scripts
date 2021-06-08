@@ -26,12 +26,12 @@ Macro {
       local m3uFlg,fpath
       local txt=fread(app.."\\"..apc)
       for fname,link in txt:gmatch("#EXTINF:%-1,(%C-)%c%c-(%C+)") do
-        local ext=string.lower(string.sub(fname,-4,-1))
+        local ext=string.lower(string.match(fname,"%.[^%.]+$"))
         if     ext==".rad" then
           if fpath and m3uFlg then fappend("\n",fpath) m3uFlg=false end
           fpath=app.."\\"..fname
           win.CreateDir(fname:gsub("\\[^\\]+$",""))
-        elseif ext==".m3u" then
+        elseif ext==".m3u" or ext==".m3u8" then
           if fpath and m3uFlg then fappend("\n",fpath) else m3uFlg=true end
           fpath=app.."\\"..fname
           win.CreateDir(fname:gsub("\\[^\\]+$",""))
@@ -39,7 +39,7 @@ Macro {
         end
         if fpath then
           if m3uFlg
-          then if ext~=".m3u" then fappend(inf..fname.."\n"..fixlink(link),fpath) end
+          then if ext~=".m3u" and ext~=".m3u8" then fappend(inf..fname.."\n"..fixlink(link),fpath) end
           else fwrite(fixlink(link),fpath)
           end
         end
@@ -48,14 +48,14 @@ Macro {
     else  -- create a common playlist from RAD and M3U files
       local m3u,fpath = "#EXTM3U",app.."\\"..app:match("[^\\]+$")..".m3u"
       local offset=string.len(app)+2
-      far.RecursiveSearch(app,"*.rad,*.m3u",
+      far.RecursiveSearch(app,"*.rad,*.m3u,*.m3u8",
         function(item,fullpath)
           if not item.FileAttributes:find("d") and fullpath~=fpath then
-            local ext=string.lower(string.sub(fullpath,-4,-1))
+            local ext=string.lower(string.match(fullpath,"%.[^%.]+$"))
             if     ext==".rad" then
               m3u=m3u..inf..string.sub(fullpath,offset,-1).."\n"..fixlink(fread(fullpath))
-            elseif ext==".m3u" then
-              m3u=m3u..inf..string.sub(fullpath,offset,-1).."\n#"
+            elseif ext==".m3u" or ext==".m3u8" then
+              m3u=m3u..inf..string.sub(fullpath,offset,-1).."\nhttp://127.0.0.1/"..fullpath:match("[^\\]+$")
               for title,link in fread(fullpath):gmatch("#EXTINF:%-1,(%C-)%c%c-(%C+)") do
                 m3u=m3u..inf..fixlink(title).."\n"..fixlink(link)
               end
