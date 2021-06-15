@@ -1,5 +1,5 @@
 ﻿-- Editor.CyrSpaceHighlighting.moon
--- v1.1.3.2
+-- v1.1.3.3
 -- Highlighting Cyrillic and space symbols
 -- ![Highlight ON](http://i62.fastpic.ru/big/2014/0603/18/0f2bf6171580c92d52a09ead18b86e18.png)
 -- ![Highlight ON](http://i.piccy.info/i9/7223f0c8d8e8b124e0849af1cdd4e5de/1587815203/7934/1374955/2020_04_25_134822.png)
@@ -12,28 +12,31 @@
 
 -- default values
 ExecDelay=2
-ForegroundColor=9
-BackgroundColor=1
 ShowTimeofProcessing=true
+VisibilityColor=0xFF000000
+ForegroundColor=VisibilityColor+9
+BackgroundColor=VisibilityColor+1
 
 F=far.Flags
+bor  = bit64.bor
+band = bit64.band
 Flags=F.ECF_AUTODELETE
 MessageX=require'MessageX'
 
 editors={}
 Colors={
   {regex.new "/(\\s+)(\\S|$)/"
-  {Flags:bit64.bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
-  ForegroundColor:0x9
-  BackgroundColor:0x1}}
+  {Flags:bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
+  ForegroundColor:ForegroundColor
+  BackgroundColor:BackgroundColor}}
   {regex.new "/([а-яёА-ЯЁ]+)([^а-яёА-ЯЁ]|$)/"
-  {Flags:bit64.bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
-  ForegroundColor:0xe
-  BackgroundColor:0xc}}
+  {Flags:bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
+  ForegroundColor:ForegroundColor+5
+  BackgroundColor:BackgroundColor+3}}
 --  regex.new [[/([-+*:.,;!?~@#$%^&\\\/]+?)([-+*:.,;!?~@#$%^&\\\/]|$)/]]
---  {Flags:bit64.bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
---  ForegroundColor:0xf
---  BackgroundColor:0x1}
+--  {Flags:bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
+--  ForegroundColor:ForegroundColor+6
+--  BackgroundColor:BackgroundColor}
 }
 colorguid=win.Uuid "F4B5E624-16F6-4243-9A3D-763097C72EAA"
 
@@ -116,15 +119,15 @@ Macro
     if not editors[id]
       tFarColor=far.AdvControl far.Flags.ACTL_GETCOLOR,far.Colors.COL_EDITORTEXT,0
       if tFarColor
-        BackgroundColor=tFarColor.BackgroundColor
-      if BackgroundColor>7
+        BackgroundColor=bor tFarColor.BackgroundColor,VisibilityColor
+      if 7<band BackgroundColor,0xF
         ForegroundColor=BackgroundColor-8
-        Colors[2][2].ForegroundColor=math.fmod BackgroundColor-3,8
-        Colors[2][2].BackgroundColor=math.fmod BackgroundColor-5,8
+        Colors[2][2].ForegroundColor=VisibilityColor+math.fmod BackgroundColor-3,8
+        Colors[2][2].BackgroundColor=VisibilityColor+math.fmod BackgroundColor-5,8
       else
         ForegroundColor=BackgroundColor+8
-        Colors[2][2].ForegroundColor=8+math.fmod BackgroundColor+5,8
-        Colors[2][2].BackgroundColor=8+math.fmod BackgroundColor+3,8
+        Colors[2][2].ForegroundColor=VisibilityColor+8+math.fmod BackgroundColor+5,8
+        Colors[2][2].BackgroundColor=VisibilityColor+8+math.fmod BackgroundColor+3,8
       Colors[1][2].ForegroundColor=ForegroundColor
       Colors[1][2].BackgroundColor=BackgroundColor
       Editor.Set 20,1

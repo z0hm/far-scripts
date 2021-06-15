@@ -50,7 +50,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")
 
-  *v1.1.3.2 (5234 bytes, changed 2020-07-02 08:58)*
+  *v1.1.3.3 (5484 bytes, changed 2021-06-15 17:54)*
 
   Highlighting Cyrillic and space symbols
 
@@ -94,7 +94,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")
 
-  *v1.1.3.2 (5100 bytes, changed 2020-07-02 09:02)*
+  *v1.1.3.3 (5330 bytes, changed 2021-06-15 18:00)*
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 

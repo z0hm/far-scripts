@@ -1,5 +1,5 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.3.2
+-- v1.1.3.3
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
 -- Required: MessageX.lua in modules folder
@@ -10,24 +10,27 @@
 
 -- default values
 ExecDelay=2
-ForegroundColor=9
-BackgroundColor=1
 ShowTimeofProcessing=true
+VisibilityColor=0xFF000000
+ForegroundColor=VisibilityColor+9
+BackgroundColor=VisibilityColor+1
 
 F=far.Flags
+bor  = bit64.bor
+band = bit64.band
 Flags=F.ECF_AUTODELETE
 MessageX=require'MessageX'
 
 editors={}
 Colors={
   {regex.new "/(\\s+)(\\S|$)/"
-  {Flags:bit64.bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
-  ForegroundColor:0x9
-  BackgroundColor:0x1}}
+  {Flags:bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
+  ForegroundColor:ForegroundColor
+  BackgroundColor:BackgroundColor}}
   {regex.new "/([a-zA-Z]+)([а-яёА-ЯЁ]+)|([а-яёА-ЯЁ]+)([a-zA-Z]+)/"
-  {Flags:bit64.bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
-  ForegroundColor:0xe
-  BackgroundColor:0xc}}
+  {Flags:bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
+  ForegroundColor:ForegroundColor+5
+  BackgroundColor:BackgroundColor+3}}
 }
 colorguid=win.Uuid "A1811CF8-C7AA-4474-A204-F8306028C7A7"
 
@@ -115,15 +118,15 @@ Macro
     if not editors[id]
       tFarColor=far.AdvControl far.Flags.ACTL_GETCOLOR,far.Colors.COL_EDITORTEXT,0
       if tFarColor
-        BackgroundColor=tFarColor.BackgroundColor
-      if BackgroundColor>7
+        BackgroundColor=bor tFarColor.BackgroundColor,VisibilityColor
+      if 7<band BackgroundColor,0xF
         ForegroundColor=BackgroundColor-8
-        Colors[2][2].ForegroundColor=math.fmod BackgroundColor-3,8
-        Colors[2][2].BackgroundColor=math.fmod BackgroundColor-5,8
+        Colors[2][2].ForegroundColor=VisibilityColor+math.fmod BackgroundColor-3,8
+        Colors[2][2].BackgroundColor=VisibilityColor+math.fmod BackgroundColor-5,8
       else
         ForegroundColor=BackgroundColor+8
-        Colors[2][2].ForegroundColor=8+math.fmod BackgroundColor+5,8
-        Colors[2][2].BackgroundColor=8+math.fmod BackgroundColor+3,8
+        Colors[2][2].ForegroundColor=VisibilityColor+8+math.fmod BackgroundColor+5,8
+        Colors[2][2].BackgroundColor=VisibilityColor+8+math.fmod BackgroundColor+3,8
       Colors[1][2].ForegroundColor=ForegroundColor
       Colors[1][2].BackgroundColor=BackgroundColor
       Editor.Set 20,1
