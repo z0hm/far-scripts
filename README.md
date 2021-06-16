@@ -94,7 +94,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")
 
-  *v1.1.3.3 (5330 bytes, changed 2021-06-15 18:00)*
+  *v1.1.3.3 (5364 bytes, changed 2021-06-16 05:16)*
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 

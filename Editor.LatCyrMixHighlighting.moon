@@ -83,12 +83,13 @@ Event
                 while sEnd<RightBorder
                   sBegin,sEnd,_,s2,_,s4 = Colors[i][1]\findW line,sEnd+1
                   if sEnd
-                    if s2 and s2~=""
-                      if i==1
-                        sEnd=sEnd-1
-                      else
-                        sBegin=sEnd-#s2/2+1
-                    if s4 and s4~=""
+                    if s2
+                      if s2~=""
+                        if i==1
+                          sEnd=sEnd-1
+                        else
+                          sBegin=sEnd-#s2/2+1
+                    elseif s4 and s4~=""
                       sBegin=sEnd-#s4/2+1
                     sEnd=math.min sEnd,RightBorder
                     editor.AddColor ei.EditorID,ii,sBegin,sEnd,Flags,Colors[i][2],190,colorguid
