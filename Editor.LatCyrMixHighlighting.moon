@@ -1,5 +1,5 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.3.3
+-- v1.1.3.4
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
 -- Required: MessageX.lua in modules folder
@@ -62,7 +62,6 @@ Event
       editors[id]=nil
     if event==F.EE_REDRAW
       count=count+1
-      --if ttime-ttime1>8000 --block other redraw events
       ei=editor.GetInfo id
       if ei
         ttime=far.FarClock!
@@ -96,7 +95,6 @@ Event
                   else
                     break
         ttime0=ttime0+far.FarClock!-ttime
-      --ttime1=far.FarClock!
 
 Event
   group:"ExitFAR"
@@ -116,6 +114,12 @@ Macro
   action:->
     count,ttime0=0,0
     id=editor.GetInfo().EditorID
+    Msg=(s)->
+      editor.Redraw id
+      if ShowTimeofProcessing
+        Answer=MessageX s.."\n\nEvent count: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c","","",ExecDelay
+        if Answer==2
+          ShowTimeofProcessing=false
     if not editors[id]
       tFarColor=far.AdvControl far.Flags.ACTL_GETCOLOR,far.Colors.COL_EDITORTEXT,0
       if tFarColor
@@ -134,19 +138,11 @@ Macro
       editors[id]=
         start:0
         finish:0
-      editor.Redraw id
-      if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#a2> ON  <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c","","",ExecDelay
-        if Answer==2
-          ShowTimeofProcessing=false
+      Msg "\nStatus: <#a2> ON  <#rr>"
     else
       Editor.Set 20,0
       ProcessColors id,(data)->
         data.start=1
         data.finish=1
       editors[id]=nil
-      editor.Redraw id
-      if ShowTimeofProcessing
-        Answer=MessageX "\nStatus: <#c4> OFF <#rr>\n\nCount: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c","","",ExecDelay
-        if Answer==2
-          ShowTimeofProcessing=false
+      Msg "\nStatus: <#c4> OFF <#rr>"
