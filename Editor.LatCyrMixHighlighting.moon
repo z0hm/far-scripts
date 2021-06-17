@@ -117,7 +117,7 @@ Macro
     Msg=(s)->
       editor.Redraw id
       if ShowTimeofProcessing
-        Answer=MessageX s.."\n\nEvent count: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","CyrSpaceHighlighting","Close;Hide","c","","",ExecDelay
+        Answer=MessageX s.."\n\nEvent count: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c","","",ExecDelay
         if Answer==2
           ShowTimeofProcessing=false
     if not editors[id]
