@@ -22,7 +22,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.1 (2369 bytes, changed 2020-04-09 09:55)*
 
-  *sha256 4889097a118ea867db12c0314e83269fb20d9a9053b2cca40b2799ead068173f*
+  *SHA-256 4889097a118ea867db12c0314e83269fb20d9a9053b2cca40b2799ead068173f*
 
   Editing command line content in the editor
 
@@ -37,7 +37,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.6 (11312 bytes, changed 2020-05-31 08:54)*
 
-  *sha256 f438fc960a40532311bcd2dfa5acda1f2bd5723156838eb8a80438e67cb25b41*
+  *SHA-256 f438fc960a40532311bcd2dfa5acda1f2bd5723156838eb8a80438e67cb25b41*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -56,7 +56,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.3.4 (5183 bytes, changed 2021-06-17 05:19)*
 
-  *sha256 5c3db8dea5a4e5e3ebd12dbccdcd0109d4db8df3786f3e6a82b16cf2527dcfa4*
+  *SHA-256 5c3db8dea5a4e5e3ebd12dbccdcd0109d4db8df3786f3e6a82b16cf2527dcfa4*
 
   Highlighting Cyrillic and space symbols
 
@@ -85,7 +85,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.2.3 (11700 bytes, changed 2020-04-09 09:55)*
 
-  *sha256 b086fb30d40f9b531d060f33a985502649bf64b2f6505a0f379e604100657681*
+  *SHA-256 b086fb30d40f9b531d060f33a985502649bf64b2f6505a0f379e604100657681*
 
   Filter Duplicates File Names with complex logic
 
@@ -104,7 +104,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.3.4 (5062 bytes, changed 2021-06-17 05:37)*
 
-  *sha256 fee8de19ee50fc7634c8bebc277ffd6b555c0bc322f93c7fbcfd5ccda5fdf3a5*
+  *SHA-256 fee8de19ee50fc7634c8bebc277ffd6b555c0bc322f93c7fbcfd5ccda5fdf3a5*
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 
@@ -129,7 +129,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0 (863 bytes, changed 2020-06-09 09:02)*
 
-  *sha256 7c0cdf472de926a76334f580227ceeeca5e597cf7ae32714d8b172ae0f8c0a03*
+  *SHA-256 7c0cdf472de926a76334f580227ceeeca5e597cf7ae32714d8b172ae0f8c0a03*
 
   Url: http://forum.ru-board.com/topic.cgi?forum=5&topic=31718&start=7640#7
 
@@ -142,7 +142,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.3.2 (2835 bytes, changed 2020-10-17 10:36)*
 
-  *sha256 6f4bd1a55fa12f3d113a4d207bf03ba0a58f45c39bff72e74addb21264be7dfd*
+  *SHA-256 6f4bd1a55fa12f3d113a4d207bf03ba0a58f45c39bff72e74addb21264be7dfd*
 
   Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
 
@@ -163,7 +163,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.1 (5835 bytes, changed 2020-10-12 11:30)*
 
-  *sha256 62efb301fecd7c7c0ddb2a40445c354412047b705947e5565848b186a33ee864*
+  *SHA-256 62efb301fecd7c7c0ddb2a40445c354412047b705947e5565848b186a33ee864*
 
   Tag navigation in files opened in the editor: [dgmsx]?html?, xslt?, [xy]ml
 
@@ -180,7 +180,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.0.2 (4806 bytes, changed 2021-05-17 11:28)*
 
-  *sha256 41228000b7cabc87b7cd770b52146646ac0bdeaa53c602409c45659ce1450910*
+  *SHA-256 41228000b7cabc87b7cd770b52146646ac0bdeaa53c602409c45659ce1450910*
 
   Extend Quit Far Dialog
 
@@ -199,7 +199,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.7.10 (11205 bytes, changed 2021-06-02 14:51)*
 
-  *sha256 590cf1f91426ec2d56ee2fef889397fa879267dc9b72e697b79a7520d6f67c80*
+  *SHA-256 590cf1f91426ec2d56ee2fef889397fa879267dc9b72e697b79a7520d6f67c80*
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -230,7 +230,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0.0.1 (1126 bytes, changed 2021-05-18 12:28)*
 
-  *sha256 55bd5af4890d4c81645a367ec28f27bcea61d6ed121e6cef9a410320240d21c7*
+  *SHA-256 55bd5af4890d4c81645a367ec28f27bcea61d6ed121e6cef9a410320240d21c7*
 
   Visual improvement of HTML-XML code, creates a new file name~2.ext
 
@@ -245,7 +245,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v0.6.7.7 (8353 bytes, changed 2021-05-06 08:37)*
 
-  *sha256 9f6363ea52593d73f121b1c42ff533870ecdf7fb4b3a5d9844dd4391543702c0*
+  *SHA-256 9f6363ea52593d73f121b1c42ff533870ecdf7fb4b3a5d9844dd4391543702c0*
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 
@@ -288,7 +288,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v2.0.1 (11930 bytes, changed 2021-01-17 08:24)*
 
-  *sha256 f529a0cdd9b5f2e7f5328068ee9577082b72e3a06c6bfd412c8119e91cb41fd1*
+  *SHA-256 f529a0cdd9b5f2e7f5328068ee9577082b72e3a06c6bfd412c8119e91cb41fd1*
 
   Panel files sorting by attributes
 
@@ -309,7 +309,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.1.0.1 (18132 bytes, changed 2020-08-20 20:39)*
 
-  *sha256 bf7b2832a5749223f5532c23cead28e91e4bf4a8f3d27dd8dd99f622d2d31b3a*
+  *SHA-256 bf7b2832a5749223f5532c23cead28e91e4bf4a8f3d27dd8dd99f622d2d31b3a*
 
   Very powerful panel file sorting
 
@@ -468,7 +468,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0.0.1 (1008 bytes, changed 2020-08-20 20:43)*
 
-  *sha256 41ceda1e697108c79e9b95525ad5a4f13f07e7c007f712080846b491c5396bac*
+  *SHA-256 41ceda1e697108c79e9b95525ad5a4f13f07e7c007f712080846b491c5396bac*
 
   Custom panel file sorts: by Name with StrCmpLogicalW, by FullPath length
 
@@ -483,7 +483,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0 (2690 bytes, changed 2020-05-21 13:50)*
 
-  *sha256 e6ee790b28a631e3f92bca1e4170cc7cb1b6b36f3877408958d5259d1df5034a*
+  *SHA-256 e6ee790b28a631e3f92bca1e4170cc7cb1b6b36f3877408958d5259d1df5034a*
 
   (un)HEX selected files, VERY FAST!
 
@@ -500,7 +500,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0 (2687 bytes, changed 2020-04-09 09:55)*
 
-  *sha256 2f4009b51874478fcf9b5acf75190239e6306c0073aead8a8b5eb9b8db3bd261*
+  *SHA-256 2f4009b51874478fcf9b5acf75190239e6306c0073aead8a8b5eb9b8db3bd261*
 
   Extended lynx-motion style
 
@@ -517,7 +517,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0.3 (3225 bytes, changed 2021-06-08 06:43)*
 
-  *sha256 ff22e3edee8ad10c0e3cb8e404a54d060a4168f232a211c023bb804df3233d1c*
+  *SHA-256 ff22e3edee8ad10c0e3cb8e404a54d060a4168f232a211c023bb804df3233d1c*
 
   [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad,*m3u<=>FolderName.m3u
 
@@ -538,7 +538,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.3 (5653 bytes, changed 2020-05-21 07:09)*
 
-  *sha256 05ee4feb9c45b70acf9880455b9052ef0cda666278a89d124a165d2067160ca5*
+  *SHA-256 05ee4feb9c45b70acf9880455b9052ef0cda666278a89d124a165d2067160ca5*
 
   Selection files with BOM
 
@@ -555,7 +555,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.3.2.5 (11534 bytes, changed 2020-08-20 20:44)*
 
-  *sha256 85bab92630c25fa700c2b19bf864c6b1dc1852329514eff28906767d79dd468c*
+  *SHA-256 85bab92630c25fa700c2b19bf864c6b1dc1852329514eff28906767d79dd468c*
 
   Select Duplicates File Names in Branch panel with complex logic
 
@@ -574,7 +574,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0.0.1 (2107 bytes, changed 2021-05-17 11:28)*
 
-  *sha256 a241b97e3bc46f897e554e9b14735b24847457895d2d7fdbc6fbb02a32953676*
+  *SHA-256 a241b97e3bc46f897e554e9b14735b24847457895d2d7fdbc6fbb02a32953676*
 
   Extend Select Folders/Files Dialog
 
@@ -591,7 +591,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.3.2 (3080 bytes, changed 2020-05-21 07:09)*
 
-  *sha256 8bd3c215284a5028cdbcdc91d6b038391c19371a54a61e366ae62cfd249c4e3c*
+  *SHA-256 8bd3c215284a5028cdbcdc91d6b038391c19371a54a61e366ae62cfd249c4e3c*
 
   Extend Panel (Shift)?F[56] Dialog
 
@@ -608,7 +608,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.9.0 (9194 bytes, changed 2021-03-31 17:17)*
 
-  *sha256 83a1d956dbf0eb0adb8dc24597868e77bb34a872c3febf0b844ee3814e8a1487*
+  *SHA-256 83a1d956dbf0eb0adb8dc24597868e77bb34a872c3febf0b844ee3814e8a1487*
 
   Visual Compare files or folders for panels: Files, Branch, Temporary, Arclite, Netbox, Observer, TorrentView.
 
@@ -633,7 +633,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.4.2 (3717 bytes, changed 2020-05-17 18:24)*
 
-  *sha256 306a9b80e3cec7cef9ed7fc2c37bb9908f0f9dad58af3273ef3ad69f4ddbf856*
+  *SHA-256 306a9b80e3cec7cef9ed7fc2c37bb9908f0f9dad58af3273ef3ad69f4ddbf856*
 
   Comfortable Grep text from files by search pattern to editor
 
@@ -666,7 +666,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0.1 (2992 bytes, changed 2020-06-20 09:14)*
 
-  *sha256 df78566a3629554de8d67b05feb9aa424db60357acf45db06e9894b85ef3fabd*
+  *SHA-256 df78566a3629554de8d67b05feb9aa424db60357acf45db06e9894b85ef3fabd*
 
   Create btpolicy.xml for uTorrent, with priority peering zone (example for Belarus users)
 
@@ -681,7 +681,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0.4 (2479 bytes, changed 2021-01-09 09:17)*
 
-  *sha256 d1f8ae513393efff5f88d211dcfc30f9bd3256816475532e4bbd6558e864498d*
+  *SHA-256 d1f8ae513393efff5f88d211dcfc30f9bd3256816475532e4bbd6558e864498d*
 
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 
@@ -696,7 +696,7 @@ a very wide range of tasks using the Far and Windows API's.
 
   *v1.0 (629 bytes, changed 2021-05-21 06:55)*
 
-  *sha256 c6246876a21e863f923078f14fae50eb075506818e2bca483f3626bd2d60f130*
+  *SHA-256 c6246876a21e863f923078f14fae50eb075506818e2bca483f3626bd2d60f130*
 
   author Shmuel, 28.05.2020
 
@@ -721,7 +721,7 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
   *21706 bytes, changed 2021-05-26 06:33*
 
-  *sha256 dbc80715accb0849b2a9c8c7aa1babdfd19b7d5ac2e330a30b52b1347ac33b1e*
+  *SHA-256 dbc80715accb0849b2a9c8c7aa1babdfd19b7d5ac2e330a30b52b1347ac33b1e*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
