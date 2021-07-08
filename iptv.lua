@@ -1,5 +1,5 @@
 -- iptv.lua
--- v1.0.4
+-- v1.0.5
 -- Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 -- Launch: in cmdline Far.exe: lua:@iptv.lua, or lfjit.exe iptv.lua, or lflua.exe iptv.lua
 
@@ -14,6 +14,7 @@ local urls={
   "http://iptvm3u.ru/onelist.m3u",
   "https://smarttvnews.ru/apps/iptvchannels.m3u",
   "https://smarttvnews.ru/apps/AutoIPTV.m3u",
+  "https://smarttvnews.ru/apps/freeiptv.m3u",
   "https://webarmen.com/my/iptv/auto.nogrp.q.m3u"
 }
 
@@ -37,15 +38,35 @@ for j=1,#urls do
   fwrite(dir..name,l) -- save individual playlists
   head=head..'#EXTINF:-1 '..s..name..'\nhttp://127.0.0.1/pls'..j..'.png\n'
   for h,u in (l.."\n"):gmatch("(#EXTINF:[^\r\n]-)\r?\n(%w%w-://[^\r\n]-)\r?\n") do -- get channel's headers and urls
-    if h and u then table.insert(pgm,{i=i,h=h:gsub(',',s),u=u}) i=i+1 end
+    if h and u then table.insert(pgm,{i=i,h=h:gsub(' *,',s),u=u}) i=i+1 end
   end
 end
+
+-- Adult filter
+for i=#pgm,1,-1 do
+  local s=pgm[i].h:match(", -%d+: (.+)$")
+  if s then
+    local l=s:gsub("[ |]+"," "):gsub("^Q%d ",""):lower()
+    if l:find("18%+") or l:find("adult") or l:find("sex") or l:find("xxx") or l:find("porn") or l:find("traffic") then table.remove(pgm,i) end
+  end
+end
+
 table.sort(pgm,function(a,b) return a.u<b.u end) -- sort by urls
 for i=#pgm,2,-1 do if pgm[i].u==pgm[i-1].u then table.remove(pgm,i) end end -- remove channel's duplicates
+
 local function comp(x) -- HD channels => Top
-  local i,s = x:match(",(%d+): (.+)$")
-  local l=s:gsub("[ |]+"," "):gsub("^Q%d ",""):lower()..i
-  return l:find("hd") and ' '..l or l
+  local i,s = x:match(", -(%d+): (.+)$")
+  local p,q,l = "1","5",""
+  if i and s then
+    l=s:gsub("[ |]+"," "):gsub("^Q%d ",""):lower()..i
+    if     l:find(" 4k") then q="0"
+    elseif l:find("uhd") then q="1"
+    elseif l:find("qhd") then q="2"
+    elseif l:find("fhd") then q="3"
+    elseif l:find("hd")  then q="4"
+    end
+  end
+  return p..q..l
 end
 table.sort(pgm,function(a,b) return comp(a.h)<comp(b.h) end) -- sort by channel's name and playlist's number
 

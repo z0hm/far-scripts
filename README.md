@@ -679,9 +679,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")
 
-  *v1.0.4 (2479 bytes, changed 2021-01-09 09:17)*
+  *v1.0.5 (3066 bytes, changed 2021-07-08 14:26)*
 
-  *SHA-256 `d1f8ae513393efff5f88d211dcfc30f9bd3256816475532e4bbd6558e864498d`*
+  *SHA-256 `721584597be8e246ea1a5494ff3b25e41f663558f8b0eccba6f4a2d3f1d79ea1`*
 
   Combining free, frequently updated iptv sheets into one My.m3u, duplicate links removed
 
