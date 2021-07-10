@@ -1,13 +1,17 @@
 -- Dialog.Maximize.moon
--- v1.1.6
+-- v1.1.7
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
 -- Based on https://forum.farmanager.com/viewtopic.php?p=146816#p146816
 
+-- xs - scale 0<=xs<=1 for all dialogs: 0 = original width, 1 = full width, 0.5 = (full - original) / 2
+-- _G._XScale={id:"",xs:1,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil} -- full width
+_G._XScale={id:"",xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil} -- original width
+XStep=0.25 -- width change step
+
 Guid_DlgXScale=win.Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
 DX=4
-XStep=0.25
 
 transform=
   --[Guid_DlgXScale]: {0,"1.16.A27",3.0} -- Set Dlg.XScale
@@ -21,7 +25,7 @@ transform=
   [win.Uuid"8BCCDFFD-3B34-49F8-87CD-F4D885B75873"]: {1,2.3,3.3,5,7,12.1,13.1} -- edit replace
   [win.Uuid"9162f965-78b8-4476-98ac-d699e5b6afe7"]: {1,3,6} -- Save as
   [win.Uuid"D8AF7A38-8357-44A5-A44B-A595CF707549"]: {1,3,6} -- Describe file
-  [win.Uuid"044EF83E-8146-41B2-97F0-404C2F4C7B69"]: {1,3,6} -- Shell: Apply command (CtrlG)
+  [win.Uuid"044EF83E-8146-41B2-97F0-404C2F4C7B69"]: {1,3} -- Shell: Apply command (CtrlG)
   [win.Uuid'502D00DF-EE31-41CF-9028-442D2E352990']: {1,3,11} -- Shell: Copy current
   [win.Uuid'89664EF4-BB8C-4932-A8C0-59CAFD937ABA']: {1,3,11} -- Shell: Move current
   -- RESearch
@@ -61,7 +65,6 @@ transform=
 
 
 F=far.Flags
-_G._XScale={id:"",xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil}
 
 ConsoleSize=->
   rr=far.AdvControl"ACTL_GETFARRECT"
