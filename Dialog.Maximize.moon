@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.7
+-- v1.1.6
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -11,31 +11,31 @@ XStep=0.25
 
 transform=
   --[Guid_DlgXScale]: {0,"1.16.A27",3.0} -- Set Dlg.XScale
-  [win.Uuid"FCEF11C4-5490-451D-8B4A-62FA03F52759"]: {1,3,11} --copy
-  [win.Uuid"431A2F37-AC01-4ECD-BB6F-8CDE584E5A03"]: {1,3,11} --move
-  [win.Uuid"FAD00DBE-3FFF-4095-9232-E1CC70C67737"]: {1,3,6,8} --mkdir
-  [win.Uuid"5EB266F4-980D-46AF-B3D2-2C50E64BCA81"]: {1,3,11} --link
-  [win.Uuid"1D07CEE2-8F4F-480A-BE93-069B4FF59A2B"]: {1,3,6} --new
-  [win.Uuid"8C9EAD29-910F-4B24-A669-EDAFBA6ED964"]: {1,3,6,9,15.1,16.1,17.1,18.1,20.1,22.2,23.1} --findfile
-  [win.Uuid"5D3CBA90-F32D-433C-B016-9BB4AF96FACC"]: {1,2.3,3.3,5,7,12.1,13.1} --editsearch
-  [win.Uuid"8BCCDFFD-3B34-49F8-87CD-F4D885B75873"]: {1,2.3,3.3,5,7,12.1,13.1} --editreplace
-  [win.Uuid"9162f965-78b8-4476-98ac-d699e5b6afe7"]: {1,3,6} --saveas
+  [win.Uuid"FCEF11C4-5490-451D-8B4A-62FA03F52759"]: {1,3,11} -- Shell: copy
+  [win.Uuid"431A2F37-AC01-4ECD-BB6F-8CDE584E5A03"]: {1,3,11} -- Shell: move
+  [win.Uuid"FAD00DBE-3FFF-4095-9232-E1CC70C67737"]: {1,3,6,8} -- Shell: mkdir
+  [win.Uuid"5EB266F4-980D-46AF-B3D2-2C50E64BCA81"]: {1,3,11} -- Shell: link
+  [win.Uuid"1D07CEE2-8F4F-480A-BE93-069B4FF59A2B"]: {1,3,6} -- Shell: new
+  [win.Uuid"8C9EAD29-910F-4B24-A669-EDAFBA6ED964"]: {1,3,6,9,15.1,16.1,17.1,18.1,20.1,22.2,23.1} -- find file
+  [win.Uuid"5D3CBA90-F32D-433C-B016-9BB4AF96FACC"]: {1,2.3,3.3,5,7,12.1,13.1} -- edit search
+  [win.Uuid"8BCCDFFD-3B34-49F8-87CD-F4D885B75873"]: {1,2.3,3.3,5,7,12.1,13.1} -- edit replace
+  [win.Uuid"9162f965-78b8-4476-98ac-d699e5b6afe7"]: {1,3,6} -- Save as
   [win.Uuid"D8AF7A38-8357-44A5-A44B-A595CF707549"]: {1,3,6} -- Describe file
-  [win.Uuid"044EF83E-8146-41B2-97F0-404C2F4C7B69"]: {1,3,6} -- Apply command
-  [win.Uuid'502D00DF-EE31-41CF-9028-442D2E352990']: {1,3,11} -- Copy current
-  [win.Uuid'89664EF4-BB8C-4932-A8C0-59CAFD937ABA']: {1,3,11} -- Move current
+  [win.Uuid"044EF83E-8146-41B2-97F0-404C2F4C7B69"]: {1,3,6} -- Shell: Apply command (CtrlG)
+  [win.Uuid'502D00DF-EE31-41CF-9028-442D2E352990']: {1,3,11} -- Shell: Copy current
+  [win.Uuid'89664EF4-BB8C-4932-A8C0-59CAFD937ABA']: {1,3,11} -- Shell: Move current
   -- RESearch
-  [win.Uuid"E506EA8F-484F-7261-FEED-9B10267753E9"]: {1.0,4.0,6.0,7.3,26.3}          -- Shell/Search
-  [win.Uuid"9736CFC1-9F3A-D4F9-02A4-566717182E8B"]: {1.0,4.0,6.0,8.0,9.3,10.3,"33.10.32",37.3} -- Shell/Replace
-  [win.Uuid"3D95792C-E25C-1CE1-EC09-DC409184EC7A"]: {1.0,4.0,6.0,7.3,24.0,35.3}     -- Shell/Grep
-  [win.Uuid"AA3CA1C7-062A-67A8-3A73-80B5E9394046"]: {1.0,5.0} -- Shell/SelectFiles,UnselectFiles,FlipSelection
-  [win.Uuid"0AE75CCC-5872-74A7-3561-BBA1991C0395"]: {1.0,4.0,6.0,8.0,28.3}          -- Shell/RenameFiles
-  [win.Uuid"622AAD65-B7CA-7670-6622-A267028B1A06"]: {1.0,5.0,7.0,16.3}              -- Shell/RenameSelectedFiles
-  [win.Uuid"FF1E3A24-0B7A-0149-EFA2-1ED2309F8410"]: {1.0,3.0,4.3,14.3,18.3}  -- Viewer,Editor/Search (hack: [Presets] is 14 in V, 18 in E)
-  [win.Uuid"411BF77E-5743-D87A-A8E7-0EFDF0C71D79"]: {1.0,3.0,5.0,6.3,7.3,25.3}      -- Editor/Replace
-  [win.Uuid"3A6225FC-AD65-75B1-2643-5158B78D6BC4"]: {1.0,3.0,4.3,14.3}              -- Editor/Filter
-  [win.Uuid"6938029A-B71F-09EE-D09D-9982EE2B40BC"]: {1.0,3.0,4.3,15.3}              -- Editor/Repeat
-  [win.Uuid"DCDDDA35-A319-1B82-8410-36C04A1390B0"]: {1.0,3.0,5.0,10.3}              -- Editor/Transliterate
+  [win.Uuid"E506EA8F-484F-7261-FEED-9B10267753E9"]: {1.0,4.0,6.0,7.3,26.3} -- Shell: Search
+  [win.Uuid"9736CFC1-9F3A-D4F9-02A4-566717182E8B"]: {1.0,4.0,6.0,8.0,9.3,10.3,"33.10.32",37.3} -- Shell: Replace
+  [win.Uuid"3D95792C-E25C-1CE1-EC09-DC409184EC7A"]: {1.0,4.0,6.0,7.3,24.0,35.3} -- Shell: Grep
+  [win.Uuid"AA3CA1C7-062A-67A8-3A73-80B5E9394046"]: {1.0,5.0} -- Shell: SelectFiles,UnselectFiles,FlipSelection
+  [win.Uuid"0AE75CCC-5872-74A7-3561-BBA1991C0395"]: {1.0,4.0,6.0,8.0,28.3} -- Shell: RenameFiles
+  [win.Uuid"622AAD65-B7CA-7670-6622-A267028B1A06"]: {1.0,5.0,7.0,16.3} -- Shell: RenameSelectedFiles
+  [win.Uuid"FF1E3A24-0B7A-0149-EFA2-1ED2309F8410"]: {1.0,3.0,4.3,14.3,18.3} -- Viewer,Editor: Search (hack: [Presets] is 14 in V, 18 in E)
+  [win.Uuid"411BF77E-5743-D87A-A8E7-0EFDF0C71D79"]: {1.0,3.0,5.0,6.3,7.3,25.3} -- Editor: Replace
+  [win.Uuid"3A6225FC-AD65-75B1-2643-5158B78D6BC4"]: {1.0,3.0,4.3,14.3} -- Editor: Filter
+  [win.Uuid"6938029A-B71F-09EE-D09D-9982EE2B40BC"]: {1.0,3.0,4.3,15.3} -- Editor: Repeat
+  [win.Uuid"DCDDDA35-A319-1B82-8410-36C04A1390B0"]: {1.0,3.0,5.0,10.3} -- Editor: Transliterate
   -- LFSearch/Shell
   [win.Uuid"3CD8A0BB-8583-4769-BBBC-5B6667D13EF9"]: {1.0,3.0,5.0,6.3} -- Shell/Find
   [win.Uuid"F7118D4A-FBC3-482E-A462-0167DF7CC346"]: {1.0,3.0,5.0,7.0,8.3,9.3,10.4,31.2,32.1,33.5} -- Shell/Replace
@@ -58,8 +58,7 @@ transform=
   [win.Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1.0,"43.10.45"}
   -- AudioPlayer
   [win.Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1.0}
-  -- Apply command (Shell: CtrlG)
-  [win.Uuid"044EF83E-8146-41B2-97F0-404C2F4C7B69"]: {1,3}
+
 
 F=far.Flags
 _G._XScale={id:"",xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil}
