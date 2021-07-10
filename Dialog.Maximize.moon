@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.6
+-- v1.1.7
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -58,6 +58,8 @@ transform=
   [win.Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1.0,"43.10.45"}
   -- AudioPlayer
   [win.Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1.0}
+  -- Apply command (Shell: CtrlG)
+  [win.Uuid"044EF83E-8146-41B2-97F0-404C2F4C7B69"]: {1,3}
 
 F=far.Flags
 _G._XScale={id:"",xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil}
