@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.7
+-- v1.1.8
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -7,7 +7,7 @@
 
 -- xs - scale 0<=xs<=1 for all dialogs: 0 = original width, 1 = full width, 0.5 = (full - original) / 2
 -- _G._XScale={id:"",xs:1,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil} -- full width
-_G._XScale={id:"",xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil} -- original width
+_G._XScale={id:"",cs:nil,xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
 XStep=0.25 -- width change step
 
 Guid_DlgXScale=win.Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
@@ -66,6 +66,12 @@ transform=
 
 F=far.Flags
 
+m=math
+abs,ceil,floor,fmod,modf = m.abs,m.ceil,m.floor,m.fmod,m.modf
+
+Corr=(x)->
+  (0==fmod _G._XScale.xs/XStep,2) and floor(x) or ceil(x)
+
 ConsoleSize=->
   rr=far.AdvControl"ACTL_GETFARRECT"
   rr.Right-rr.Left+1
@@ -74,8 +80,7 @@ DlgRect=(hDlg)->
   {Left:_G._XScale.dl,Top:_G._XScale.dt,Right:_G._XScale.dr,Bottom:_G._XScale.db}=hDlg\send F.DM_GETDLGRECT
   _G._XScale.dw=_G._XScale.dr-_G._XScale.dl+1
   _G._XScale.dh=_G._XScale.db-_G._XScale.dt+1
-  itm=hDlg\send F.DM_GETDLGITEM,1
-  _G._XScale.pl=itm[2]+2
+  _G._XScale.pl=(hDlg\send F.DM_GETDLGITEM,1)[2]+2
 
 Proc=(id,hDlg)->
   cs=ConsoleSize!
@@ -84,142 +89,128 @@ Proc=(id,hDlg)->
     if not _G._XScale[id]
       _G._XScale[id]={}
     DlgRect(hDlg)
+  if _G._XScale.cs~=cs
+    _G._XScale.cs=cs
+    DlgRect(hDlg)
   df=cs-DX-_G._XScale.dw
   if df<=0
-    _G._XScale.xs=0
-    _G._XScale.xp=0
-  dw,dh,dt,pl = _G._XScale.dw,_G._XScale.dh,_G._XScale.dt,_G._XScale.pl
-  diff=df*(_G._XScale.xs-_G._XScale.xp)
-  dw+=df*_G._XScale.xs
-  dw=math.floor dw+0.5
-  pr=dw-pl-1
-  hDlg\send F.DM_SHOWDIALOG,0,0  -- hide dialog
-  for ii in *transform[id]
-    local idx,opt,ref
-    if "number"==type ii
-      continue if ii<1
-      idx,opt = math.modf ii
-      opt=math.floor opt*10+0.5
-    else
-      idx,opt,ref = ii\match"^(%d%d-)%.(%d%d-)%.(.+)$"
-      idx=tonumber idx
-      opt=tonumber opt
-    item=far.GetDlgItem hDlg,idx
-    --_G._XScale[id][idx]=item
-    if item  -- prevent error message for out-of-range index (see "hack" above)
-      switch opt
-        when 0  -- Stretch full
-          if idx==1 and item[1]==3
-            item[4]=pr+2
-          else
-            if item[4]==item[2]
-              item[2]+=diff
-            item[4]+=diff
-        when 1  -- Move half
-          if item[4]==item[2]
-            item[4]+=diff/2
-          item[2]+=diff/2
-        when 2  -- Stretch half
-          if item[4]==item[2]
-            item[2]+=diff/2
-          item[4]+=diff/2
-        when 3  -- Move full
-          if item[4]==item[2]
-            item[4]+=diff
-          item[2]+=diff
-        when 4  -- Move left
-          item[2]=pl
-        when 5  -- Move half & Stretch full
-          if item[4]==item[2]
-            item[4]+=diff/2
-          item[2]+=diff/2
-          if diff>=0
-            item[4]+=diff
-        when 6  -- Move relative by X
-          x=tonumber ref\match"[%-%+]?%d+"
-          item[2]+=x
-          item[4]+=x
-        when 7  -- Move relative by Y
-          y=tonumber ref\match"[%-%+]?%d+"
-          item[3]+=y
-          item[5]+=y
---      when 8  -- reserved
-        when 9  -- Move & Size relative by X1 & X2
-          x1,x2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d+)"
-          item[2]+=tonumber x1
-          item[4]+=tonumber x2
-        when 10  -- Align to ref.X
-          t=hDlg\send F.DM_GETDLGITEM,tonumber ref
-          item[4]=item[4]+t[2]-item[2]
-          item[2]=t[2]
-        when 11  -- Align to ref.Y
-          t=hDlg\send F.DM_GETDLGITEM,tonumber ref
-          item[5]=item[5]+t[3]-item[3]
-          item[3]=t[3]
-        when 12  -- Move & Stretch: (colons quantity).(colon number).(dx)
-          m,q,n,x = ref\match"([F]?)(%d)%.(%d)%.([%-%+]?%d+)"
-          if not q
-            m,q,n = ref\match"([F]?)(%d)%.(%d)"
-            x=0
-          wc=(dw-pl*2-1)/tonumber q
-          n=tonumber n
-          w=item[4]-item[2]+1
-          if w>wc
-            w=wc
-          x=tonumber x
-          item[2]=wc*(n-1)+pl+x
-          if m=="F"
-            item[4]=item[2]+w-1
-          else
-            item[4]=item[2]+wc-1
-        when 13  -- Free Move & Stretch Relative
-          x1,x2,y1,y2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d+)"
-          item[2]+=tonumber x1
-          item[3]+=tonumber y1
-          item[4]+=tonumber x2
-          item[5]+=tonumber y2
-        when 14  -- Free Move & Stretch Absolute
-          x1,x2,y1,y2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d+)"
-          item[2]=tonumber x1
-          item[3]=tonumber y1
-          item[4]=tonumber x2
-          item[5]=tonumber y2
-        when 15  -- Set text
-          item[10]=ref
-        when 16  -- Scale Dialog
-          m,sc=ref\match"([AF]?)([%d%.]+)"
-          sc=tonumber sc
-          w=m=="" and dw*sc or sc
-          hDlg\send F.DM_RESIZEDIALOG,0,{X:w,Y:dh}
-          hDlg\send F.DM_MOVEDIALOG,1,{X:(cs-w)/2,Y:dt}
-          pr=w-pl-1
-          if idx==1
-            item[4]=pr+2
-          else
-            p=pl*2+1
-            sc=(w-p)/(dw-p)
-            w=item[4]-item[2]+1
-            if m=="A"
-              w*=sc  -- Adaptive width
-            item[2]=(item[2]-pl)*sc+pl
-            item[4]=item[2]+w-1
-      item[2]=math.floor item[2]+0.5
-      item[4]=math.floor item[4]+0.5
-      if idx==1
-        if item[2]<pl-2
-          item[2]=pl-2
-        if item[4]>pr+2
-          item[4]=pr+2
+    _G._XScale.xs,_G._XScale.xp = 0,0
+  if _G._XScale.xs~=_G._XScale.xp
+    dh,dt,pl = _G._XScale.dh,_G._XScale.dt,_G._XScale.pl
+    diff=(_G._XScale.xs-_G._XScale.xp)*df
+    dw=Corr _G._XScale.xs*df+_G._XScale.dw
+    pr=dw-pl-1
+    _G._XScale.pr=pr
+    hDlg\send F.DM_SHOWDIALOG,0,0  -- hide dialog
+    for ii in *transform[id]
+      local idx,opt,ref
+      if "number"==type ii
+        continue if ii<1
+        idx,opt = modf ii
+        opt=floor opt*10+0.5
       else
-        if item[2]<pl
-          item[2]=pl
-        if item[4]>pr
-          item[4]=pr
-      far.SetDlgItem hDlg,idx,item
-  hDlg\send F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
-  hDlg\send F.DM_MOVEDIALOG,1,{X:math.floor((cs-dw)/2+0.5),Y:dt}
-  --hDlg\send F.DM_REDRAW,0,0
-  hDlg\send F.DM_SHOWDIALOG,1,0 -- show dialog
+        idx,opt,ref = ii\match"^(%d%d-)%.(%d%d-)%.(.+)$"
+        idx=tonumber idx
+        opt=tonumber opt
+      item=far.GetDlgItem hDlg,idx
+      --_G._XScale[id][idx]=item
+      if item  -- prevent error message for out-of-range index (see "hack" above)
+        switch opt
+          when 0  -- Stretch full
+            if idx==1 and item[1]==3
+              item[4]=pr+2
+            else
+              if item[4]==item[2]
+                item[2]+=diff
+              item[4]+=diff
+          when 1  -- Move half
+            if item[4]==item[2]
+              item[4]+=diff/2
+            item[2]+=diff/2
+          when 2  -- Stretch half
+            if item[4]==item[2]
+              item[2]+=diff/2
+            item[4]+=diff/2
+          when 3  -- Move full
+            if item[4]==item[2]
+              item[4]+=diff
+            item[2]+=diff
+          when 4  -- Move left
+            item[2]=pl
+          when 5  -- Move half & Stretch full
+            if item[4]==item[2]
+              item[4]+=diff/2
+            item[2]+=diff/2
+            if diff>=0
+              item[4]+=diff
+          when 6  -- Move relative by X
+            x=tonumber ref\match"[%-%+]?%d+"
+            item[2]+=x
+            item[4]+=x
+          when 7  -- Move relative by Y
+            y=tonumber ref\match"[%-%+]?%d+"
+            item[3]+=y
+            item[5]+=y
+--        when 8  -- reserved
+          when 9  -- Move & Size relative by X1 & X2
+            x1,x2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d+)"
+            item[2]+=tonumber x1
+            item[4]+=tonumber x2
+          when 10  -- Align to ref.X
+            t=hDlg\send F.DM_GETDLGITEM,tonumber ref
+            item[4]=item[4]+t[2]-item[2]
+            item[2]=t[2]
+          when 11  -- Align to ref.Y
+            t=hDlg\send F.DM_GETDLGITEM,tonumber ref
+            item[5]=item[5]+t[3]-item[3]
+            item[3]=t[3]
+          when 12  -- Move & Stretch: (colons quantity).(colon number).(dx)
+            m,q,n,x = ref\match"([F]?)(%d)%.(%d)%.([%-%+]?%d+)"
+            if not q
+              m,q,n = ref\match"([F]?)(%d)%.(%d)"
+              x=0
+            wc=(dw-pl*2-1)/tonumber q
+            n=tonumber n
+            w=item[4]-item[2]+1
+            if w>wc
+              w=wc
+            x=tonumber x
+            item[2]=wc*(n-1)+pl+x
+            if m=="F"
+              item[4]=item[2]+w-1
+            else
+              item[4]=item[2]+wc-1
+          when 13  -- Free Move & Stretch Relative
+            x1,x2,y1,y2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d+)"
+            item[2]+=tonumber x1
+            item[3]+=tonumber y1
+            item[4]+=tonumber x2
+            item[5]+=tonumber y2
+          when 14  -- Free Move & Stretch Absolute
+            x1,x2,y1,y2 = ref\match"([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d%d-)%.([%-%+]?%d+)"
+            item[2]=tonumber x1
+            item[3]=tonumber y1
+            item[4]=tonumber x2
+            item[5]=tonumber y2
+          when 15  -- Set text
+            item[10]=ref
+        item[2]=Corr item[2] -- round
+        item[4]=Corr item[4] -- round
+        if idx==1
+          if item[2]<pl-2
+            item[2]=pl-2
+          if item[4]>pr+2
+            item[4]=pr+2
+        else
+          if item[2]<pl
+            item[2]=pl
+          if item[4]>pr
+            item[4]=pr
+        far.SetDlgItem hDlg,idx,item
+    hDlg\send F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
+    hDlg\send F.DM_MOVEDIALOG,1,{X:Corr((cs-dw)/2),Y:dt}
+    --hDlg\send F.DM_REDRAW,0,0
+    hDlg\send F.DM_SHOWDIALOG,1,0 -- show dialog
 
 XItems={
          {F.DI_DOUBLEBOX, 0,0,19,2,0,       0,0,       0,  "XScale"}
@@ -237,14 +228,14 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         res=0
       elseif res>1
         res=1
-      _G._XScale.xp=_G._XScale.xs
-      _G._XScale.xs=res
+      _G._XScale.xp,_G._XScale.xs = _G._XScale.xs,res
 
-exec=(hDlg)->
-  if _G._XScale.xs~=_G._XScale.xp
-    id=hDlg\send F.DM_GETDIALOGINFO
-    if id and transform[id.Id]
-      Proc id.Id,hDlg
+exec=(hDlg,p1)->
+  id=hDlg\send F.DM_GETDIALOGINFO
+  if id and transform[id.Id]
+    st=hDlg\send F.DM_EDITUNCHANGEDFLAG,p1,-1
+    Proc id.Id,hDlg
+    hDlg\send F.DM_EDITUNCHANGEDFLAG,p1,st
 
 Event
   group:"DialogEvent"
@@ -252,25 +243,26 @@ Event
   action:(event,param)->
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG
       _G._XScale.xp=0
-      exec param.hDlg
+      exec param.hDlg,param.Param1
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=far.InputRecordToName param.Param2
         if name=="F2"
           res=far.Dialog Guid_DlgXScale,-1,-1,20,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
           if res==3
-            exec param.hDlg
+            exec param.hDlg,param.Param1
         elseif name=="CtrlAltRight"
           if _G._XScale.xs<1
             _G._XScale.xp=_G._XScale.xs
             _G._XScale.xs+=XStep
             if _G._XScale.xs>1
               _G._XScale.xs=1
-            exec param.hDlg
+            exec param.hDlg,param.Param1
         elseif name=="CtrlAltLeft"
           if _G._XScale.xs>0
             _G._XScale.xp=_G._XScale.xs
             _G._XScale.xs-=XStep
             if _G._XScale.xs<0
               _G._XScale.xs=0
-            exec param.hDlg
+            exec param.hDlg,param.Param1
+    false
