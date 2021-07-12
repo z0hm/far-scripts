@@ -1,5 +1,5 @@
 ﻿-- Editor.SearchLinesWithMinMaxLength.lua
--- v1.3.2
+-- v1.3.2.1
 -- Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
 -- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/2fbf64356c455c4f73c6c7a9a79e075c/1602930317/34080/1401072/293632020_10_17_132412.png)
 -- Press the [ Min ] or [ Max ] button for to go to this line
@@ -8,16 +8,22 @@
 
 local MessageX=require'MessageX'
 
+local e=editor
+local GetInfo,GetStringW,SetPosition = e.GetInfo,e.GetStringW,e.SetPosition
+
+local w=win
+local Utf16ToUtf8,WideCharToMultiByte = w.Utf16ToUtf8,w.WideCharToMultiByte
+
 Macro {
   description="Search Lines with MinMax Lengths";
   area="Editor"; key="F3";
   action=function()
     local ttime=far.FarClock()
     local MinText,MaxText,LineInfo,StringNumber,MinNumber,MaxNumber,MinSymbols,MaxSymbols = "","",{},1,0,0,math.huge,0
-    local EGI=editor.GetInfo()
+    local EGI=GetInfo()
     local EditorID,CodePage,TotalLines = EGI.EditorID,EGI.CodePage,EGI.TotalLines
     while true do
-      LineInfo=editor.GetStringW(EditorID,StringNumber,0)
+      LineInfo=GetStringW(EditorID,StringNumber,0)
       if LineInfo then
         local Symbols=LineInfo.StringLength
         if Symbols<MinSymbols and StringNumber>1 and StringNumber<TotalLines then MinText,MinNumber,MinSymbols = LineInfo.StringText,StringNumber,Symbols
@@ -32,10 +38,10 @@ Macro {
     if MaxSymbols>MaxLen then MaxText=MaxText:sub(0,MaxLen) MaxPf=">" end
     if CodePage>=1200 and CodePage<=1201
     then MinBytes,MaxBytes,MinPf,MaxPf = MinSymbols*2,MaxSymbols*2,"",""
-    else MinBytes,MaxBytes = #win.WideCharToMultiByte(MinText,CodePage),#win.WideCharToMultiByte(MaxText,CodePage)
+    else MinBytes,MaxBytes = #WideCharToMultiByte(MinText,CodePage),#WideCharToMultiByte(MaxText,CodePage)
     end
-    MinText=win.Utf16ToUtf8(MinText)
-    MaxText=win.Utf16ToUtf8(MaxText)
+    MinText=Utf16ToUtf8(MinText)
+    MaxText=Utf16ToUtf8(MaxText)
     local spc='\194\183'
     local tab='\26'
     local function show(s)
@@ -55,8 +61,8 @@ Macro {
       'Search Lines with MinMax Lengths',
       'Min;Max;Cancel','c'
     )
-    if res==1 then editor.SetPosition(EditorID,{CurLine=MinNumber})
-    elseif res==2 then editor.SetPosition(EditorID,{CurLine=MaxNumber})
+    if res==1 then SetPosition(EditorID,{CurLine=MinNumber})
+    elseif res==2 then SetPosition(EditorID,{CurLine=MaxNumber})
     end
   end
 }

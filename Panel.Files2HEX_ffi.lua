@@ -1,5 +1,5 @@
 ﻿-- Panel.Files2HEX_ffi.lua
--- v1.0
+-- v1.0.0.1
 -- (un)HEX selected files, VERY FAST!
 -- Keys: launch from Macro Browser alt.
 -- author Shmuel, co-author AleXH
@@ -7,8 +7,20 @@
 local buf_size=0x10000
 
 local ffi=require 'ffi'
-local C=ffi.C
-ffi.cdef[[
+local C,cast,cdef,new,sizeof = ffi.C,ffi.cast,ffi.cdef,ffi.new,ffi.sizeof
+
+local fread,fwrite,fclose,_wfopen = C.fread,C.fwrite,C.fclose,C._wfopen
+
+local f=far
+local Message = f.Message
+
+local w=win
+local Utf8ToUtf16 = w.Utf8ToUtf16
+
+local b=bit
+local rshift = b.rshift
+
+cdef[[
   typedef struct {int a;} FILE;
   size_t fread(void*,size_t,size_t,FILE*);
   size_t fwrite(const void*,size_t,size_t,FILE*);
@@ -25,18 +37,18 @@ Macro {
       Panel.SetPosIdx(0,1,1)
       local fname = APanel.Path0.."\\"..APanel.Current
       local hex = fname:match("%.hex$") and true or false
-      local name_in = win.Utf8ToUtf16(fname).."\0"
+      local name_in = Utf8ToUtf16(fname).."\0"
       fname = hex and fname:gsub("%.hex$","") or fname..".hex"
-      local name_out = win.Utf8ToUtf16(fname).."\0"
-      local mode_in,mode_out = "\114\0\98\0\0","\119\0\98\0\0" -- win.Utf8ToUtf16("rb").."\0", win.Utf8ToUtf16("wb").."\0"
-      local f_in =assert(C._wfopen(ffi.cast("wchar_t*", name_in), ffi.cast("wchar_t*", mode_in)))
-      local f_out=assert(C._wfopen(ffi.cast("wchar_t*", name_out), ffi.cast("wchar_t*", mode_out)))
+      local name_out = Utf8ToUtf16(fname).."\0"
+      local mode_in,mode_out = "\114\0\98\0\0","\119\0\98\0\0" -- Utf8ToUtf16("rb").."\0", Utf8ToUtf16("wb").."\0"
+      local f_in =assert(_wfopen(cast("wchar_t*", name_in), cast("wchar_t*", mode_in)))
+      local f_out=assert(_wfopen(cast("wchar_t*", name_out), cast("wchar_t*", mode_out)))
       if hex
       then
         -- unHEX
-        local ibuf,obuf = ffi.new("unsigned char[?]",buf_size*2),ffi.new("unsigned char[?]",buf_size)
+        local ibuf,obuf = new("unsigned char[?]",buf_size*2),new("unsigned char[?]",buf_size)
         while true do
-          local n = tonumber(C.fread(ibuf,1,ffi.sizeof(ibuf),f_in))
+          local n = tonumber(fread(ibuf,1,sizeof(ibuf),f_in))
           if n==0 then break end
           for i=0,(n-1)/2 do
             local high = ibuf[i+i]
@@ -45,29 +57,29 @@ Macro {
             low  = low<65  and low-48  or low-55
             obuf[i] = high*16+low
           end
-          C.fwrite(obuf,1,n/2,f_out)
+          fwrite(obuf,1,n/2,f_out)
         end
       else
         -- HEX
-        local ibuf,obuf = ffi.new("unsigned char[?]",buf_size),ffi.new("unsigned char[?]",buf_size*2)
+        local ibuf,obuf = new("unsigned char[?]",buf_size),new("unsigned char[?]",buf_size*2)
         while true do
-          local n = tonumber(C.fread(ibuf,1,ffi.sizeof(ibuf),f_in))
+          local n = tonumber(fread(ibuf,1,sizeof(ibuf),f_in))
           if n==0 then break end
           for i=0,n-1 do
             local low  = ibuf[i]%16 --bit.band(ibuf[i],0xf)
-            local high = bit.rshift(ibuf[i],4)
+            local high = rshift(ibuf[i],4)
             obuf[i+i]   = high<10 and high+48 or high+55
             obuf[i+i+1] = low<10  and low+48  or low+55
           end
-          C.fwrite(obuf,1,n+n,f_out)
+          fwrite(obuf,1,n+n,f_out)
         end
       end
-      C.fclose(f_out)
-      C.fclose(f_in)
+      fclose(f_out)
+      fclose(f_in)
       Panel.Select(0,0,1,0)
     end
     panel.UpdatePanel(nil,1)
     panel.RedrawPanel(nil,1)
-    far.Message("Time: "..(Far.UpTime-t1).." ms","(un)HEX Files")
+    Message("Time: "..(Far.UpTime-t1).." ms","(un)HEX Files")
   end;
 }

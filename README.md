@@ -140,9 +140,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.SearchLinesWithMinMaxLength.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.SearchLinesWithMinMaxLength.lua "Editor.SearchLinesWithMinMaxLength.lua")
 
-  *v1.3.2 (2835 bytes, changed 2020-10-17 10:36)*
+  *v1.3.2.1 (2980 bytes, changed 2021-07-12 18:23)*
 
-  *SHA-256 `6f4bd1a55fa12f3d113a4d207bf03ba0a58f45c39bff72e74addb21264be7dfd`*
+  *SHA-256 `2dbf102652abcdaef4bce8ed36f64d725497d4259fbff2bfee6fb2394d044f40`*
 
   Search for lines with minimum and maximum length, excluding the first and last lines, they are often empty
 
@@ -481,9 +481,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")
 
-  *v1.0 (2690 bytes, changed 2020-05-21 13:50)*
+  *v1.0.0.1 (2879 bytes, changed 2021-07-12 18:14)*
 
-  *SHA-256 `e6ee790b28a631e3f92bca1e4170cc7cb1b6b36f3877408958d5259d1df5034a`*
+  *SHA-256 `d2ff776229dd2cb3ff3ce00b793031d9dd00f182c6a977255a1f5090b77070ac`*
 
   (un)HEX selected files, VERY FAST!
 
@@ -631,9 +631,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")
 
-  *v1.4.2 (3717 bytes, changed 2020-05-17 18:24)*
+  *v1.4.2.1 (3735 bytes, changed 2021-07-12 18:29)*
 
-  *SHA-256 `306a9b80e3cec7cef9ed7fc2c37bb9908f0f9dad58af3273ef3ad69f4ddbf856`*
+  *SHA-256 `027d2b4124bf17495219021ba11f3a9dd2e22e5818c6bc5e10cfe45c7fc454d0`*
 
   Comfortable Grep text from files by search pattern to editor
 
