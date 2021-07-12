@@ -481,9 +481,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")
 
-  *v1.0.0.1 (2879 bytes, changed 2021-07-12 18:14)*
+  *v1.0 (2690 bytes, changed 2021-07-12 19:13)*
 
-  *SHA-256 `d2ff776229dd2cb3ff3ce00b793031d9dd00f182c6a977255a1f5090b77070ac`*
+  *SHA-256 `e6ee790b28a631e3f92bca1e4170cc7cb1b6b36f3877408958d5259d1df5034a`*
 
   (un)HEX selected files, VERY FAST!
 
