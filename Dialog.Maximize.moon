@@ -7,7 +7,7 @@
 
 -- xs - scale 0<=xs<=1 for all dialogs: 0 = original width, 1 = full width, 0.5 = (full - original) / 2
 -- _G._XScale={id:"",xs:1,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil} -- full width
-_G._XScale={id:"",cs:nil,xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
+_G._XScale={id:"",cs:nil,xs:0,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil,st:nil} -- original width
 XStep=0.25 -- width change step
 
 Guid_DlgXScale=win.Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
@@ -82,7 +82,7 @@ DlgRect=(hDlg)->
   _G._XScale.dh=_G._XScale.db-_G._XScale.dt+1
   _G._XScale.pl=(hDlg\send F.DM_GETDLGITEM,1)[2]+2
 
-Proc=(id,hDlg)->
+Proc=(id,hDlg,Param1)->
   cs=ConsoleSize!
   if id~=_G._XScale.id
     _G._XScale.id=id
@@ -96,6 +96,7 @@ Proc=(id,hDlg)->
   if df<=0
     _G._XScale.xs,_G._XScale.xp = 0,0
   if _G._XScale.xs~=_G._XScale.xp
+    eucf=hDlg\send F.DM_EDITUNCHANGEDFLAG,Param1,-1
     dh,dt,pl = _G._XScale.dh,_G._XScale.dt,_G._XScale.pl
     diff=(_G._XScale.xs-_G._XScale.xp)*df
     dw=Corr _G._XScale.xs*df+_G._XScale.dw
@@ -207,6 +208,7 @@ Proc=(id,hDlg)->
           if item[4]>pr
             item[4]=pr
         far.SetDlgItem hDlg,idx,item
+    hDlg\send F.DM_EDITUNCHANGEDFLAG,Param1,eucf
     hDlg\send F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
     hDlg\send F.DM_MOVEDIALOG,1,{X:Corr((cs-dw)/2),Y:dt}
     --hDlg\send F.DM_REDRAW,0,0
@@ -230,12 +232,10 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         res=1
       _G._XScale.xp,_G._XScale.xs = _G._XScale.xs,res
 
-exec=(hDlg,p1)->
+exec=(hDlg,Param1)->
   id=hDlg\send F.DM_GETDIALOGINFO
   if id and transform[id.Id]
-    st=hDlg\send F.DM_EDITUNCHANGEDFLAG,p1,-1
-    Proc id.Id,hDlg
-    hDlg\send F.DM_EDITUNCHANGEDFLAG,p1,st
+    Proc id.Id,hDlg,Param1
 
 Event
   group:"DialogEvent"
