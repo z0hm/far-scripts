@@ -35,9 +35,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.8.1 (11534 bytes, changed 2021-07-12 15:26)*
+  *v1.1.8.1 (11536 bytes, changed 2021-07-12 16:53)*
 
-  *SHA-256 `46823cc44500eeb13f71212864e3787f15bbe1ef4542e634c224e12e5cde010e`*
+  *SHA-256 `30b31397753908323359780d21360019aea666892c2156010295ce86de9933b7`*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -54,9 +54,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")
 
-  *v1.1.3.4 (5183 bytes, changed 2021-06-17 05:19)*
+  *v1.1.3.5 (5302 bytes, changed 2021-07-12 17:26)*
 
-  *SHA-256 `5c3db8dea5a4e5e3ebd12dbccdcd0109d4db8df3786f3e6a82b16cf2527dcfa4`*
+  *SHA-256 `eda0f0c8ca919e9083b2ad0b6bc8404a63971ec7f201495658bea4e3d37ce734`*
 
   Highlighting Cyrillic and space symbols
 
@@ -102,9 +102,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")
 
-  *v1.1.3.4 (5062 bytes, changed 2021-06-17 05:37)*
+  *v1.1.3.5 (5182 bytes, changed 2021-07-12 17:32)*
 
-  *SHA-256 `fee8de19ee50fc7634c8bebc277ffd6b555c0bc322f93c7fbcfd5ccda5fdf3a5`*
+  *SHA-256 `62c82774ffb4c57bbe18bf995eac0c875f180f471f24011e13fa13ee181a22a8`*
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 

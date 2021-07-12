@@ -1,5 +1,5 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.3.4
+-- v1.1.3.5
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
 -- Required: MessageX.lua in modules folder
@@ -15,14 +15,23 @@ VisibilityColor=0xFF000000
 ForegroundColor=VisibilityColor+9
 BackgroundColor=VisibilityColor+1
 
-F=far.Flags
-bor  = bit64.bor
-band = bit64.band
+f=far
+F,AdvControl,Colors,FarClock = f.Flags,f.AdvControl,f.Colors,f.FarClock
+
+b=bit64
+bor,band = b.bor,b.band
+
+m=math
+min,fmod = m.min,m.fmod
+
+e=editor
+AddColor,DelColor,GetInfo,GetStringW,Redraw,TabToReal = e.AddColor,e.DelColor,e.GetInfo,e.GetStringW,e.Redraw,e.TabToReal
+
 Flags=F.ECF_AUTODELETE
 MessageX=require'MessageX'
 
 editors={}
-Colors={
+colors={
   {regex.new "/(\\s+)(\\S|$)/"
   {Flags:bor F.FCF_FG_4BIT,F.FCF_BG_4BIT
   ForegroundColor:ForegroundColor
@@ -45,7 +54,7 @@ GetEditorData=(id)->
 
 RemoveColors=(id,data)->
   for ii=data.start,data.finish
-    editor.DelColor id,ii,0,colorguid
+    DelColor id,ii,0,colorguid
 
 ProcessColors=(id,update)->
   data=GetEditorData id
@@ -62,25 +71,25 @@ Event
       editors[id]=nil
     if event==F.EE_REDRAW
       count=count+1
-      ei=editor.GetInfo id
+      ei=GetInfo id
       if ei
-        ttime=far.FarClock!
+        ttime=FarClock!
         ProcessColors ei.EditorID,(data)->
           data.start=ei.TopScreenLine
-          data.finish=math.min ei.TopScreenLine+ei.WindowSizeY,ei.TotalLines
+          data.finish=min ei.TopScreenLine+ei.WindowSizeY,ei.TotalLines
           for ii=data.start,data.finish
-            RealLeftPos=editor.TabToReal(ei.EditorID,ii,ei.LeftPos)-1
-            gsw=editor.GetStringW ei.EditorID,ii
+            RealLeftPos=TabToReal(ei.EditorID,ii,ei.LeftPos)-1
+            gsw=GetStringW ei.EditorID,ii
             line=gsw.StringText
             length=gsw.StringLength
             if RealLeftPos<=length
               RightBorder=RealLeftPos+ei.WindowSizeX
               if length<RightBorder
-                editor.AddColor ei.EditorID,ii,length+1,length+2,Flags,Colors[1][2],190,colorguid
-              for i=1,#Colors
+                AddColor ei.EditorID,ii,length+1,length+2,Flags,colors[1][2],190,colorguid
+              for i=1,#colors
                 sEnd=RealLeftPos
                 while sEnd<RightBorder
-                  sBegin,sEnd,_,s2,_,s4 = Colors[i][1]\findW line,sEnd+1
+                  sBegin,sEnd,_,s2,_,s4 = colors[i][1]\findW line,sEnd+1
                   if sEnd
                     if s2
                       if s2~=""
@@ -90,18 +99,18 @@ Event
                           sBegin=sEnd-#s2/2+1
                     elseif s4 and s4~=""
                       sBegin=sEnd-#s4/2+1
-                    sEnd=math.min sEnd,RightBorder
-                    editor.AddColor ei.EditorID,ii,sBegin,sEnd,Flags,Colors[i][2],190,colorguid
+                    sEnd=min sEnd,RightBorder
+                    AddColor ei.EditorID,ii,sBegin,sEnd,Flags,colors[i][2],190,colorguid
                   else
                     break
-        ttime0=ttime0+far.FarClock!-ttime
+        ttime0=ttime0+FarClock!-ttime
 
 Event
   group:"ExitFAR"
   action:->
-    wincount=far.AdvControl F.ACTL_GETWINDOWCOUNT,0,0
+    wincount=AdvControl F.ACTL_GETWINDOWCOUNT,0,0
     for ii=1,wincount
-      info=far.AdvControl F.ACTL_GETWINDOWINFO,ii,0
+      info=AdvControl F.ACTL_GETWINDOWINFO,ii,0
       if info and F.WTYPE_EDITOR==info.Type
         ProcessColors info.Id,(data)->
           data.start=0
@@ -113,27 +122,27 @@ Macro
   key:"F3"
   action:->
     count,ttime0=0,0
-    id=editor.GetInfo().EditorID
+    id=GetInfo().EditorID
     Msg=(s)->
-      editor.Redraw id
+      Redraw id
       if ShowTimeofProcessing
         Answer=MessageX s.."\n\nEvent count: <#1s>"..count.."<#rs>\nTime: <#1s>"..ttime0.."<#rs> mcs","LatCyrMixHighlighting","Close;Hide","c","","",ExecDelay
         if Answer==2
           ShowTimeofProcessing=false
     if not editors[id]
-      tFarColor=far.AdvControl far.Flags.ACTL_GETCOLOR,far.Colors.COL_EDITORTEXT,0
+      tFarColor=AdvControl F.ACTL_GETCOLOR,Colors.COL_EDITORTEXT,0
       if tFarColor
         BackgroundColor=bor tFarColor.BackgroundColor,VisibilityColor
       if 7<band BackgroundColor,0xF
         ForegroundColor=BackgroundColor-8
-        Colors[2][2].ForegroundColor=VisibilityColor+math.fmod BackgroundColor-3,8
-        Colors[2][2].BackgroundColor=VisibilityColor+math.fmod BackgroundColor-5,8
+        colors[2][2].ForegroundColor=VisibilityColor+fmod BackgroundColor-3,8
+        colors[2][2].BackgroundColor=VisibilityColor+fmod BackgroundColor-5,8
       else
         ForegroundColor=BackgroundColor+8
-        Colors[2][2].ForegroundColor=VisibilityColor+8+math.fmod BackgroundColor+5,8
-        Colors[2][2].BackgroundColor=VisibilityColor+8+math.fmod BackgroundColor+3,8
-      Colors[1][2].ForegroundColor=ForegroundColor
-      Colors[1][2].BackgroundColor=BackgroundColor
+        colors[2][2].ForegroundColor=VisibilityColor+8+fmod BackgroundColor+5,8
+        colors[2][2].BackgroundColor=VisibilityColor+8+fmod BackgroundColor+3,8
+      colors[1][2].ForegroundColor=ForegroundColor
+      colors[1][2].BackgroundColor=BackgroundColor
       Editor.Set 20,1
       editors[id]=
         start:0

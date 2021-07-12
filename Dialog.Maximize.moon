@@ -100,12 +100,12 @@ Proc=(id,hDlg,Param1)->
   if df<=0
     _XScale.xs,_XScale.xp = 0,0
   if _XScale.xs~=_XScale.xp
-    eucf=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,Param1,-1
     dh,dt,pl = _XScale.dh,_XScale.dt,_XScale.pl
     diff=(_XScale.xs-_XScale.xp)*df
     dw=Corr _XScale.xs*df+_XScale.dw
     pr=dw-pl-1
-    _XScale.pr=pr
+    --_XScale.pr=pr
+    eucf=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,Param1,-1
     SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
     for ii in *transform[id]
       local idx,opt,ref
