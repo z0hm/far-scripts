@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.9
+-- v1.1.9.1
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -93,7 +93,7 @@ DlgRect=(hDlg)->
   _XScale.dh=_XScale.db-_XScale.dt+1
   _XScale.pl=(SendDlgMessage hDlg,F.DM_GETDLGITEM,1)[2]+2
 
-Proc=(id,hDlg,Param1)->
+Proc=(id,hDlg)->
   cs=ConsoleSize!
   if id~=_XScale.id
     _XScale.id=id
@@ -113,7 +113,6 @@ Proc=(id,hDlg,Param1)->
   dw,corr[1] = modf _XScale.xs*df+_XScale.dw+corr[1] -- round
   pr=dw-pl-1
   --_XScale.pr=pr -- debug
-  eucf=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,Param1,-1
   SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
   for ii in *transform[id]
     local idx,opt,ref
@@ -228,8 +227,13 @@ Proc=(id,hDlg,Param1)->
           item[2]=pl
         if item[4]>pr
           item[4]=pr
-      SetDlgItem hDlg,idx,item
-  SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,Param1,eucf
+      t=SendDlgMessage hDlg,F.DM_GETDLGITEM,idx
+      if t[1]==F.DI_EDIT or t[1]==F.DI_FIXEDIT
+        eucf=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
+        SetDlgItem hDlg,idx,item
+        SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,eucf
+      else  
+        SetDlgItem hDlg,idx,item
   SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
   --x=Corr (cs-dw)/2 -- round
   x,corr[3] = modf (cs-dw)/2+corr[3] -- round
@@ -255,10 +259,10 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         res=1
       _XScale.xp,_XScale.xs = _XScale.xs,res
 
-exec=(hDlg,Param1)->
+exec=(hDlg)->
   id=SendDlgMessage hDlg,F.DM_GETDIALOGINFO
   if id and transform[id.Id]
-    Proc id.Id,hDlg,Param1
+    Proc id.Id,hDlg
 
 Event
   group:"DialogEvent"
@@ -266,26 +270,26 @@ Event
   action:(event,param)->
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG
       _XScale.xp=0
-      exec param.hDlg,param.Param1
+      exec param.hDlg
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=InputRecordToName param.Param2
         if name=="F2"
           res=Dialog Guid_DlgXScale,-1,-1,20,3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc
           if res==3
-            exec param.hDlg,param.Param1
+            exec param.hDlg
         elseif name=="CtrlAltRight"
           if _XScale.xs<1
             _XScale.xp=_XScale.xs
             _XScale.xs+=XStep
             if _XScale.xs>1
               _XScale.xs=1
-            exec param.hDlg,param.Param1
+            exec param.hDlg
         elseif name=="CtrlAltLeft"
           if _XScale.xs>0
             _XScale.xp=_XScale.xs
             _XScale.xs-=XStep
             if _XScale.xs<0
               _XScale.xs=0
-            exec param.hDlg,param.Param1
+            exec param.hDlg
     false
