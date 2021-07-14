@@ -1,5 +1,5 @@
 ﻿-- Panel.CustomSortByAttributes.lua
--- v2.0.1
+-- v2.0.1.1
 -- Panel files sorting by attributes
 -- ![Panel.CustomSortByAttributes](http://i.piccy.info/i9/e4a7f377afa812d28e195dbae27e802b/1585895856/14743/1370861/2020_04_03_093318.png)
 -- Keys: CtrlShiftF3 or from Menu "Sort by"
@@ -23,6 +23,9 @@ local Key = "CtrlShiftF3"
 local ffi = require("ffi")
 
 ffi.cdef[[BOOL SetFileAttributesW(LPCWSTR lpFileName, DWORD dwFileAttributes);]]
+
+local b=bit
+local band,bnot,bor,bxor = b.band,b.bnot,b.bor,b.bxor
 
 local function ToWChar(str) str=win.Utf8ToUtf16(str) local res=ffi.new("wchar_t[?]",#str/2+1) ffi.copy(res,str) return res end
 
@@ -97,12 +100,12 @@ for i=1,#AttributeValue do FAttributes[i]=false end
 local function BySelected(l)
   if l==AttributesWeight then l=(#AttributeValue+1)*#AttributeValue+1
   else
-    local equal=bit.band(l,AttributesWeight)
-    local diff =bit.bxor(l,AttributesWeight)
+    local equal=band(l,AttributesWeight)
+    local diff =bxor(l,AttributesWeight)
     local e,d = 0,0
     for i=1,#AttributeValue do
-      if bit.band(equal,AttributeValue[i])>0 then e=e+1 end
-      if bit.band(diff ,AttributeValue[i])>0 then d=d+1 end
+      if band(equal,AttributeValue[i])>0 then e=e+1 end
+      if band(diff ,AttributeValue[i])>0 then d=d+1 end
     end
     l=(#AttributeValue+1)*e-d
   end
@@ -111,8 +114,8 @@ end
 
 local Compare = function(p1,p2)
   count = count+1
-  local l1 = bit.band(tonumber(p1.FileAttributes),FAMasque)
-  local l2 = bit.band(tonumber(p2.FileAttributes),FAMasque)
+  local l1 = band(tonumber(p1.FileAttributes),FAMasque)
+  local l2 = band(tonumber(p2.FileAttributes),FAMasque)
   if CompareMode then l1,l2 = BySelected(l1),BySelected(l2) end
   return l1<l2 and -1 or (l1>l2 and 1 or 0)
 end
@@ -139,9 +142,9 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     end
     if tonumber(text) then
       text = text:gsub("^0","")
-      tSAttributes = bit.band(tonumber(text) or 0,FAMasque)
+      tSAttributes = band(tonumber(text) or 0,FAMasque)
       for i=1,#AttributeValue do
-        tFAttributes[i] = bit.band(tSAttributes,AttributeValue[i])==AttributeValue[i] and true or false
+        tFAttributes[i] = band(tSAttributes,AttributeValue[i])==AttributeValue[i] and true or false
         hDlg:send(F.DM_SETCHECK,i+7,tFAttributes[i] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
       end
     else
@@ -159,7 +162,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     tSAttributes = mf.fattr(FPath) or tSAttributes
     hDlg:send(F.DM_SETTEXT,4,tSAttributes)
     for i=1,#AttributeValue do
-      tFAttributes[i] = bit.band(tSAttributes,AttributeValue[i])==AttributeValue[i] and true or false
+      tFAttributes[i] = band(tSAttributes,AttributeValue[i])==AttributeValue[i] and true or false
       hDlg:send(F.DM_SETCHECK,i+7,tFAttributes[i] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
     end
   elseif Msg==F.DN_BTNCLICK and Param1==6 then  -- Set Attributes
@@ -169,7 +172,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     local i=Param1-7
     tFAttributes[i] = Param2~=0
     if tonumber(tSAttributes) then
-      tSAttributes = tFAttributes[i] and bit.bor(tSAttributes,AttributeValue[i]) or bit.band(tSAttributes,bit.bnot(AttributeValue[i]))
+      tSAttributes = tFAttributes[i] and bor(tSAttributes,AttributeValue[i]) or band(tSAttributes,bnot(AttributeValue[i]))
     else
       tSAttributes = tFAttributes[i] and tSAttributes..AttributesSymbols:sub(i,i) or tSAttributes:gsub(AttributesSymbols:sub(i,i),"")
     end
@@ -187,21 +190,21 @@ Macro {
   description = Description; area = "Shell Menu"; key = Key.." Enter MsLClick";
   condition = function(key) return Area.Shell and key==Key or Area.Menu and Menu.Id==MenuGuid and Menu.Value:match(Description) and (key=="Enter" or key=="MsLClick") end;
   action = function()
-    local kbd=bit.band(Far.KbdLayout(),0xFFFF)
+    local kbd=band(Far.KbdLayout(),0xFFFF)
     if kbd==0 and _G.KbdLayout then kbd=_G.KbdLayout() end
     if not kbd or kbd and kbd~=0x0409 then Far.KbdLayout(0x0409) end
     FName=APanel.Current
     FPath=APanel.Path0.."\\"..FName
     if not SAttributes then
       SAttributes=mf.fattr(FPath)
-      for i=1,#AttributeValue do FAttributes[i] = bit.band(SAttributes,AttributeValue[i])==AttributeValue[i] and true or false end
+      for i=1,#AttributeValue do FAttributes[i] = band(SAttributes,AttributeValue[i])==AttributeValue[i] and true or false end
     end
     if Area.Menu then Keys("Esc") end
     if far.Dialog(uGuid,-1,-1,70,20,nil,Items,nil,DlgProc)==#Items-1 then
       SAttributes = tSAttributes
       local OldAttributesWeight = AttributesWeight
       AttributesWeight=0 for i=1,#AttributeValue do FAttributes[i]=tFAttributes[i] if FAttributes[i] then AttributesWeight=AttributesWeight+AttributeValue[i] end end
-      if AttributesWeight~=OldAttributesWeight or tCompareMode~=CompareMode then panel.SetSortOrder(nil,1,bit.band(panel.GetPanelInfo(nil,1).Flags,F.PFLAGS_REVERSESORTORDER)==0) end
+      if AttributesWeight~=OldAttributesWeight or tCompareMode~=CompareMode then panel.SetSortOrder(nil,1,band(panel.GetPanelInfo(nil,1).Flags,F.PFLAGS_REVERSESORTORDER)==0) end
       CompareMode = tCompareMode
       count = 0
       local ttime=far.FarClock()

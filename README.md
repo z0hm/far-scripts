@@ -286,9 +286,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByAttributes.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByAttributes.lua "Panel.CustomSortByAttributes.lua")
 
-  *v2.0.1 (11930 bytes, changed 2021-01-17 08:24)*
+  *v2.0.1.1 (11942 bytes, changed 2021-07-14 11:22)*
 
-  *SHA-256 `f529a0cdd9b5f2e7f5328068ee9577082b72e3a06c6bfd412c8119e91cb41fd1`*
+  *SHA-256 `203eee8dccd80457559ca486a5c49c48ef68de92d765fa1e59be4e1ecbfdfaa7`*
 
   Panel files sorting by attributes
 
