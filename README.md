@@ -307,9 +307,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")
 
-  *v1.1.0.2 (19256 bytes, changed 2021-07-14 09:54)*
+  *v1.1.0.2 (19285 bytes, changed 2021-07-14 10:19)*
 
-  *SHA-256 `8d533f0822b7f5eff5bf659ebb43ac0abf711d7ea1de8e4d68cef857abc2f311`*
+  *SHA-256 `7a213a1997ff5e164bb6b927d764ebe351738537faa9cd9fa14d1668ae614880`*
 
   Very powerful panel file sorting
 
@@ -400,6 +400,8 @@ a very wide range of tasks using the Far and Windows API's.
         local f_in=assert(C._wfopen(ffi.cast("wchar_t*",fp),ffi.cast("wchar_t*",mode_in)))
 
         if f_in~=NULL then
+
+          ffi.fill(ibuf,3)
 
           local n=C.fread(ibuf,1,ffi.sizeof(ibuf),f_in)
 

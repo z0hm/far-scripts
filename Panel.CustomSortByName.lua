@@ -45,6 +45,7 @@
 --       local res=0
 --       local f_in=assert(C._wfopen(ffi.cast("wchar_t*",fp),ffi.cast("wchar_t*",mode_in)))
 --       if f_in~=NULL then
+--         ffi.fill(ibuf,3)
 --         local n=C.fread(ibuf,1,ffi.sizeof(ibuf),f_in)
 --         C.fclose(f_in)
 --         local n,b0,b1,b2 = tonumber(n),tonumber(ibuf[0]),tonumber(ibuf[1]),tonumber(ibuf[2])
