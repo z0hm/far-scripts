@@ -35,7 +35,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.9.1 (12019 bytes, changed 2021-07-14 04:27)*
+  *v1.1.9.1 (12019 bytes, changed 2021-07-14 04:44)*
 
   *SHA-256 `41d873aca79358d051e337687b7cd6fbf08b1e86cd3e5bca4ffade849c951d59`*
 
@@ -161,7 +161,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")
 
-  *v1.1.1 (5835 bytes, changed 2020-10-12 11:30)*
+  *v1.1.1 (5835 bytes, changed 2021-07-14 05:37)*
 
   *SHA-256 `62efb301fecd7c7c0ddb2a40445c354412047b705947e5565848b186a33ee864`*
 
@@ -307,9 +307,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")
 
-  *v1.1.0.1 (18132 bytes, changed 2020-08-20 20:39)*
+  *v1.1.0.2 (19256 bytes, changed 2021-07-14 09:54)*
 
-  *SHA-256 `bf7b2832a5749223f5532c23cead28e91e4bf4a8f3d27dd8dd99f622d2d31b3a`*
+  *SHA-256 `8d533f0822b7f5eff5bf659ebb43ac0abf711d7ea1de8e4d68cef857abc2f311`*
 
   Very powerful panel file sorting
 
@@ -343,11 +343,15 @@ a very wide range of tasks using the Far and Windows API's.
 
       -- by BOM
 
+      local efbbbf,fffe,feff,ffi,sub = '\239\187\191','\255\254','\254\255',require'ffi',string.sub
+
+      local C=ffi.C
+
       local function bom(fp)
 
-        local res,efbbbf,fffe,feff,ffi = 0,'\239\187\191','\255\254','\254\255',require'ffi'
+        local res=0
 
-        local f=win.WideCharToMultiByte(ffi.string(fp,tonumber(ffi.C.wcslen(fp))*2),65001)
+        local f=win.WideCharToMultiByte(ffi.string(fp,tonumber(C.wcslen(fp))*2),65001)
 
         local h=io.open(f,"rb")
 
@@ -355,7 +359,65 @@ a very wide range of tasks using the Far and Windows API's.
 
           local s=h:read(3) or '' h:close()
 
-          if s==efbbbf then res=3 else s=string.sub(s,1,2) if s==fffe then res=2 elseif s==feff then res=1 end end
+          if s==efbbbf then res=3 else s=sub(s,1,2) if s==fffe then res=2 elseif s==feff then res=1 end end
+
+        end
+
+        return res
+
+      end
+
+      return bom(_G.sFuncTbl.fp1)-bom(_G.sFuncTbl.fp2)
+
+    ```
+
+  </details>
+
+  <details><summary>by BOM ffi</summary>
+
+
+
+    ``` lua
+
+      -- by BOM ffi
+
+      local ffi = require'ffi'
+
+      local C = ffi.C
+
+      local NULL = ffi.cast("void*",0)
+
+      local ibuf=ffi.new"unsigned char[3]"
+
+      
+
+      local mode_in = "\114\0\98\0\0" -- "rb" UTF-16LE..'\0'
+
+      local function bom(fp)
+
+        local res=0
+
+        local f_in=assert(C._wfopen(ffi.cast("wchar_t*",fp),ffi.cast("wchar_t*",mode_in)))
+
+        if f_in~=NULL then
+
+          local n=C.fread(ibuf,1,ffi.sizeof(ibuf),f_in)
+
+          C.fclose(f_in)
+
+          local n,b0,b1,b2 = tonumber(n),tonumber(ibuf[0]),tonumber(ibuf[1]),tonumber(ibuf[2])
+
+          if n==3 and b0==0xef and b1==0xbb and b2==0xbf then res=3
+
+          elseif n>=2 then
+
+            if     b0==0xff and b1==0xfe then res=2
+
+            elseif b0==0xfe and b1==0xff then res=1
+
+            end
+
+          end
 
         end
 
@@ -379,7 +441,9 @@ a very wide range of tasks using the Far and Windows API's.
 
       local ffi = require'ffi'
 
-      return tonumber(ffi.C.wcslen(_G.sFuncTbl.fp1))-tonumber(ffi.C.wcslen(_G.sFuncTbl.fp2))
+      local C=ffi.C
+
+      return tonumber(C.wcslen(_G.sFuncTbl.fp1))-tonumber(C.wcslen(_G.sFuncTbl.fp2))
 
     ```
 
@@ -409,9 +473,11 @@ a very wide range of tasks using the Far and Windows API's.
 
       local ffi,BS = require'ffi',[[\\]]
 
-      local _,x1 = regex.gsubW(ffi.string(_G.sFuncTbl.fp1,tonumber(ffi.C.wcslen(_G.sFuncTbl.fp1))*2),BS,"")
+      local C=ffi.C
 
-      local _,x2 = regex.gsubW(ffi.string(_G.sFuncTbl.fp2,tonumber(ffi.C.wcslen(_G.sFuncTbl.fp2))*2),BS,"")
+      local _,x1 = regex.gsubW(ffi.string(_G.sFuncTbl.fp1,tonumber(C.wcslen(_G.sFuncTbl.fp1))*2),BS,"")
+
+      local _,x2 = regex.gsubW(ffi.string(_G.sFuncTbl.fp2,tonumber(C.wcslen(_G.sFuncTbl.fp2))*2),BS,"")
 
       return x1-x2
 
@@ -427,17 +493,19 @@ a very wide range of tasks using the Far and Windows API's.
 
       -- by HEX in FileName
 
-      local ffi,RE,huge = require'ffi','[0-9A-Fa-f]+$',math.huge
+      local ffi,RE,huge,gsub = require'ffi',regex.new'[0-9A-Fa-f]+$',math.huge,string.gsub
+
+      local C=ffi.C
 
       local function p(s)
 
         local num=huge
 
-        local fp=ffi.string(s,tonumber(ffi.C.wcslen(s))*2)
+        local fp=ffi.string(s,tonumber(C.wcslen(s))*2)
 
-        local hex=regex.matchW(fp,RE)
+        local hex=RE:matchW(fp)
 
-        if hex then num=tonumber(string.gsub(hex,'\000',''),16) end
+        if hex then num=tonumber(gsub(hex,'\000',''),16) end
 
         return num
 
