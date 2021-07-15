@@ -1,5 +1,5 @@
 ﻿-- MessageX.lua
--- v0.6.7.7
+-- v0.6.7.8
 -- Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 -- ![MessageX Dialog](http://i.piccy.info/i9/f5defa4d150c234d882858e3a73978f5/1589987690/2336/1379306/2020_05_20_180740.png)
 -- Support delay execution in seconds (**ExecDelay**:integer)
@@ -20,17 +20,23 @@
 local F=far.Flags
 local K=far.Colors
 
-local pat="<#([0-9A-FRSa-frs])([0-9A-FRSa-frs])>"
-local patlen=5
+local band64,bor64 = bit64.band,bit64.bor
+local string_find,string_gsub,string_lower,string_rep = string.find,string.gsub,string.lower,string.rep
+local math_floor,math_log,math_max = math.floor,math.log,math.max
+local far_AdvControl,far_CreateUserControl,far_Dialog,far_SendDlgMessage,far_Show,far_Timer = far.AdvControl,far.CreateUserControl,far.Dialog,far.SendDlgMessage,far.Show,far.Timer
+local table_insert = table.insert
+local regex_new = regex.new
 
+local pat=regex_new"<#([0-9A-FRSa-frs])([0-9A-FRSa-frs])>"
+local patlen=5
 -- if available flag "c"
 local function CreateColorTbl(tbl,width)
   local ct,line,smax,fg,bg = {},1,0
   while line<=#tbl do
-    table.insert(ct,{})
+    table_insert(ct,{})
     local len,to,from,_fg,_bg = 0,0
     repeat
-      from,to,_fg,_bg = tbl[line]:find(pat,to+1)
+      from,to,_fg,_bg = pat:find(tbl[line],to+1)
       if from then
         _fg=_fg:lower() _bg=_bg:lower()
         if _fg=="r" then fg=nil
@@ -43,16 +49,16 @@ local function CreateColorTbl(tbl,width)
         len=len+patlen
       end
     until not from
-    tbl[line]=tbl[line]:gsub(pat,"")
+    tbl[line]=pat:gsub(tbl[line],"")
     local sz=tbl[line]:len()
     local w=width-4
     if sz>=w then smax=w elseif smax<sz then smax=sz end
     while sz>w do
-      table.insert(ct,{})
+      table_insert(ct,{})
       for k in pairs(ct[line]) do if k>w then ct[line+1][k-w]=ct[line][k] ct[line][k]=nil end end
       local s
       tbl[line],s = tbl[line]:sub(1,w),tbl[line]:sub(w+1,sz)
-      line=line+1 table.insert(tbl,line,s) sz=sz-w
+      line=line+1 table_insert(tbl,line,s) sz=sz-w
     end
     line=line+1
   end
@@ -62,18 +68,18 @@ end
 -- if available flag "m" or w/o him
 local function CreateMonoTbl(tbl,width,Flags)
   local line,ct,smax,mono = 1,{},0
-  if Flags:find("m") then mono=true end
+  if string_find(Flags,"m") then mono=true end
   while line<=#tbl do
-    table.insert(ct,{})
-    if mono then tbl[line]=tbl[line]:gsub(pat,"") end
+    table_insert(ct,{})
+    if mono then tbl[line]=pat:gsub(tbl[line],"") end
     local sz=tbl[line]:len()
     local w=width-4
     if sz>=w then smax=w elseif smax<sz then smax=sz end
     while sz>w do
-      table.insert(ct,{})
+      table_insert(ct,{})
       local s
       tbl[line],s = tbl[line]:sub(1,w),tbl[line]:sub(w+1,sz)
-      line=line+1 table.insert(tbl,line,s) sz=sz-w
+      line=line+1 table_insert(tbl,line,s) sz=sz-w
     end
     line=line+1
   end
@@ -81,14 +87,15 @@ local function CreateMonoTbl(tbl,width,Flags)
 end
 
 -- if available Buttons
+local pat1 = "(!?)([^;]+)"
 local function CreateButtons(line,Buttons)
   local butnum,butdef,butlen,tButtons = 0,0,0,{}
   if Buttons=="" then return butdef,butlen end
   local bFlags=F.DIF_CENTERGROUP
-  for def,button in Buttons:gmatch("(!?)([^;]+)") do
+  for def,button in Buttons:gmatch(pat1) do
     butnum=butnum+1
     if def=="!" then butdef=butnum end
-    table.insert(tButtons,{F.DI_BUTTON,0,line,0,0,0,0,0,bFlags,button})
+    table_insert(tButtons,{F.DI_BUTTON,0,line,0,0,0,0,0,bFlags,button})
     butlen=butlen+button:gsub("&&"," "):gsub("&",""):len()+4
   end
   if butdef==0 then butdef=1 end
@@ -99,7 +106,7 @@ end
 local function CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
   local tbllen,smax,ct = #tbl,0
   if tbllen>0 then
-    if Flags:find("c")
+    if string_find(Flags,"c")
     then tbl,ct,smax = CreateColorTbl(tbl,width)
     else tbl,ct,smax = CreateMonoTbl(tbl,width,Flags)
     end
@@ -110,7 +117,7 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
   local line=tbllen+4>height and height-2 or (tbllen + (tbllen>0 and 2 or 1))
   local butdef,butlen,tButtons = CreateButtons(line,Buttons)
 
-  local X2=math.max(smax+4,butlen+4,Title:len()+4+(ExecDelay and math.floor(math.log(ExecDelay,10)+3) or 0))
+  local X2=math_max(smax+4,butlen+4,Title:len()+4+(ExecDelay and math_floor(math_log(ExecDelay,10)+3) or 0))
   local Y2=2+tbllen -- add box and Msg
   if tButtons then Y2=Y2+1 -- add Buttons
     if tbllen>0 then Y2=Y2+1 end -- add separator
@@ -118,19 +125,19 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
   if Y2>height then Y2,tbllen = height,(tButtons and height-4 or height-2) end
   if tbllen==0 then return tButtons,butdef,X2,Y2 end -- No Msg
 
-  local buffer=far.CreateUserControl(X2-4,tbllen)
-  local cFlags=bit64.bor(F.FCF_FG_4BIT,F.FCF_BG_4BIT)
-  local elem=Flags:find("w") and K.COL_WARNDIALOGTEXT or K.COL_DIALOGTEXT
-  local leftAlign=Flags:find("l")
-  local tFarColor=far.AdvControl(F.ACTL_GETCOLOR,elem)
-  local fg_dlg=bit64.band(tFarColor.ForegroundColor,0xF)
-  local bg_dlg=bit64.band(tFarColor.BackgroundColor,0xF)
+  local buffer=far_CreateUserControl(X2-4,tbllen)
+  local cFlags=bor64(F.FCF_FG_4BIT,F.FCF_BG_4BIT)
+  local elem=string_find(Flags,"w") and K.COL_WARNDIALOGTEXT or K.COL_DIALOGTEXT
+  local leftAlign=string_find(Flags,"l")
+  local tFarColor=far_AdvControl(F.ACTL_GETCOLOR,elem)
+  local fg_dlg=band64(tFarColor.ForegroundColor,0xF)
+  local bg_dlg=band64(tFarColor.BackgroundColor,0xF)
   local fg,bg,ptr = fg_dlg,bg_dlg,1
   for y=1,tbllen do
     if not leftAlign then
-      local half=math.floor((X2-4-tbl[y]:len())/2)
+      local half=math_floor((X2-4-tbl[y]:len())/2)
       if half>0 then
-        tbl[y]=(" "):rep(half)..tbl[y]
+        tbl[y]=string_rep(" ",half)..tbl[y]
         for x=X2-4,1,-1 do if ct[y][x] then ct[y][x+half]=ct[y][x] ct[y][x]=nil end end
       end
     end
@@ -145,23 +152,24 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
   return tButtons,butdef,X2,Y2,{F.DI_USERCONTROL,2,1,X2-3,tbllen,buffer,0,0,F.DIF_NOFOCUS,""}
 end
 
+local pat2,pat3,pat4 = "([^\r\n]*)\r?\n",regex_new"[^\r\n]+$"," :%d+$"
 local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
   -- Protection against incorrect arguments
   if ExecDelay and type(ExecDelay)=="number" then
-    if ExecDelay>=1 then ExecDelay=math.floor(ExecDelay) else return end
+    if ExecDelay>=1 then ExecDelay=math_floor(ExecDelay) else return end
   else ExecDelay=nil
   end
   Title,Buttons,Flags,HelpTopic,Guid = Title or "MessageX",Buttons or "",Flags or "",HelpTopic or "",Guid or ""
-  Flags=Flags:lower()
+  Flags=string_lower(Flags)
 
   -- Check window size
   local width,height
-  local w=far.AdvControl(F.ACTL_GETFARRECT)
+  local w=far_AdvControl(F.ACTL_GETFARRECT)
   if w then width,height = w.Right+1,w.Bottom+1 end
 
   local MsgType=type(Msg)
   if MsgType~="string" then
-    if MsgType=="table" then far.Show(unpack(Msg)) else far.Show(Msg) end
+    if MsgType=="table" then far_Show(unpack(Msg)) else far_Show(Msg) end
     exit()
   end
   if Msg:find"^[%s%c]+$" then
@@ -170,14 +178,14 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
     Msg=Msg:gsub(" ",spc)
     Msg=Msg:gsub("\t",tab)
     Msg="<#1s>"..Msg.."<#rs>"
-    Flags=Flags:find"c" and Flags or Flags..'c'
+    Flags=string_find(Flags,"c") and Flags or Flags..'c'
   end
 
   -- Line processing
   local tbl={}
   if Msg and Msg~="" then
-    for line in Msg:gmatch("([^\r\n]*)\r?\n") do table.insert(tbl,line) end
-    table.insert(tbl,Msg:match("[^\r\n]+$"))
+    for line in Msg:gmatch(pat2) do table_insert(tbl,line) end
+    table_insert(tbl,pat3:match(Msg))
   end
 
   -- Message Creation
@@ -186,13 +194,13 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
   -- Frame Creation
   local Items={{F.DI_DOUBLEBOX,0,0,X2,Y2,0,0,0,0,Title or ""}}
   -- Message Insertion
-  if item then table.insert(Items,item) end
+  if item then table_insert(Items,item) end
 
   -- Seperator Insertion
-  if item and tButtons then table.insert(Items,{F.DI_TEXT,0,Y2-3,0,0,0,0,0,F.DIF_SEPARATOR,""}) end
+  if item and tButtons then table_insert(Items,{F.DI_TEXT,0,Y2-3,0,0,0,0,0,F.DIF_SEPARATOR,""}) end
 
   -- Button Creation
-  if tButtons then for i=1,#tButtons do table.insert(Items,tButtons[i]) end end
+  if tButtons then for i=1,#tButtons do table_insert(Items,tButtons[i]) end end
 
   -- Dialogue processing
   local timer
@@ -202,28 +210,28 @@ local function MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)
     local function OnTimer()
       ExecDelay=ExecDelay-1
       if ExecDelay>0
-      then hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1):gsub(" :%d+$"," :"..ExecDelay))
-      else hDlg:send(F.DM_CLOSE,hDlg:send(F.DM_GETFOCUS))
+      then far_SendDlgMessage(hDlg,F.DM_SETTEXT,1,string_gsub(far_SendDlgMessage(hDlg,F.DM_GETTEXT,1),pat4," :"..ExecDelay))
+      else far_SendDlgMessage(hDlg,F.DM_CLOSE,far_SendDlgMessage(hDlg,F.DM_GETFOCUS))
       end
     end
     if Msg==F.DN_INITDIALOG then
-      if butdef~=0 then hDlg:send(F.DM_SETFOCUS,butdefid) end
+      if butdef~=0 then far_SendDlgMessage(hDlg,F.DM_SETFOCUS,butdefid) end
       if ExecDelay then
-        hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1).." :"..ExecDelay)
-        timer=far.Timer(1000,OnTimer)
+        far_SendDlgMessage(hDlg,F.DM_SETTEXT,1,far_SendDlgMessage(hDlg,F.DM_GETTEXT,1).." :"..ExecDelay)
+        timer=far_Timer(1000,OnTimer)
       end
-    elseif timer and Msg==F.DN_GOTFOCUS and hDlg:send(F.DM_GETFOCUS)~=butdefid then -- Param1 1st time return wrong id
+    elseif timer and Msg==F.DN_GOTFOCUS and far_SendDlgMessage(hDlg,F.DM_GETFOCUS)~=butdefid then -- Param1 1st time return wrong id
       timer:Close() timer=nil
-      hDlg:send(F.DM_SETTEXT,1,hDlg:send(F.DM_GETTEXT,1):gsub(" :%d+$",""))
+      far_SendDlgMessage(hDlg,F.DM_SETTEXT,1,string_gsub(far_SendDlgMessage(hDlg,F.DM_GETTEXT,1),pat4,""))
     end
   end
 
   -- Flags processing
   local DlgFlags=F.FDLG_SMALLDIALOG
-  if Flags:find("w") then DlgFlags=DlgFlags+F.FMSG_WARNING end
+  if string_find(Flags,"w") then DlgFlags=DlgFlags+F.FMSG_WARNING end
 
   -- Show dialogue
-  local result=far.Dialog(Guid,-1,-1,X2,Y2,HelpTopic,Items,DlgFlags,DlgProc)
+  local result=far_Dialog(Guid,-1,-1,X2,Y2,HelpTopic,Items,DlgFlags,DlgProc)
   if timer then timer:Close() timer=nil end
   return result<0 and result or result-shft
 end

@@ -243,9 +243,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")
 
-  *v0.6.7.7 (8353 bytes, changed 2021-05-06 08:37)*
+  *v0.6.7.8 (9082 bytes, changed 2021-07-15 10:18)*
 
-  *SHA-256 `9f6363ea52593d73f121b1c42ff533870ecdf7fb4b3a5d9844dd4391543702c0`*
+  *SHA-256 `92bbaec7a4de2423cd19ba424309971a5696a3c13a9d41bf262ca51ad6a3e444`*
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 
