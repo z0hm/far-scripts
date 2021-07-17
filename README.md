@@ -35,9 +35,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.9.1 (12019 bytes, changed 2021-07-14 04:44)*
+  *v1.1.9.2 (12149 bytes, changed 2021-07-17 04:55)*
 
-  *SHA-256 `41d873aca79358d051e337687b7cd6fbf08b1e86cd3e5bca4ffade849c951d59`*
+  *SHA-256 `573946a9dd06275364652e148c623a705a60b6d2d159b5763ccd51c759a2a0b0`*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -83,9 +83,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.FilterDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.FilterDuplicatesFileNames.lua "Editor.FilterDuplicatesFileNames.lua")
 
-  *v1.2.3 (11700 bytes, changed 2020-04-09 09:55)*
+  *v1.2.3.1 (12524 bytes, changed 2021-07-17 05:03)*
 
-  *SHA-256 `b086fb30d40f9b531d060f33a985502649bf64b2f6505a0f379e604100657681`*
+  *SHA-256 `b1b883f7aca361827213dae91b1862c7cf95ae4e13ab03468c8b1c8867af2525`*
 
   Filter Duplicates File Names with complex logic
 

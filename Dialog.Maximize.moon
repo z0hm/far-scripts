@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.9.1
+-- v1.1.9.2
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -50,7 +50,7 @@ transform=
   [Uuid"AF8D7072-FF17-4407-9AF4-7323273BA899"]: {1.0,3.0,11.0,13.0,14.4,16.4,20.2,21.1,22.5,25.0,27.0} -- Shell/Rename
   -- LFSearch/Editor
   [Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1.0,3.0,4.3,7.1,"8.12.F2.2.13",10.1,14.4,15.4,"16.12.3.2","17.10.16","18.10.16","19.12.3.3","20.10.19","21.10.19",25.0,27.2,28.1,29.5} -- Editor/Find
-  [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1.0,3.0,5.0,6.3,7.3,8.4,9.1,10.4,11.5,"17.10.11","14.10.17","15.16.14.11","20.12.3.1","21.10.10","22.10.20","23.12.3.2","24.10.23","25.10.23","26.12.3.3","27.10.26","28.10.26",32.0,34.2,35.5,36.5} -- Editor/Replace
+  [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1.0,3.0,5.0,6.3,7.3,8.4,9.1,10.4,11.5,"14.10.11","15.16.11.11","17.10.11","20.12.3.1","21.10.10","22.10.20","23.12.3.2","24.10.23","25.10.23","26.12.3.3","27.10.26","28.10.26",32.0,34.2,35.5,36.5} -- Editor/Replace
   [Uuid"87ED8B17-E2B2-47D0-896D-E2956F396F1A"]: {1.0,3.0,5.0,6.4,19.2,20.1,21.5} -- Editor/Multi-Line Replace
   -- Editor Find
   [Uuid"A0562FC4-25FA-48DC-BA5E-48EFA639865F"]: {1.0,4.0,10.1} -- Find
@@ -64,7 +64,9 @@ transform=
   -- Create archive (Shell: ShiftF1)
   [Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1,10,23,"43.10.45"}
   -- AudioPlayer
-  --[Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1} -- don't support width change
+  --[Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1} -- don't support width change yet
+  -- Custom sort by Name
+  [Uuid"5B40F3FF-6593-48D2-8F78-4A32C8C36BCA"]: {1,5,12,14}
 
 
 f=far
@@ -125,7 +127,7 @@ Proc=(id,hDlg)->
       idx=tonumber idx
       opt=tonumber opt
     item=GetDlgItem hDlg,idx
-    --_XScale[id][idx]=item -- debug
+    _XScale[id][idx]=item
     if item  -- prevent error message for out-of-range index (see "hack" above)
       switch opt
         when 0  -- Stretch full
@@ -163,17 +165,19 @@ Proc=(id,hDlg)->
           y=tonumber match ref,re1
           item[3]+=y
           item[5]+=y
---      when 8  -- reserved
+        --when 8  -- reserved
         when 9  -- Move & Size relative by X1 & X2
           x1,x2 = match ref,re2
           item[2]+=tonumber x1
           item[4]+=tonumber x2
         when 10  -- Align to ref.X
-          t=SendDlgMessage hDlg,F.DM_GETDLGITEM,tonumber ref
+          ref=tonumber ref
+          t=_XScale[id][ref] or SendDlgMessage hDlg,F.DM_GETDLGITEM,ref
           item[4]=item[4]+t[2]-item[2]
           item[2]=t[2]
         when 11  -- Align to ref.Y
-          t=SendDlgMessage hDlg,F.DM_GETDLGITEM,tonumber ref
+          ref=tonumber ref
+          t=_XScale[id][ref] or SendDlgMessage hDlg,F.DM_GETDLGITEM,ref
           item[5]=item[5]+t[3]-item[3]
           item[3]=t[3]
         when 12  -- Move & Stretch: (colons quantity).(colon number).(dx)
@@ -210,7 +214,7 @@ Proc=(id,hDlg)->
           x1,x2 = match ref,re2
           x1=tonumber x1
           x2=tonumber x2
-          t=SendDlgMessage hDlg,F.DM_GETDLGITEM,x1
+          t=_XScale[id][x1] or SendDlgMessage hDlg,F.DM_GETDLGITEM,x1
           item[4]=item[4]+t[2]-item[2]+x2
           item[2]=t[2]+x2
       --item[2]=Corr item[2] -- round
@@ -227,11 +231,10 @@ Proc=(id,hDlg)->
           item[2]=pl
         if item[4]>pr
           item[4]=pr
-      t=SendDlgMessage hDlg,F.DM_GETDLGITEM,idx
-      if t[1]==F.DI_EDIT or t[1]==F.DI_FIXEDIT
-        eucf=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
+      if item[1]==F.DI_EDIT or item[1]==F.DI_FIXEDIT
+        f=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
         SetDlgItem hDlg,idx,item
-        SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,eucf
+        SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,f
       else  
         SetDlgItem hDlg,idx,item
   SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}

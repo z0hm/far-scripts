@@ -1,5 +1,5 @@
 ﻿-- Editor.FilterDuplicatesFileNames.lua
--- v1.2.3
+-- v1.2.3.1
 -- Filter Duplicates File Names with complex logic
 -- ![Editor.FilterDuplicatesFileNames](http://i.piccy.info/i9/ef8a00f82a655df0f6058b78be55fc5f/1585847959/7483/1370793/2020_04_02_201451.png)
 -- Keys: launch from Macro Browser alt.
@@ -15,15 +15,26 @@ local repfile = "EFDFN-Report.txt"
 repfile = Temp.."\\"..repfile
 local FReport = repfile
 
+
 local F = far.Flags
 local ffi = require'ffi'
 local C = ffi.C
+
+local bit_band,bit_bnot,bit_bor = bit.band,bit.bnot,bit.bor
+local bit64_bor = bit64.bor
+local editor_Editor,editor_GetStringW = editor.Editor,editor.GetStringW
+local far_CPluginStartupInfo,far_Dialog,far_FarClock,far_Message,far_SendDlgMessage = far.CPluginStartupInfo,far.Dialog,far.FarClock,far.Message,far.SendDlgMessage
+local regex_matchW = regex.matchW
+local string_byte,string_rep = string.byte,string.rep
+local table_insert,table_remove,table_sort = table.insert,table.remove,table.sort
+local win_GetFileAttr,win_Utf16ToUtf8,win_Utf8ToUtf16 = win.GetFileAttr,win.Utf16ToUtf8,win.Utf8ToUtf16
+
 local NULL = ffi.cast("void*",0)
-local pHTAB = ffi.cast("void*",win.Utf8ToUtf16("\t"))
+local pHTAB = ffi.cast("void*",win_Utf8ToUtf16("\t"))
 local PANEL_ACTIVE = ffi.cast("HANDLE",-1)
 local pBL0,pBL1 = ffi.cast("BOOL*",0),ffi.cast("BOOL*",1)
-local FSF = ffi.cast("struct PluginStartupInfo*",far.CPluginStartupInfo()).FSF
-local ZERO,HTAB,BS = ffi.cast("unsigned int",0),ffi.cast("unsigned int",9),string.byte("\\")
+local FSF = ffi.cast("struct PluginStartupInfo*",far_CPluginStartupInfo()).FSF
+local ZERO,HTAB,BS = ffi.cast("unsigned int",0),ffi.cast("unsigned int",9),string_byte("\\")
 local ts = {nil,true,9999,true,false,2,2,true,true}
 local Flags = C.SORT_STRINGSORT
 local tts,FullPathEF,FileSizeEF,FileAttrEF = {}
@@ -34,7 +45,7 @@ unsigned long long int wcstoull(const wchar_t*, wchar_t**, int);
 ]]
 
 local function ToWChar(str)
-  str=win.Utf8ToUtf16(str)
+  str=win_Utf8ToUtf16(str)
   local res=ffi.new("wchar_t[?]",#str/2+1)
   ffi.copy(res,str)
   return res
@@ -106,26 +117,26 @@ local Items = {
 local function DlgProc(hDlg,Msg,Param1,Param2)
   if Msg==F.DN_INITDIALOG then
     for i=2,#Items-3 do tts[i]=ts[i] end
-    hDlg:send(F.DM_SETTEXT,3,tts[3])
-    hDlg:send(F.DM_SETCHECK,2,tts[2] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-    hDlg:send(F.DM_SETCHECK,4,tts[4] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-    hDlg:send(F.DM_SETCHECK,5,tts[5] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-    hDlg:send(F.DM_SETCHECK,6,tts[6]==0 and F.BSTATE_UNCHECKED or tts[6]==1 and F.BSTATE_CHECKED or tts[6]==2 and F.BSTATE_3STATE)
-    hDlg:send(F.DM_SETTEXT,6,"&Sizes of FD: "..(tts[6]==0 and "<>" or tts[6]==1 and "==" or "--"))
-    hDlg:send(F.DM_ENABLE,6,FileSizeEF and 1 or 0)
-    hDlg:send(F.DM_SETCHECK,7,tts[7]==0 and F.BSTATE_UNCHECKED or tts[7]==1 and F.BSTATE_CHECKED or tts[7]==2 and F.BSTATE_3STATE)
-    hDlg:send(F.DM_SETTEXT,7,"&Attributes of FD: "..(tts[7]==0 and "<>" or tts[7]==1 and "==" or "--"))
-    hDlg:send(F.DM_ENABLE,7,FileAttrEF and 1 or 0)
-    hDlg:send(F.DM_SETCHECK,8,tts[8] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-    hDlg:send(F.DM_ENABLE,8,FileSizeEF and 1 or 0)
-    hDlg:send(F.DM_SETCHECK,9,tts[9] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+    far_SendDlgMessage(hDlg,F.DM_SETTEXT,3,tts[3])
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,2,tts[2] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,4,tts[4] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,5,tts[5] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,6,tts[6]==0 and F.BSTATE_UNCHECKED or tts[6]==1 and F.BSTATE_CHECKED or tts[6]==2 and F.BSTATE_3STATE)
+    far_SendDlgMessage(hDlg,F.DM_SETTEXT,6,"&Sizes of FD: "..(tts[6]==0 and "<>" or tts[6]==1 and "==" or "--"))
+    far_SendDlgMessage(hDlg,F.DM_ENABLE,6,FileSizeEF and 1 or 0)
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,7,tts[7]==0 and F.BSTATE_UNCHECKED or tts[7]==1 and F.BSTATE_CHECKED or tts[7]==2 and F.BSTATE_3STATE)
+    far_SendDlgMessage(hDlg,F.DM_SETTEXT,7,"&Attributes of FD: "..(tts[7]==0 and "<>" or tts[7]==1 and "==" or "--"))
+    far_SendDlgMessage(hDlg,F.DM_ENABLE,7,FileAttrEF and 1 or 0)
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,8,tts[8] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+    far_SendDlgMessage(hDlg,F.DM_ENABLE,8,FileSizeEF and 1 or 0)
+    far_SendDlgMessage(hDlg,F.DM_SETCHECK,9,tts[9] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
   elseif Msg==F.DN_BTNCLICK and (Param1==2 or Param1==4 or Param1==5 or Param1==8 or Param1==9) then
     tts[Param1] = Param2~=0
   elseif Msg==F.DN_BTNCLICK and (Param1==6 or Param1==7) then
     tts[Param1] = Param2
-    hDlg:send(F.DM_SETTEXT,Param1,(Param1==6 and "&Sizes of FD: " or "&Attributes of FD: ")..(Param2==0 and "<>" or Param2==1 and "==" or "--"))
+    far_SendDlgMessage(hDlg,F.DM_SETTEXT,Param1,(Param1==6 and "&Sizes of FD: " or "&Attributes of FD: ")..(Param2==0 and "<>" or Param2==1 and "==" or "--"))
   elseif Msg==F.DN_EDITCHANGE and Param1==3 then -- Number symbols
-    tts[3] = tonumber(hDlg:send(F.DM_GETTEXT,3)) or tts[3]
+    tts[3] = tonumber(far_SendDlgMessage(hDlg,F.DM_GETTEXT,3)) or tts[3]
   else
     return
   end
@@ -138,10 +149,10 @@ description="EFDFN: Filter Duplicates FileName in Editor"; name="EFDFN"; area="S
 
 action=function()
   if Area.Shell then
-    local t0 = far.FarClock()
+    local t0 = far_FarClock()
     local count=0
     while true do
-      if win.GetFileAttr(FList)
+      if win_GetFileAttr(FList)
       then count=count+1 FList=lstfile:gsub("%.txt$","_"..count..".txt")
       else break
       end
@@ -151,27 +162,27 @@ action=function()
     function (ppi,FullPath,NULL)
       local attr=tonumber(ppi.FileAttributes)
       local size=tonumber(ppi.FileSize)
-      if bit.band(attr,C.FILE_ATTRIBUTE_DIRECTORY)==0 then
-        h:write(tostring(attr).."\t"..tostring(size).."\t"..win.Utf16ToUtf8(ffi.string(FullPath,C.wcslen(FullPath)*2)).."\n")
+      if bit_band(attr,C.FILE_ATTRIBUTE_DIRECTORY)==0 then
+        h:write(tostring(attr).."\t"..tostring(size).."\t"..win_Utf16ToUtf8(ffi.string(FullPath,C.wcslen(FullPath)*2)).."\n")
       end
       return true
     end
     ,F.FRS_RETUPDIR+F.FRS_RECUR+F.FRS_SCANSYMLINK,NULL)
     io.close(h)
-    far.Message("mcs: "..far.FarClock()-t0,"CLFN")
-    editor.Editor(FList,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_RELOADIFOPEN),1,1,65001)
+    far_Message("mcs: "..far_FarClock()-t0,"CLFN")
+    editor_Editor(FList,nil,0,0,-1,-1,bit64_bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_RELOADIFOPEN),1,1,65001)
   end
-  local line=editor.GetStringW(-1,1,0).StringText
+  local line=editor_GetStringW(-1,1,0).StringText
   if line then
-    FileSizeEF,FileAttrEF,FullPathEF = regex.matchW(line,[[^(\d+\t)?(\d+\t)?([^\t]+)$]])
+    FileSizeEF,FileAttrEF,FullPathEF = regex_matchW(line,[[^(\d+\t)?(\d+\t)?([^\t]+)$]])
     ts[6],ts[7] = FileSizeEF and ts[6] or 2,FileAttrEF and ts[7] or 2
   end
-  if far.Dialog(uGuid,-1,-1,69,11,nil,Items,nil,DlgProc)==#Items-1 then
-    local t0 = far.FarClock()
+  if far_Dialog(uGuid,-1,-1,69,11,nil,Items,nil,DlgProc)==#Items-1 then
+    local t0 = far_FarClock()
     for i=2,#Items-3 do ts[i]=tts[i] end
-    Flags = ts[4] and bit.bor(Flags,C.NORM_IGNORECASE) or bit.band(Flags,bit.bnot(C.NORM_IGNORECASE))
+    Flags = ts[4] and bit_bor(Flags,C.NORM_IGNORECASE) or bit_band(Flags,bit_bnot(C.NORM_IGNORECASE))
     local tsel = {}
-    local ec=ffi.cast("struct PluginStartupInfo*",far.CPluginStartupInfo()).EditorControl
+    local ec=ffi.cast("struct PluginStartupInfo*",far_CPluginStartupInfo()).EditorControl
     local ei=ffi.new("struct EditorInfo")
     ei.StructSize=ffi.sizeof(ei)
     if ec(-1,"ECTL_GETINFO",0,ei) then
@@ -182,11 +193,11 @@ action=function()
         egs.StringNumber=i
         if ec(-1,"ECTL_GETSTRING",0,egs) then
           local st1,ln1,st3,ln3,sz1,fa1=StartAndLenW(egs.StringText)
-          table.insert(tsel,{false,st1,ln1,st3,ln3,sz1,fa1,i,egs.StringText})
+          table_insert(tsel,{false,st1,ln1,st3,ln3,sz1,fa1,i,egs.StringText})
         end
       end
       for i=0,LastLine-1 do PGPL(i) end
-      table.sort(tsel,compare)
+      table_sort(tsel,compare)
       for i=2,LastLine do
         if C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,tsel[i-1][2],tsel[i-1][3],tsel[i][2],tsel[i][3])==2 then
           local x = C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,tsel[i-1][4],tsel[i-1][5],tsel[i][4],tsel[i][5])==2
@@ -222,25 +233,25 @@ action=function()
       for i=1,#tsel do if tsel[i][1] then icount=icount+1 end end
       local count=0
       while true do
-        if win.GetFileAttr(FReport)
+        if win_GetFileAttr(FReport)
         then count=count+1 FReport=repfile:gsub("%.txt$","_"..count..".txt")
         else break
         end
       end
       local h=io.open(FReport,"w+b")
       h:write("Items: "..icount.."/"..#tsel..
-        "\nExecution time: "..(far.FarClock()-t0)..
+        "\nExecution time: "..(far_FarClock()-t0)..
         " mcs\nNumber of symbols: "..(ts[2] and ts[3] or "all")..
         "\nIgnore case: "..tostring(ts[4])..
         "\nIgnore Full Duplicates: "..tostring(ts[5])..
         "\nSizes of FD: "..(ts[6]==0 and "<>" or ts[6]==1 and "==" or "--")..
         "\nAttributes of FD: "..(ts[7]==0 and "<>" or ts[7]==1 and "==" or "--")..
         "\nAccuracy (two-pass method): "..tostring(ts[8])..
-        "\n"..string.rep("-",30).."\n")
-      for i=#tsel,1,-1 do if tsel[i][1] then h:write(tostring(tsel[i][8]+1).."\t"..win.Utf16ToUtf8(ffi.string(tsel[i][9],C.wcslen(tsel[i][9])*2)).."\n") end table.remove(tsel) end
+        "\n"..string_rep("-",30).."\n")
+      for i=#tsel,1,-1 do if tsel[i][1] then h:write(tostring(tsel[i][8]+1).."\t"..win_Utf16ToUtf8(ffi.string(tsel[i][9],C.wcslen(tsel[i][9])*2)).."\n") end table_remove(tsel) end
       io.close(h)
-      editor.Editor(FReport,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_RELOADIFOPEN),1,1,65001)
-      far.Message("mcs: "..far.FarClock()-t0,"EFDFN")
+      editor_Editor(FReport,nil,0,0,-1,-1,bit64_bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_RELOADIFOPEN),1,1,65001)
+      far_Message("mcs: "..far_FarClock()-t0,"EFDFN")
     end
   end
 end;
@@ -250,13 +261,13 @@ Macro {
   description = "EFDFN - Help"; area = "Dialog"; key = "F1";
   condition=function() return Area.Dialog and Dlg.Id==guid end;
   action=function()
-    if Dlg.CurPos<=3 then far.Message("The number of first or last symbols to compare","Help: Number of symbols")
-    elseif Dlg.CurPos==4 then far.Message("Case of letters in FileName will be ignored","Help: Ignore case")
-    elseif Dlg.CurPos==5 then far.Message("Full duplicates of FileName will be ignored","Help: Ignore Full Duplicates")
-    elseif Dlg.CurPos==6 then far.Message("-- ignore, == equal, <> is not equal","Help: Sizes of FD")
-    elseif Dlg.CurPos==7 then far.Message("-- ignore, == equal, <> is not equal","Help: Attributes of FD")
-    elseif Dlg.CurPos==8 then far.Message("Two-pass method for\n<> (is not equal) options only","Help: Accuracy")
-    elseif Dlg.CurPos==9 then far.Message("mcs  - total time of execution in mcs\nReport will be saved to:\n"..FReport,"Help: Report",nil,"l")
+    if Dlg.CurPos<=3 then far_Message("The number of first or last symbols to compare","Help: Number of symbols")
+    elseif Dlg.CurPos==4 then far_Message("Case of letters in FileName will be ignored","Help: Ignore case")
+    elseif Dlg.CurPos==5 then far_Message("Full duplicates of FileName will be ignored","Help: Ignore Full Duplicates")
+    elseif Dlg.CurPos==6 then far_Message("-- ignore, == equal, <> is not equal","Help: Sizes of FD")
+    elseif Dlg.CurPos==7 then far_Message("-- ignore, == equal, <> is not equal","Help: Attributes of FD")
+    elseif Dlg.CurPos==8 then far_Message("Two-pass method for\n<> (is not equal) options only","Help: Accuracy")
+    elseif Dlg.CurPos==9 then far_Message("mcs  - total time of execution in mcs\nReport will be saved to:\n"..FReport,"Help: Report",nil,"l")
     end
   end;
 }
