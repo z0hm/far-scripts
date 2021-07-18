@@ -35,9 +35,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.9.3 (12478 bytes, changed 2021-07-18 14:11)*
+  *v1.1.9.3 (12506 bytes, changed 2021-07-18 16:47)*
 
-  *SHA-256 `df93ffe92bb0df709352c434c66123a8342302f814c982761794dc4eb127ee65`*
+  *SHA-256 `dfc88709ec5a7ed909dcba5124c08a1c7284f8080a35d5f4e0aa5c0975cb42e1`*
 
   Resizing dialogs, aligning the positions of dialog elements
 

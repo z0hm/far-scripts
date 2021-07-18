@@ -9,6 +9,7 @@ XScale=0 -- scale 0<=XScale<=1 for all dialogs: 0 = original width, 1 = full wid
 XStep=0.25 -- width change step
 DX=4 -- indent
 
+XScale=_G.XScale or XScale
 _XScale={id:"",cw:nil,ch:nil,xs:XScale,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
 
 w=win
