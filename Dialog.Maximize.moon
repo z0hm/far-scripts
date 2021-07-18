@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.9.2
+-- v1.1.9.3
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -9,7 +9,7 @@ XScale=0 -- scale 0<=XScale<=1 for all dialogs: 0 = original width, 1 = full wid
 XStep=0.25 -- width change step
 DX=4 -- indent
 
-_XScale={id:"",cs:nil,xs:XScale,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
+_XScale={id:"",cw:nil,ch:nil,xs:XScale,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
 
 w=win
 Uuid=w.Uuid
@@ -64,7 +64,7 @@ transform=
   -- Create archive (Shell: ShiftF1)
   [Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1,10,23,"43.10.45"}
   -- AudioPlayer
-  --[Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1} -- don't support width change yet
+  --[Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1,2,"3.6.0",4.1,5.3,"6.6.0",7.2,8.3,9.3,10.5,12.1,13.3,14} -- don't support width change yet
   -- Custom sort by Name
   [Uuid"5B40F3FF-6593-48D2-8F78-4A32C8C36BCA"]: {1,5,12,14}
 
@@ -80,42 +80,36 @@ match = s.match
 
 re0,re1,re2,re3,re4,re5 = "^(%d+)%.(%d+)%.(.+)$","[%-%+]?%d+","([%-%+]?%d+)%.([%-%+]?%d+)","([F]?)(%d)%.(%d)%.([%-%+]?%d+)","([F]?)(%d)%.(%d)","([%-%+]?%d+)%.([%-%+]?%d+)%.([%-%+]?%d+)%.([%-%+]?%d+)"
 
---Corr=(x)->
---  (0==fmod _XScale.xs/XStep,2) and floor(x) or ceil(x)
-
-corr={0,{},0,{}}
-
 ConsoleSize=->
   rr=AdvControl"ACTL_GETFARRECT"
-  rr.Right-rr.Left+1
+  rr.Right-rr.Left+1,rr.Bottom-rr.Top+1
 
-DlgRect=(hDlg)->
-  {Left:_XScale.dl,Top:_XScale.dt,Right:_XScale.dr,Bottom:_XScale.db}=SendDlgMessage hDlg,F.DM_GETDLGRECT
-  _XScale.dw=_XScale.dr-_XScale.dl+1
-  _XScale.dh=_XScale.db-_XScale.dt+1
-  _XScale.pl=(SendDlgMessage hDlg,F.DM_GETDLGITEM,1)[2]+2
+DlgRect=(id,hDlg)->
+  {Left:_XScale[id].dl,Top:_XScale[id].dt,Right:_XScale[id].dr,Bottom:_XScale[id].db}=SendDlgMessage hDlg,F.DM_GETDLGRECT
+  _XScale[id].dw=_XScale[id].dr-_XScale[id].dl+1
+  _XScale[id].dh=_XScale[id].db-_XScale[id].dt+1
+  _XScale[id].pl=(SendDlgMessage hDlg,F.DM_GETDLGITEM,1)[2]+2
 
+_XScale.cw,_XScale.ch = ConsoleSize!
 Proc=(id,hDlg)->
-  cs=ConsoleSize!
   if id~=_XScale.id
     _XScale.id=id
     if not _XScale[id]
-      _XScale[id]={}
-    DlgRect hDlg
-  if _XScale.cs~=cs
-    _XScale.cs=cs
-    DlgRect hDlg
-  df=cs-DX-_XScale.dw
-  if df<=0
-    _XScale.xs,_XScale.xp = 0,0
+      _XScale[id]={cr:{0,{},0,{},0}}
+      DlgRect id,hDlg
+  cw,ch = ConsoleSize!
+  --if cw~=_XScale.cw or ch~=_XScale.ch
+  --  _XScale.cw,_XScale.ch = cw,ch
+  df=cw-DX-_XScale[id].dw
   --if _XScale.xs~=_XScale.xp -- debug
-  dh,dt,pl = _XScale.dh,_XScale.dt,_XScale.pl
+  dh,dt,pl = _XScale[id].dh,_XScale[id].dt,_XScale[id].pl
   diff=(_XScale.xs-_XScale.xp)*df
-  --dw=Corr _XScale.xs*df+_XScale.dw -- round
-  dw,corr[1] = modf _XScale.xs*df+_XScale.dw+corr[1] -- round
+  dw=_XScale.xs*df+_XScale[id].dw
+  --dw,_XScale[id].cr[1] = modf dw+_XScale[id].cr[1] -- round
   pr=dw-pl-1
   --_XScale.pr=pr -- debug
-  SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
+  --SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
+  SendDlgMessage hDlg,F.DM_ENABLEREDRAW,0,0
   for ii in *transform[id]
     local idx,opt,ref
     if "number"==type ii
@@ -127,8 +121,8 @@ Proc=(id,hDlg)->
       idx=tonumber idx
       opt=tonumber opt
     item=GetDlgItem hDlg,idx
-    _XScale[id][idx]=item
     if item  -- prevent error message for out-of-range index (see "hack" above)
+      _XScale[id][idx]=item
       switch opt
         when 0  -- Stretch full
           if idx==1 and item[1]==3
@@ -217,10 +211,8 @@ Proc=(id,hDlg)->
           t=_XScale[id][x1] or SendDlgMessage hDlg,F.DM_GETDLGITEM,x1
           item[4]=item[4]+t[2]-item[2]+x2
           item[2]=t[2]+x2
-      --item[2]=Corr item[2] -- round
-      --item[4]=Corr item[4] -- round
-      item[2],corr[2][idx] = modf item[2]+(corr[2][idx] or 0) -- round
-      item[4],corr[4][idx] = modf item[4]+(corr[4][idx] or 0) -- round
+      item[2],_XScale[id].cr[2][idx] = modf item[2]+(_XScale[id].cr[2][idx] or 0) -- round
+      item[4],_XScale[id].cr[4][idx] = modf item[4]+(_XScale[id].cr[4][idx] or 0) -- round
       if idx==1
         if item[2]<pl-2
           item[2]=pl-2
@@ -238,11 +230,11 @@ Proc=(id,hDlg)->
       else  
         SetDlgItem hDlg,idx,item
   SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
-  --x=Corr (cs-dw)/2 -- round
-  x,corr[3] = modf (cs-dw)/2+corr[3] -- round
-  SendDlgMessage hDlg,F.DM_MOVEDIALOG,1,{X:x,Y:dt}
+  --x,_XScale[id].cr[3] = modf (cw-dw)/2+_XScale[id].cr[3] -- round
+  SendDlgMessage hDlg,F.DM_MOVEDIALOG,1,{X:(cw-dw)/2,Y:(ch-dh)/2}
+  SendDlgMessage hDlg,F.DM_ENABLEREDRAW,1,0
   --SendDlgMessage hDlg,F.DM_REDRAW,0,0
-  SendDlgMessage hDlg,F.DM_SHOWDIALOG,1,0 -- show dialog
+  --SendDlgMessage hDlg,F.DM_SHOWDIALOG,1,0 -- show dialog
 
 XItems={
          {F.DI_DOUBLEBOX, 0,0,19,2,0,       0,0,       0,  "XScale"}
@@ -274,6 +266,10 @@ Event
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG
       _XScale.xp=0
       exec param.hDlg
+    --elseif event==F.DE_DLGPROCINIT and param.Msg==F.DN_RESIZECONSOLE
+      --SendDlgMessage param.hDlg,F.DM_RESIZEDIALOG,0,param.Param2
+      --_XScale.xp=0
+      --exec param.hDlg
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=InputRecordToName param.Param2
