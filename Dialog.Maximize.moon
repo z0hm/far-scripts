@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.9.3
+-- v1.1.10.0
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -10,7 +10,7 @@ XStep=0.25 -- width change step
 DX=4 -- indent
 
 XScale=_G.XScale or XScale
-_XScale={id:"",cw:nil,ch:nil,xs:XScale,xp:0,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
+_XScale={id:"",xs:XScale,cw:nil,ch:nil,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
 
 w=win
 Uuid=w.Uuid
@@ -50,9 +50,11 @@ transform=
   [Uuid"74D7F486-487D-40D0-9B25-B2BB06171D86"]: {1.0,3.0,5.0,7.0,8.3,9.3} -- Shell/Grep
   [Uuid"AF8D7072-FF17-4407-9AF4-7323273BA899"]: {1.0,3.0,11.0,13.0,14.4,16.4,20.2,21.1,22.5,25.0,27.0} -- Shell/Rename
   -- LFSearch/Editor
-  [Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1.0,3.0,4.3,7.1,"8.12.F2.2.13",10.1,14.4,15.4,"16.12.3.2","17.10.16","18.10.16","19.12.3.3","20.10.19","21.10.19",25.0,27.2,28.1,29.5} -- Editor/Find
-  [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1.0,3.0,5.0,6.3,7.3,8.4,9.1,10.4,11.5,"14.10.11","15.16.11.11","17.10.11","20.12.3.1","21.10.10","22.10.20","23.12.3.2","24.10.23","25.10.23","26.12.3.3","27.10.26","28.10.26",32.0,34.2,35.5,36.5} -- Editor/Replace
+  [Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1.0,3.0,4.3,7.1,"8.12.F2.2.13",10.1,14.4,15.4,"16.6.1","19.10.20",25.0,27.2,28.1,29.5} -- Editor/Find
+  [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1.0,3.0,5.0,6.3,7.3,8.4,9.1,10.4,11.5,"14.10.11","15.16.11.11","17.10.11","20.12.3.1","21.10.20","22.10.20","23.6.1",32.0,34.2,35.5,36.5} -- Editor/Replace
   [Uuid"87ED8B17-E2B2-47D0-896D-E2956F396F1A"]: {1.0,3.0,5.0,6.4,19.2,20.1,21.5} -- Editor/Multi-Line Replace
+  -- NetBox
+  --[Uuid"42E4AEB1-A230-44F4-B33C-F195BB654931"]: {1,2,8.3,9.3,25.1,28,30.3,45,47,63,67,115,116,117,139,143,145.3,148.1,147.2,149.5}
   -- Editor Find
   [Uuid"A0562FC4-25FA-48DC-BA5E-48EFA639865F"]: {1.0,4.0,10.1} -- Find
   [Uuid"070544C7-E2F6-4E7B-B348-7583685B5647"]: {1.0,4.0,6.0,12.1,13.1} -- Replace
@@ -85,32 +87,56 @@ ConsoleSize=->
   rr=AdvControl"ACTL_GETFARRECT"
   rr.Right-rr.Left+1,rr.Bottom-rr.Top+1
 
-DlgRect=(id,hDlg)->
-  {Left:_XScale[id].dl,Top:_XScale[id].dt,Right:_XScale[id].dr,Bottom:_XScale[id].db}=SendDlgMessage hDlg,F.DM_GETDLGRECT
-  _XScale[id].dw=_XScale[id].dr-_XScale[id].dl+1
-  _XScale[id].dh=_XScale[id].db-_XScale[id].dt+1
-  _XScale[id].pl=(SendDlgMessage hDlg,F.DM_GETDLGITEM,1)[2]+2
+CopyTable=(s,t)->
+  for k,v in pairs s
+    if "table"==type v
+      t[k]={}
+      CopyTable v,t[k]
+    else
+      t[k]=v
+
+DlgRect=(id,hDlg,t)->
+  {Left:t.dl,Top:t.dt,Right:t.dr,Bottom:t.db}=SendDlgMessage hDlg,F.DM_GETDLGRECT
+  t.dw=t.dr-t.dl+1
+  t.dh=t.db-t.dt+1
+  t.pl=(SendDlgMessage hDlg,F.DM_GETDLGITEM,1)[2]+2
+  t.pr=t.dw-t.pl-1
+  i=0
+  while true
+    i+=1
+    item=GetDlgItem hDlg,i
+    if item
+      t[i]={}
+      CopyTable item,t[i]
+    else
+      break
+
+fSetDlgItem=(hDlg,idx,item)->
+  if item[1]==F.DI_EDIT or item[1]==F.DI_FIXEDIT
+    f=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
+    SetDlgItem hDlg,idx,item
+    SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,f
+  else  
+    SetDlgItem hDlg,idx,item
 
 _XScale.cw,_XScale.ch = ConsoleSize!
 Proc=(id,hDlg)->
   if id~=_XScale.id
     _XScale.id=id
     if not _XScale[id]
-      _XScale[id]={cr:{0,{},0,{},0}}
-      DlgRect id,hDlg
+      _XScale[id]={}
+      DlgRect id,hDlg,_XScale[id]
   cw,ch = ConsoleSize!
-  --if cw~=_XScale.cw or ch~=_XScale.ch
-  --  _XScale.cw,_XScale.ch = cw,ch
+  if cw~=_XScale.cw or ch~=_XScale.ch
+    _XScale.cw,_XScale.ch = cw,ch
   df=cw-DX-_XScale[id].dw
   --if _XScale.xs~=_XScale.xp -- debug
-  dh,dt,pl = _XScale[id].dh,_XScale[id].dt,_XScale[id].pl
-  diff=(_XScale.xs-_XScale.xp)*df
-  dw=_XScale.xs*df+_XScale[id].dw
-  --dw,_XScale[id].cr[1] = modf dw+_XScale[id].cr[1] -- round
+  dh,pl = _XScale[id].dh,_XScale[id].pl
+  diff=_XScale.xs*df
+  dw=_XScale[id].dw+diff
   pr=dw-pl-1
-  --_XScale.pr=pr -- debug
-  --SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
   SendDlgMessage hDlg,F.DM_ENABLEREDRAW,0,0
+  --SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
   for ii in *transform[id]
     local idx,opt,ref
     if "number"==type ii
@@ -121,9 +147,10 @@ Proc=(id,hDlg)->
       idx,opt,ref = match ii,re0
       idx=tonumber idx
       opt=tonumber opt
-    item=GetDlgItem hDlg,idx
-    if item  -- prevent error message for out-of-range index (see "hack" above)
-      _XScale[id][idx]=item
+    --item=GetDlgItem hDlg,idx
+    if _XScale[id][idx]  -- prevent error message for out-of-range index (see "hack" above)
+      item={}
+      CopyTable _XScale[id][idx],item
       switch opt
         when 0  -- Stretch full
           if idx==1 and item[1]==3
@@ -212,8 +239,6 @@ Proc=(id,hDlg)->
           t=_XScale[id][x1] or SendDlgMessage hDlg,F.DM_GETDLGITEM,x1
           item[4]=item[4]+t[2]-item[2]+x2
           item[2]=t[2]+x2
-      item[2],_XScale[id].cr[2][idx] = modf item[2]+(_XScale[id].cr[2][idx] or 0) -- round
-      item[4],_XScale[id].cr[4][idx] = modf item[4]+(_XScale[id].cr[4][idx] or 0) -- round
       if idx==1
         if item[2]<pl-2
           item[2]=pl-2
@@ -224,14 +249,8 @@ Proc=(id,hDlg)->
           item[2]=pl
         if item[4]>pr
           item[4]=pr
-      if item[1]==F.DI_EDIT or item[1]==F.DI_FIXEDIT
-        f=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
-        SetDlgItem hDlg,idx,item
-        SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,f
-      else  
-        SetDlgItem hDlg,idx,item
+      fSetDlgItem hDlg,idx,item
   SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
-  --x,_XScale[id].cr[3] = modf (cw-dw)/2+_XScale[id].cr[3] -- round
   SendDlgMessage hDlg,F.DM_MOVEDIALOG,1,{X:(cw-dw)/2,Y:(ch-dh)/2}
   SendDlgMessage hDlg,F.DM_ENABLEREDRAW,1,0
   --SendDlgMessage hDlg,F.DM_REDRAW,0,0
@@ -253,7 +272,7 @@ XDlgProc=(hDlg,Msg,Param1,Param2)->
         res=0
       elseif res>1
         res=1
-      _XScale.xp,_XScale.xs = _XScale.xs,res
+      _XScale.xs=res
 
 exec=(hDlg)->
   id=SendDlgMessage hDlg,F.DM_GETDIALOGINFO
@@ -265,12 +284,9 @@ Event
   description:"Dialog Transform"
   action:(event,param)->
     if event==F.DE_DLGPROCINIT and param.Msg==F.DN_INITDIALOG
-      _XScale.xp=0
       exec param.hDlg
-    --elseif event==F.DE_DLGPROCINIT and param.Msg==F.DN_RESIZECONSOLE
-      --SendDlgMessage param.hDlg,F.DM_RESIZEDIALOG,0,param.Param2
-      --_XScale.xp=0
-      --exec param.hDlg
+    elseif event==F.DE_DLGPROCINIT and param.Msg==F.DN_RESIZECONSOLE
+      exec param.hDlg
     elseif event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT
       if param.Param2.EventType==F.KEY_EVENT
         name=InputRecordToName param.Param2
@@ -280,14 +296,12 @@ Event
             exec param.hDlg
         elseif name=="CtrlAltRight"
           if _XScale.xs<1
-            _XScale.xp=_XScale.xs
             _XScale.xs+=XStep
             if _XScale.xs>1
               _XScale.xs=1
             exec param.hDlg
         elseif name=="CtrlAltLeft"
           if _XScale.xs>0
-            _XScale.xp=_XScale.xs
             _XScale.xs-=XStep
             if _XScale.xs<0
               _XScale.xs=0
