@@ -90,6 +90,8 @@ ConsoleSize=->
   rr=AdvControl"ACTL_GETFARRECT"
   rr.Right-rr.Left+1,rr.Bottom-rr.Top+1
 
+_XScale.cw,_XScale.ch = ConsoleSize!
+
 CopyTable=(s,t)->
   for k,v in pairs s
     if "table"==type v
@@ -114,15 +116,6 @@ DlgRect=(id,hDlg,t)->
     else
       break
 
-fSetDlgItem=(hDlg,idx,item)->
-  if item[1]==F.DI_EDIT or item[1]==F.DI_FIXEDIT
-    f=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
-    SetDlgItem hDlg,idx,item
-    SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,f
-  else  
-    SetDlgItem hDlg,idx,item
-
-_XScale.cw,_XScale.ch = ConsoleSize!
 Proc=(id,hDlg)->
   if id~=_XScale.id
     _XScale.id=id
@@ -250,7 +243,12 @@ Proc=(id,hDlg)->
           item[2]=pl
         if item[4]>pr
           item[4]=pr
-      fSetDlgItem hDlg,idx,item
+      if item[1]==F.DI_EDIT or item[1]==F.DI_FIXEDIT
+        f=SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,-1
+        SetDlgItem hDlg,idx,item
+        SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,f
+      else  
+        SetDlgItem hDlg,idx,item
   SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
   SendDlgMessage hDlg,F.DM_MOVEDIALOG,1,{X:(cw-dw)/2,Y:(ch-dh)/2}
   SendDlgMessage hDlg,F.DM_ENABLEREDRAW,1,0
