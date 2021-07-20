@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.10.2
+-- v1.1.10.3
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -94,14 +94,6 @@ ConsoleSize=->
 
 _XScale.cw,_XScale.ch = ConsoleSize!
 
-CopyTable=(s,t)->
-  for k,v in pairs s
-    if "table"==type v
-      t[k]={}
-      CopyTable v,t[k]
-    else
-      t[k]=v
-
 Proc=(id,hDlg)->
   if id~=_XScale.id
     _XScale.id=id
@@ -112,13 +104,16 @@ Proc=(id,hDlg)->
       _XScale[id].dh=_XScale[id].db-_XScale[id].dt+1
       _XScale[id].pl=(GetDlgItem hDlg,1)[2]+2
       _XScale[id].pr=_XScale[id].dw-_XScale[id].pl-1
-      i=0
+      idx=0
       while true
-        i+=1
-        item=GetDlgItem hDlg,i
+        idx+=1
+        item=GetDlgItem hDlg,idx
         if item
-          _XScale[id][i]={}
-          CopyTable item,_XScale[id][i]
+          _XScale[id][idx]={}
+          _XScale[id][idx][2]=item[2]
+          _XScale[id][idx][3]=item[3]
+          _XScale[id][idx][4]=item[4]
+          _XScale[id][idx][5]=item[5]
         else
           break
   cw,ch = ConsoleSize!
@@ -141,9 +136,12 @@ Proc=(id,hDlg)->
       idx,opt,ref = match ii,re0
       idx=tonumber idx
       opt=tonumber opt
-    if _XScale[id][idx]  -- prevent error message for out-of-range index (see "hack" above)
-      item={}
-      CopyTable _XScale[id][idx],item
+    item=GetDlgItem hDlg,idx
+    if item  -- prevent error message for out-of-range index (see "hack" above)
+      item[2]=_XScale[id][idx][2]
+      item[3]=_XScale[id][idx][3]
+      item[4]=_XScale[id][idx][4]
+      item[5]=_XScale[id][idx][5]
       switch opt
         when 0  -- Stretch full
           if idx==1 and item[1]==3
