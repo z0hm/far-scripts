@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.10.1
+-- v1.1.10.2
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -44,6 +44,8 @@ transform=
   [Uuid Guids.ApplyCommandId                 ]: {1,3} -- Shell: Apply command (CtrlG)
   [Uuid Guids.EditUserMenuId                 ]: {1,5,8,9,10,11,12,13,14,15,16,17}
   [Uuid Guids.FileAssocModifyId              ]: {1,3,5,8,10,12,14,16,18}
+  [Uuid Guids.ViewerSearchId                 ]: {1,3} -- Viewer Search
+  --[Uuid Guids.FileAttrDlgId                  ]: {1,37} -- File Attributes
   -- ArcLite
   [Uuid"08A1229B-AD54-451B-8B53-6D5FD35BCFAA"]: {1,15,19,27,31} -- Configuration
   [Uuid"CD57D7FA-552C-4E31-8FA8-73D9704F0666"]: {1,10,23,"43.10.45"} -- Create archive
@@ -72,8 +74,8 @@ transform=
   [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1,3,5,6.3,7.3,8.4,9.1,10.4,11.5,"14.10.11","15.16.11.11","17.10.11","20.12.3.1","21.10.20","22.10.20","23.6.1",32,34.2,35.5,36.5} -- Editor/Replace
   [Uuid"87ED8B17-E2B2-47D0-896D-E2956F396F1A"]: {1,3,5,6.4,19.2,20.1,21.5} -- Editor/Multi-Line Replace
   -- Editor Find
-  [Uuid"A0562FC4-25FA-48DC-BA5E-48EFA639865F"]: {1,4,10.1} -- Find
-  [Uuid"070544C7-E2F6-4E7B-B348-7583685B5647"]: {1,4,6,12.1,13.1} -- Replace
+  [Uuid"A0562FC4-25FA-48DC-BA5E-48EFA639865F"]: {1,2.3,4,10.1} -- Find
+  [Uuid"070544C7-E2F6-4E7B-B348-7583685B5647"]: {1,2.3,4,6,12.1,13.1} -- Replace
   -- Calculator
   [Uuid"E45555AE-6499-443C-AA04-12A1AADAB989"]: {1,3,10,11,12,13,14}
   -- LiveFileSearch
@@ -100,28 +102,25 @@ CopyTable=(s,t)->
     else
       t[k]=v
 
-DlgRect=(id,hDlg,t)->
-  {Left:t.dl,Top:t.dt,Right:t.dr,Bottom:t.db}=SendDlgMessage hDlg,F.DM_GETDLGRECT
-  t.dw=t.dr-t.dl+1
-  t.dh=t.db-t.dt+1
-  t.pl=(SendDlgMessage hDlg,F.DM_GETDLGITEM,1)[2]+2
-  t.pr=t.dw-t.pl-1
-  i=0
-  while true
-    i+=1
-    item=GetDlgItem hDlg,i
-    if item
-      t[i]={}
-      CopyTable item,t[i]
-    else
-      break
-
 Proc=(id,hDlg)->
   if id~=_XScale.id
     _XScale.id=id
     if not _XScale[id]
       _XScale[id]={}
-      DlgRect id,hDlg,_XScale[id]
+      {Left:_XScale[id].dl,Top:_XScale[id].dt,Right:_XScale[id].dr,Bottom:_XScale[id].db}=SendDlgMessage hDlg,F.DM_GETDLGRECT
+      _XScale[id].dw=_XScale[id].dr-_XScale[id].dl+1
+      _XScale[id].dh=_XScale[id].db-_XScale[id].dt+1
+      _XScale[id].pl=(GetDlgItem hDlg,1)[2]+2
+      _XScale[id].pr=_XScale[id].dw-_XScale[id].pl-1
+      i=0
+      while true
+        i+=1
+        item=GetDlgItem hDlg,i
+        if item
+          _XScale[id][i]={}
+          CopyTable item,_XScale[id][i]
+        else
+          break
   cw,ch = ConsoleSize!
   if cw~=_XScale.cw or ch~=_XScale.ch
     _XScale.cw,_XScale.ch = cw,ch
@@ -181,19 +180,21 @@ Proc=(id,hDlg)->
           y=tonumber match ref,re1
           item[3]+=y
           item[5]+=y
-        --when 8  -- reserved
+        --when 8  -- MoveX full
+        --  item[2]+=diff+item[2]-item[4]
+        --  item[4]+=diff
         when 9  -- Move & Size relative by X1 & X2
           x1,x2 = match ref,re2
           item[2]+=tonumber x1
           item[4]+=tonumber x2
         when 10  -- Align to ref.X
           ref=tonumber ref
-          t=_XScale[id][ref] or SendDlgMessage hDlg,F.DM_GETDLGITEM,ref
+          t=_XScale[id][ref]
           item[4]=item[4]+t[2]-item[2]
           item[2]=t[2]
         when 11  -- Align to ref.Y
           ref=tonumber ref
-          t=_XScale[id][ref] or SendDlgMessage hDlg,F.DM_GETDLGITEM,ref
+          t=_XScale[id][ref]
           item[5]=item[5]+t[3]-item[3]
           item[3]=t[3]
         when 12  -- Move & Stretch: (colons quantity).(colon number).(dx)
@@ -230,7 +231,7 @@ Proc=(id,hDlg)->
           x1,x2 = match ref,re2
           x1=tonumber x1
           x2=tonumber x2
-          t=_XScale[id][x1] or SendDlgMessage hDlg,F.DM_GETDLGITEM,x1
+          t=_XScale[id][x1]
           item[4]=item[4]+t[2]-item[2]+x2
           item[2]=t[2]+x2
       if idx==1
