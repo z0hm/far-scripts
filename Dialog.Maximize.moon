@@ -45,6 +45,8 @@ transform=
   [Uuid Guids.EditUserMenuId                 ]: {1,5,8,9,10,11,12,13,14,15,16,17}
   [Uuid Guids.FileAssocModifyId              ]: {1,3,5,8,10,12,14,16,18}
   [Uuid Guids.ViewerSearchId                 ]: {1,3} -- Viewer Search
+  [Uuid Guids.SelectDialogId                 ]: {1,2} -- Select Gray+
+  [Uuid Guids.UnSelectDialogId               ]: {1,2} -- Select Gray-
   --[Uuid Guids.FileAttrDlgId                  ]: {1,37} -- File Attributes
   -- ArcLite
   [Uuid"08A1229B-AD54-451B-8B53-6D5FD35BCFAA"]: {1,15,19,27,31} -- Configuration
