@@ -16,6 +16,25 @@ a very wide range of tasks using the Far and Windows API's.
 ## A brief summary of scripts in the repository:
 
 
+[&nbsp;](#user-content-chessknightlua)
+
+## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
+
+  *v0.5 (9158 bytes, changed 2021-07-24 13:04)*
+
+  *SHA-256 `e352e2e3e1498979d6b9e0c5fee4305a81756af6b56ade25c24aefa5f3a0ed2f`*
+
+  Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
+
+  ![Chess Knight](http://i.piccy.info/i9/ef8a00f82a655df0f6058b78be55fc5f/1585847959/7483/1370793/2020_04_02_201451.png)
+
+  Launch: in cmdline Far.exe: lua:@ChessKnight.lua
+
+  Tip: for installation of holes, see the program code
+
+
+
+
 [&nbsp;](#user-content-commandlinef4lua)
 
 ## [CommandLineF4.lua](https://github.com/z0hm/far-scripts/blob/master/CommandLineF4.lua "CommandLineF4.lua")
@@ -551,9 +570,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")
 
-  *v1.0 (2690 bytes, changed 2021-07-12 19:13)*
+  *v1.0.0.1 (2692 bytes, changed 2021-07-24 14:21)*
 
-  *SHA-256 `e6ee790b28a631e3f92bca1e4170cc7cb1b6b36f3877408958d5259d1df5034a`*
+  *SHA-256 `44d11a2bf931cf37983915f5c6b81ec01d57cf1e2d9acc1078276d4c5ba30b30`*
 
   (un)HEX selected files, VERY FAST!
 

@@ -1,5 +1,5 @@
 ﻿-- Panel.Files2HEX_ffi.lua
--- v1.0
+-- v1.0.0.1
 -- (un)HEX selected files, VERY FAST!
 -- Keys: launch from Macro Browser alt.
 -- author Shmuel, co-author AleXH
@@ -38,7 +38,7 @@ Macro {
         while true do
           local n = tonumber(C.fread(ibuf,1,ffi.sizeof(ibuf),f_in))
           if n==0 then break end
-          for i=0,(n-1)/2 do
+          for i=0,n/2-1 do
             local high = ibuf[i+i]
             local low  = ibuf[i+i+1]
             high = high<65 and high-48 or high-55
