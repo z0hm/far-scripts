@@ -20,17 +20,17 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.5 (9158 bytes, changed 2021-07-24 13:04)*
+  *v0.9 (9542 bytes, changed 2021-07-25 11:06)*
 
-  *SHA-256 `e352e2e3e1498979d6b9e0c5fee4305a81756af6b56ade25c24aefa5f3a0ed2f`*
+  *SHA-256 `b8c95be630e140b85590248b08c66c010220f7dc0a2e3efec50f9c918870d140`*
 
   Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
 
-  ![Chess Knight](http://i.piccy.info/i9/ef8a00f82a655df0f6058b78be55fc5f/1585847959/7483/1370793/2020_04_02_201451.png)
+  ![Chess Knight](http://i.piccy.info/i9/3816fa76158b77498e41371e849e6637/1627210911/17158/1436778/2021_07_25_131624.png)
 
   Launch: in cmdline Far.exe: lua:@ChessKnight.lua
 
-  Tip: for installation of holes, see the program code
+  Tip: for installation of holes, see the program code, line 16-17
 
 
 
