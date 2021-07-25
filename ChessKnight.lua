@@ -1,11 +1,13 @@
 -- ChessKnight.lua
--- v0.9
+-- v0.9.0.1
 -- Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
 -- ![Chess Knight](http://i.piccy.info/i9/3816fa76158b77498e41371e849e6637/1627210911/17158/1436778/2021_07_25_131624.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
 -- Tip: for installation of holes, see the program code, line 16-17
 
 -- ќбход конЄм шахматной доски произвольного размера, посещЄнные ранее клетки и клетки с дырами дл€ ходов недоступны.
+local log = false -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1 byte storing xy
+
 local ffi = require"ffi"
 local C=ffi.C
 ffi.cdef"typedef uint8_t Tree[9]"
@@ -103,17 +105,20 @@ for i=cl,0,-1 do cx[i],cy[i] = x+dx[ti[i]],y+dy[ti[i]] end -- массив координат к
 local fw,rb,ret,full1,v,x2,y2 = 1,0,ret0,full-1 -- счЄтчики: ходов вперЄд, возвратов (откатов)
 if ret and math.fmod(full,2)==0 then ret=false end
 
---debug max board 15x15 xy 1 byte
---local buf_size=1
---local fname = win.GetEnv"TEMP".."\\ChessKnight.log" 
---local name_out = win.Utf8ToUtf16(fname).."\0"
---local mode_out = "\119\0\98\0\0" -- win.Utf8ToUtf16("wb").."\0"
---local f_out=assert(C._wfopen(ffi.cast("wchar_t*", name_out), ffi.cast("wchar_t*", mode_out)))
---local obuf = ffi.new("unsigned char[?]",buf_size)
---local lshift = bit.lshift
+-- logging max board 15x15 - xy stored in 1 byte
+local lshift,pB,buf_size,fname,name_out,mode_out,f_out,obuf = bit.lshift
+if bx>15 or by>15 then log=false end
+if log then
+  pB,buf_size = 0,0x1000000
+  fname = win.GetEnv"TEMP".."\\ChessKnight.log" 
+  name_out = win.Utf8ToUtf16(fname).."\0"
+  mode_out = "\119\0\98\0\0" -- win.Utf8ToUtf16("wb").."\0"
+  f_out=assert(C._wfopen(ffi.cast("wchar_t*", name_out), ffi.cast("wchar_t*", mode_out)))
+  obuf = ffi.new("unsigned char[?]",buf_size)
+end
 
 ::START::
---obuf[0] = lshift(x+1,4)+y+1 C.fwrite(obuf,1,1,f_out) --fh:write(" "..(x+1)..(y+1)) -- debug
+if log then if pB<buf_size then obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) pB=0 obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 end end -- logging
 t1v=around(x,y)+1 -- указатель, хран€щий количество векторов на доступные дл€ хода клетки, указывает на активный (последний) вектор
 ffi.copy(Tree[t1s]+1,ti,t1v) -- записываем вектора в дерево со смещением 1
 Tree[t1s][0]=t1v -- сохран€ем указатель на активный (последний) вектор
@@ -139,7 +144,7 @@ repeat -- откат
   t00[x][y],t01[x][y] = -1,-1 -- освобождаем клетку x,y
   t1v=Tree[t1s][0] -- восстанавливаем указатель на приведший на неЄ вектор
   v=Tree[t1s][t1v] x,y = x-dx[v],y-dy[v] rb=rb+1 -- получаем вектор и возвращаемс€ на клетку с которой пришли
-  --obuf[0] = lshift(x+1,4)+y+1 C.fwrite(obuf,1,1,f_out) --fh:write(" "..(x+1)..(y+1)) -- debug
+  if log then if pB<buf_size then obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) pB=0 obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 end end -- logging
   t1v=t1v-1 Tree[t1s][0]=t1v -- выбираем другой вектор хода
 until t1v>0
 v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
@@ -150,15 +155,15 @@ end
 t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходим на следующую клетку
 goto START -- следующий ход
 ::FINISH::
+if log then if pB>0 then C.fwrite(obuf,1,pB,f_out) pB=0 end C.fclose(f_out) end -- logging
 ttime = math.floor((far.FarClock()-ttime)/1000)/1000
---C.fclose(f_out) -- debug
 
 -- ¬ывод результатов на экран и в лог в %TEMP%
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
 local s0="Board: "..bx.."x"..by.."\nHoles: "
 local fbx,fby = "%0"..#tostring(bx).."d","%0"..#tostring(by).."d"
 for i=1,#holes do s0=s0..string.format(fbx,holes[i][1])..string.format(fby,holes[i][2]).."," end
-s0=string.sub(s0,1,-2).."\nVisited squares: "..(t1s+1).."/"..full.."\nClosed path: "..tostring(ret0).."\n\nSolution: "..(ret==ret0 and t1s+1==full and "found " or "not found ").."\nTime: "..ttime.." s\n"
+s0=string.sub(s0,1,-2).."\nVisited squares: "..(t1s+1).."/"..full.."\nClosed path: "..(ret0 and "yes" or "no").."\n\nSolution: "..(ret==ret0 and t1s+1==full and "found " or "not found ").."\nTime: "..ttime.." s\n"
 local s1="\nWay: "..string.format(fbx,x0)..string.format(fby,y0)
 x2,y2 = x0,y0
 for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2) end

@@ -20,9 +20,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9 (9542 bytes, changed 2021-07-25 11:06)*
+  *v0.9.0.1 (9947 bytes, changed 2021-07-25 16:05)*
 
-  *SHA-256 `b8c95be630e140b85590248b08c66c010220f7dc0a2e3efec50f9c918870d140`*
+  *SHA-256 `6b2688f34d1c59934e574dcd1fda79e4816818b849f025beb09d9626d9af8c50`*
 
   Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
 
