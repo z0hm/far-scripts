@@ -20,9 +20,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.0.2 (10416 bytes, changed 2021-07-26 11:41)*
+  *v0.9.0.2 (10426 bytes, changed 2021-07-26 13:05)*
 
-  *SHA-256 `cfa58297efeec5070f96f429b41d2aa33bccbd4a93700a1a29665cf7d4ad78fa`*
+  *SHA-256 `dd37155bbaadb056015568b2772a56f01bf1e7b8280ec9b7188f79d6993c79e3`*
 
   Finding the path of the chess knight. The path can be closed. The chessboard can be of any size. Rules: previously visited squares and squares with holes are not available for moving.
 

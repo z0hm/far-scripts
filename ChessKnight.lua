@@ -180,7 +180,7 @@ for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string.format((dd
 local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb
 local h=io.open(win.GetEnv"TEMP".."\\ChessKnight.txt","wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:close()
 local MessageX=require"MessageX"
-if MessageX then
+if MessageX and by<22 then
   s0=string.find(s0,"not found") and string.gsub(s0," not found ","<#c4>%1<#rr>") or string.gsub(s0," found ","<#a2>%1<#rr>")
   s2=string.gsub(s2,"%[(.-)%]","<#f1> %1 <#rr>")
   s2=string.gsub(s2,string.rep(" ",sf).."0 ","<#ec>%1<#rr>")
