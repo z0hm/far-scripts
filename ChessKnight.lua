@@ -1,6 +1,6 @@
 -- ChessKnight.lua
 -- v0.9.0.2
--- Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
+-- Finding the path of the chess knight. The path can be closed. The chessboard can be of any size. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
 
