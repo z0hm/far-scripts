@@ -1,7 +1,7 @@
 -- ChessKnight.lua
 -- v0.9.0.2
 -- Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
--- ![Chess Knight](http://i.piccy.info/i9/3816fa76158b77498e41371e849e6637/1627210911/17158/1436778/2021_07_25_131624.png)
+-- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
 
 -- Обход конём шахматной доски произвольного размера, посещённые ранее клетки и клетки с дырами для ходов недоступны.
@@ -40,9 +40,7 @@ local function console()
   io.write("Board: "..bx.."x"..by..", Start: "..string.format(fbx,x0)..string.format(fby,y0)..", Closed path: "..(ret0 and "yes" or "no")..", Logging: "..(log and "yes" or "no")..", Holes: "..holes_show())
   panel.SetUserScreen()
 end
-local function Msg()
-  far.Message("For a closed path, the number of squares must be even, add"..(#holes==0 and "" or "/remove").." a hole.",title)
-end
+local function Msg() far.Message("For a closed path, the number of squares must be even, add"..(#holes==0 and "" or "/remove").." a hole.",title) end
 if ret0 and math.fmod(full,2)==1 then
   local x,y = math.floor((bx+1)/2),math.floor((by+1)/2) -- центр доски
   if x0==x and y0==y -- старт в центре доски?
@@ -129,7 +127,7 @@ if log then
 end
 
 ::START::
-if log then if pB<buf_size then obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) pB=0 obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 end end -- logging
+if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
 t1v=around(x,y)+1 -- указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
 ffi.copy(Tree[t1s]+1,ti,t1v) -- записываем вектора в дерево со смещением 1
 Tree[t1s][0]=t1v -- сохраняем указатель на активный (последний) вектор
@@ -155,7 +153,7 @@ repeat -- откат
   t00[x][y],t01[x][y] = -1,-1 -- освобождаем клетку x,y
   t1v=Tree[t1s][0] -- восстанавливаем указатель на приведший на неё вектор
   v=Tree[t1s][t1v] x,y = x-dx[v],y-dy[v] rb=rb+1 -- получаем вектор и возвращаемся на клетку с которой пришли
-  if log then if pB<buf_size then obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) pB=0 obuf[pB] = lshift(x+1,4)+y+1 pB=pB+1 end end -- logging
+  if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
   t1v=t1v-1 Tree[t1s][0]=t1v -- выбираем другой вектор хода
 until t1v>0
 v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
