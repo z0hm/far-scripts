@@ -174,16 +174,20 @@ s0=s0.."\n\nSolution: "..(ret==ret0 and t1s+1==full and "found " or "not found "
 local s1="\nPath: "..string.format(fbx,x0)..string.format(fby,y0)
 x2,y2 = x0,y0
 for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2) end
-t1s,s1 = t1s+1,s1.."\n\n"
-local s2,sf = "",#tostring(full)
+t1s,s1 = t1s+1,s1.."\n"
+local s2,sf = "\n",#tostring(full)
 for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string.format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
 local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb
 local h=io.open(win.GetEnv"TEMP".."\\ChessKnight.txt","wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:close()
 local MessageX=require"MessageX"
-if MessageX and by<22 then
+local function fine(x)
   s0=string.find(s0,"not found") and string.gsub(s0," not found ","<#c4>%1<#rr>") or string.gsub(s0," found ","<#a2>%1<#rr>")
-  s2=string.gsub(s2,"%[(.-)%]","<#f1> %1 <#rr>")
-  s2=string.gsub(s2,string.rep(" ",sf).."0 ","<#ec>%1<#rr>")
-  MessageX(s0..s1..s2..s3,title,nil,"c")
-else far.Message(s0..s1..s2..s3,title)
+  if x then
+    s2=string.gsub(s2,"%[(.-)%]","<#f1> %1 <#rr>")
+    s2=string.gsub(s2,string.rep(" ",sf).."0 ","<#ec>%1<#rr>")
+  end
+end
+if by<22 then if MessageX then fine(1) MessageX(s0..s1..s2..s3,title,nil,"c") else far.Message(s0..s1..s2..s3,title) end
+elseif by<32 then if MessageX then fine(1) MessageX(s0..s2..s3,title,nil,"c") else far.Message(s0..s2..s3,title) end
+else if MessageX then fine() MessageX(s0..s3,title,nil,"c") else far.Message(s0..s3,title) end
 end
