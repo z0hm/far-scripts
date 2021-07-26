@@ -5,7 +5,7 @@
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
 
 -- Обход конём шахматной доски произвольного размера, посещённые ранее клетки и клетки с дырами для ходов недоступны.
-local log = 0 -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1 byte storing xy
+local log  = 0 -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1 byte storing xy
 local ret0 = 0 -- =0 без обязательного возврата к клетке старта, =1 с возвратом (замкнутый путь)
 
 local ffi = require"ffi"
@@ -40,11 +40,14 @@ local function console()
   io.write("Board: "..bx.."x"..by..", Start: "..string.format(fbx,x0)..string.format(fby,y0)..", Closed path: "..(ret0 and "yes" or "no")..", Logging: "..(log and "yes" or "no")..", Holes: "..holes_show())
   panel.SetUserScreen()
 end
+local function Msg()
+  far.Message("For a closed path, the number of squares must be even, add"..(#holes==0 and "" or "/remove").." a hole.",title)
+end
 if ret0 and math.fmod(full,2)==1 then
   local x,y = math.floor((bx+1)/2),math.floor((by+1)/2) -- центр доски
-  if x0==x and y0==y then -- старт в центре доски?
-    if holes_check(bx,by) then far.Message("For a closed path, the number of squares must be even, add"..(#holes==0 and "" or "/remove").." a hole.",title) goto ANSWER else table.insert(holes,{bx,by}) end
-  else table.insert(holes,{x,y}) console()
+  if x0==x and y0==y -- старт в центре доски?
+  then if holes_check(bx,by) then Msg() goto ANSWER else table.insert(holes,{bx,by}) console() end
+  else if holes_check( x, y) then Msg() goto ANSWER else table.insert(holes,{ x, y}) console() end
   end
 else console()
 end
