@@ -20,17 +20,15 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.0.1 (9947 bytes, changed 2021-07-25 16:05)*
+  *v0.9.0.2 (10292 bytes, changed 2021-07-26 08:26)*
 
-  *SHA-256 `6b2688f34d1c59934e574dcd1fda79e4816818b849f025beb09d9626d9af8c50`*
+  *SHA-256 `313ca264bd897c82c7efbd7981ae1ff8dce7ebe4a2378c7339dfb1c5652097b3`*
 
   Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
 
   ![Chess Knight](http://i.piccy.info/i9/3816fa76158b77498e41371e849e6637/1627210911/17158/1436778/2021_07_25_131624.png)
 
   Launch: in cmdline Far.exe: lua:@ChessKnight.lua
-
-  Tip: for installation of holes, see the program code, line 16-17
 
 
 
@@ -54,9 +52,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.10.3 (12672 bytes, changed 2021-07-21 14:39)*
+  *v1.1.10.3 (12684 bytes, changed 2021-07-26 06:58)*
 
-  *SHA-256 `db491c2cb39de6eba6f2aa6f3a61119d1425e578962d8403c7e21f668cfcf3f0`*
+  *SHA-256 `a3201ce35d7b20673f23883ceb12e1c8cf239f31b73eb327b69b7e8f42ba6c6d`*
 
   Resizing dialogs, aligning the positions of dialog elements
 

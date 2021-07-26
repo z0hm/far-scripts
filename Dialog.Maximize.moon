@@ -84,8 +84,8 @@ transform=
   [Uuid"6A69A5AF-FC3F-4B7A-9A3C-6047B7CBA242"]: {1,5,"8.12.2.1","10.12.2.1",11.1,12.1,13.1,14.1,15.1}
   -- AudioPlayer
   --[Uuid"9C3A61FC-F349-48E8-9B78-DAEBD821694B"]: {1,2,"3.6.0",4.1,5.3,"6.6.0",7.2,8.3,9.3,10.5,12.1,13.3,14} -- don't support width change yet
-  -- Macros: Custom sort by Name
-  [Uuid"5B40F3FF-6593-48D2-8F78-4A32C8C36BCA"]: {1,5,12,14}
+  -- Macroses:
+  [Uuid"5B40F3FF-6593-48D2-8F78-4A32C8C36BCA"]: {1,5,12,14} -- Panel.CustomSortByName.lua
 
 
 re0,re1,re2,re3,re4,re5 = "^(%d+)%.(%d+)%.(.+)$","[%-%+]?%d+","([%-%+]?%d+)%.([%-%+]?%d+)","([F]?)(%d)%.(%d)%.([%-%+]?%d+)","([F]?)(%d)%.(%d)","([%-%+]?%d+)%.([%-%+]?%d+)%.([%-%+]?%d+)%.([%-%+]?%d+)"

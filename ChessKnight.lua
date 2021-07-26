@@ -1,47 +1,55 @@
 -- ChessKnight.lua
--- v0.9.0.1
+-- v0.9.0.2
 -- Bypassing the case of a chessboard arbitrary size, visited previously squares and squares with holes for moves are not available.
 -- ![Chess Knight](http://i.piccy.info/i9/3816fa76158b77498e41371e849e6637/1627210911/17158/1436778/2021_07_25_131624.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
--- Tip: for installation of holes, see the program code, line 16-17
 
 -- Обход конём шахматной доски произвольного размера, посещённые ранее клетки и клетки с дырами для ходов недоступны.
-local log = false -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1 byte storing xy
+local log = 0 -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1 byte storing xy
+local ret0 = 0 -- =0 без обязательного возврата к клетке старта, =1 с возвратом (замкнутый путь)
 
 local ffi = require"ffi"
 local C=ffi.C
 ffi.cdef"typedef uint8_t Tree[9]"
 
 local F = far.Flags
-local board="6x6" -- 8x8 по умолчанию
-local holes -- список координат дыр, примеры:
---holes={{4,2},{4,3}}
---holes={{4,3}}
-holes = holes or {}
-local ret0 = 0 -- =0 без обязательного возврата к клетке старта, =1 с возвратом (замкнутый путь)
 local title="Chess Knight"
+local uuid=win.Uuid"F625937B-B79A-4D58-92B7-9B40BC374F21"
 ::ANSWER::
-local answer = far.InputBox(nil,title,"Enter bx by x0 y0 ret (ex.: "..board..", start 1 1, ret 1: 6 6 1 1 1):",nil,nil,nil,nil,F.FIB_NONE) or ""
-local bx,by,x0,y0,ret0 = string.match(answer,"(%d+)[x, ]+(%d+)[, ]+(%d+)[, ]+(%d+)[, ]+([01])")
-if not bx then
-  ret0,bx,by,x0,y0 = 0,string.match(answer,"(%d+)[x, ]+(%d+)[, ]+(%d+)[, ]+(%d+)")
-  if not bx then
-    ret0,x0,y0,bx,by,ret = 0,1,1,string.match(answer,"(%d+)[x, ]+(%d+)")
-    if not bx then bx,by = 6,6 end
-  end
+local answer = far.InputBox(uuid,title,"board 6x6, start 1 1, ret 1, log 1, holes 42,43: 6 6 1 1 1 1 42 43","ChessKnight.lua",nil,nil,nil,F.FIB_NONE) or ""
+local holes,bx,by,fbx,fby,x0,y0 = {}
+if answer=="" then bx,by,x0,y0 = 6,6,1,1
+elseif string.find(answer,"^%d+%s+%d+$") then x0,y0,bx,by = 1,1,string.match(answer,"(%d+)%s+(%d+)") bx,by = tonumber(bx),tonumber(by)
+else
+  local t={}
+  for n in string.gmatch(answer,"%d+") do table.insert(t,tonumber(n)) end
+  bx,by,x0,y0,ret0,log = unpack(t)
+  if #t>6 then for i=7,#t do local s=tostring(t[i]) table.insert(holes,{tonumber(string.sub(s,1,#tostring(bx))),tonumber(string.sub(s,#tostring(bx)+1,#s))}) end end
 end
-bx,by,x0,y0,ret0 = tonumber(bx),tonumber(by),tonumber(x0),tonumber(y0),tonumber(ret0)==1
+ret0,log = ret0==1,log==1
 local full=bx*by-#holes -- количество клеток для ходов
+local fbx,fby = "%0"..#tostring(bx).."d","%0"..#tostring(by).."d"
 local function holes_check(x,y) for _,v in ipairs(holes) do if v[1]==x and v[2]==y then return true end end return false end
+local function holes_show()
+  if #holes==0 then return "no" end
+  local s="" for _,v in ipairs(holes) do s=s..string.format(fbx,v[1])..string.format(fby,v[2]).."," end
+  return string.sub(s,1,-2)
+end
+local function console()
+  panel.GetUserScreen()
+  io.write("Board: "..bx.."x"..by..", Start: "..string.format(fbx,x0)..string.format(fby,y0)..", Closed path: "..(ret0 and "yes" or "no")..", Logging: "..(log and "yes" or "no")..", Holes: "..holes_show())
+  panel.SetUserScreen()
+end
 if ret0 and math.fmod(full,2)==1 then
   local x,y = math.floor((bx+1)/2),math.floor((by+1)/2) -- центр доски
-  if x0==x and y0==y -- старт в центре доски?
-  then if holes_check(bx,by) then far.Message("Oops! {"..bx..","..by.."} contained in the holes list\n- remove it or change start square",title) goto ANSWER else table.insert(holes,{bx,by}) end
-  else if holes_check(x,y) then far.Message("Oops! {"..x..","..y.."} contained in the holes list\n- remove it or change size chessboard",title) goto ANSWER else table.insert(holes,{x,y}) end
+  if x0==x and y0==y then -- старт в центре доски?
+    if holes_check(bx,by) then far.Message("For a closed path, the number of squares must be even, add"..(#holes==0 and "" or "/remove").." a hole.",title) goto ANSWER else table.insert(holes,{bx,by}) end
+  else table.insert(holes,{x,y}) console()
   end
+else console()
 end
-local ttime=far.FarClock()
 full=bx*by-#holes -- количество клеток для ходов
+local ttime=far.FarClock()
 -- {dx,dy} - вектор хода
 -- порядок следования векторов в массиве определяет приоритет выбора клетки для хода среди клеток с одинаковым количеством доступных для движения векторов
 --local dx=ffi.new("int8_t[8]",{-1,-2,-2,-1, 1, 2, 2, 1})
@@ -137,7 +145,7 @@ repeat -- откат
   t1s=t1s-1 -- откатываем последний неудачный ход
   if t1s<0 then -- достигнута клетка старта?
     if ret -- маршрут замкнутый?
-    then if cn<cl then cn=cn+1 else ret=false end init() goto START -- выбираем другую клетку для финиша
+    then if cn<cl then cn=cn+1 else cn,ret = 0,false end init() goto START -- выбираем другую клетку для финиша
     else goto FINISH -- все пути испробованы, путь не найден
     end
   end
@@ -160,11 +168,9 @@ ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 
 -- Вывод результатов на экран и в лог в %TEMP%
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
-local s0="Board: "..bx.."x"..by.."\nHoles: "
-local fbx,fby = "%0"..#tostring(bx).."d","%0"..#tostring(by).."d"
-for i=1,#holes do s0=s0..string.format(fbx,holes[i][1])..string.format(fby,holes[i][2]).."," end
-s0=string.sub(s0,1,-2).."\nVisited squares: "..(t1s+1).."/"..full.."\nClosed path: "..(ret0 and "yes" or "no").."\n\nSolution: "..(ret==ret0 and t1s+1==full and "found " or "not found ").."\nTime: "..ttime.." s\n"
-local s1="\nWay: "..string.format(fbx,x0)..string.format(fby,y0)
+local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string.format(fbx,x0)..string.format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")
+s0=s0.."\n\nSolution: "..(ret==ret0 and t1s+1==full and "found " or "not found ").."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
+local s1="\nPath: "..string.format(fbx,x0)..string.format(fby,y0)
 x2,y2 = x0,y0
 for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2) end
 t1s,s1 = t1s+1,s1.."\n\n"
