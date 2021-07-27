@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.0.3
+-- v0.9.0.4
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be of any size. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -173,7 +173,9 @@ local s2,sf = "\n",#tostring(full)
 for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string.format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
 local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb
 local h=io.open(win.GetEnv"TEMP".."\\ChessKnight.txt","wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:close()
+
 local MessageX=require"MessageX"
+
 local function fine(x)
   s0=string.find(s0,"not found") and string.gsub(s0," not found ","<#c4>%1<#rr>") or string.gsub(s0," found ","<#a2>%1<#rr>")
   if x then
@@ -181,7 +183,13 @@ local function fine(x)
     s2=string.gsub(s2,string.rep(" ",sf).."0 ","<#ec>%1<#rr>")
   end
 end
-if by<22 then if MessageX then fine(1) MessageX(s0..s1..s2..s3,title,nil,"c") else far.Message(s0..s1..s2..s3,title) end
-elseif by<32 then if MessageX then fine(1) MessageX(s0..s2..s3,title,nil,"c") else far.Message(s0..s2..s3,title) end
+
+local rr=far.AdvControl"ACTL_GETFARRECT"
+local Width,Height = rr.Right-rr.Left-4,rr.Bottom-rr.Top-16
+
+local ws2=(#s2-2)/by<=Width
+
+if math.floor((#s1-2)/Width+0.5)+by<=Height and ws2 then if MessageX then fine(1) MessageX(s0..s1..s2..s3,title,nil,"c") else far.Message(s0..s1..s2..s3,title) end
+elseif by<=Height and ws2 then if MessageX then fine(1) MessageX(s0..s2..s3,title,nil,"c") else far.Message(s0..s2..s3,title) end
 else if MessageX then fine() MessageX(s0..s3,title,nil,"c") else far.Message(s0..s3,title) end
 end
