@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.0.2
+-- v0.9.0.3
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be of any size. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -74,6 +74,8 @@ local cx=ffi.new("int8_t[8]",{-1}) -- массив с x координатами
 local cy=ffi.new("int8_t[8]",{-1}) -- массив с y координатами клеток 1-го хода (финиша)
 local ti=ffi.new("int8_t[8]",{-1}) -- массив с индексами векторов на клетки, доступные для хода с клетки x,y
 local ta=ffi.new("int8_t[8]",{-1}) -- массив с количеством векторов у доступных для хода клеток
+-- сортируем вектора по убыванию количества векторов у целевых клеток, обеспечивая приоритет обхода клеток с наименьшим количеством входов
+-- алгоритм сохраняет очерёдность одинаковых значений, обеспечивая неизменность маршрутов и их конечное количество
 local function around(x,y)
   local tl=-1
   for i=7,0,-1 do
@@ -86,21 +88,15 @@ local function around(x,y)
         if x2>=0 and x2<=bx and y2>=0 and y2<=by and t00[x2][y2]<0 then a=a+1 end
       end
       ta[tl],ti[tl] = a,i
-    end
-  end
-  -- сортируем вектора по убыванию количества векторов у целевых клеток, обеспечивая приоритет обхода клеток с наименьшим количеством входов
-  -- алгоритм сохраняет очерёдность одинаковых значений, обеспечивая неизменность маршрутов и их конечное количество
-  local l=tl-1
-  if l>=0 then
-    for j=l,0,-1 do
-      local b=true
-      for i=l,0,-1 do
-        local i1=i+1
-        if ta[i]<ta[i1] then
-          b,ta[i],ti[i],ta[i1],ti[i1] = false,ta[i1],ti[i1],ta[i],ti[i]
+      if tl>0 then
+        for i1=tl,1,-1 do
+          local i0=i1-1
+          if ta[i1]>ta[i0]
+          then ta[i0],ti[i0],ta[i1],ti[i1] = ta[i1],ti[i1],ta[i0],ti[i0]
+          else break
+          end
         end
       end
-      if b then break end
     end
   end
   return tl
