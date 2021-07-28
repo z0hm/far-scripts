@@ -187,8 +187,7 @@ end
 local rr=far.AdvControl"ACTL_GETFARRECT"
 local Width,Height = rr.Right-rr.Left-3,rr.Bottom-rr.Top-15
 
-local hs1,ws2 = math.ceil((#s1-2)/Width)+by+1<=Height,(#s2-2)/by<=Width
-
+local hs1,ws2 = math.ceil((#s1-1)/Width)+by+1<=Height,(#s2-1)/by-1<=Width
 if hs1 and ws2 then if MessageX then fine(1) MessageX(s0..s1..s2..s3,title,nil,"c") else far.Message(s0..s1..s2..s3,title) end
 elseif by<=Height and ws2 then if MessageX then fine(1) MessageX(s0..s2..s3,title,nil,"c") else far.Message(s0..s2..s3,title) end
 else if MessageX then fine() MessageX(s0..s3,title,nil,"c") else far.Message(s0..s3,title) end
