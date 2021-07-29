@@ -143,8 +143,8 @@ local function CreateItem(tbl,width,height,Flags,Buttons,Title,ExecDelay)
     end
     for x=1,X4 do
       local char=tbl[y]:sub(x,x) or " "
-      fg = ct[y][x] and (ct[y][x].fg and ct[y][x].fg or fg_dlg) or y>1 and x==1 and ct[y-1][X3] and (ct[y-1][X3].fg and ct[y-1][X3].fg or fg_dlg) or fg
-      bg = ct[y][x] and (ct[y][x].bg and ct[y][x].bg or bg_dlg) or y>1 and x==1 and ct[y-1][X3] and (ct[y-1][X3].bg and ct[y-1][X3].bg or bg_dlg) or bg
+      fg = ct[y][x] and (ct[y][x].fg and ct[y][x].fg or fg_dlg) or x==1 and y>1 and ct[y-1][X3] and (ct[y-1][X3].fg and ct[y-1][X3].fg or fg_dlg) or fg
+      bg = ct[y][x] and (ct[y][x].bg and ct[y][x].bg or bg_dlg) or x==1 and y>1 and ct[y-1][X3] and (ct[y-1][X3].bg and ct[y-1][X3].bg or bg_dlg) or bg
       buffer[ptr]={Char=char,Attributes={Flags=cFlags,ForegroundColor=fg,BackgroundColor=bg}}
       ptr=ptr+1
     end
