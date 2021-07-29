@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.10.3
+-- v1.1.10.4
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -127,7 +127,7 @@ Proc=(id,hDlg)->
   dw=_XScale[id].dw+diff
   pr=dw-pl-1
   SendDlgMessage hDlg,F.DM_ENABLEREDRAW,0,0
-  --SendDlgMessage hDlg,F.DM_SHOWDIALOG,0,0  -- hide dialog
+  SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
   for ii in *transform[id]
     local idx,opt,ref
     if "number"==type ii
@@ -144,38 +144,43 @@ Proc=(id,hDlg)->
       item[3]=_XScale[id][idx][3]
       item[4]=_XScale[id][idx][4]
       item[5]=_XScale[id][idx][5]
+      NOTDITEXT=not (item[1]==F.DI_TEXT and item[4]==0)
       switch opt
         when 0  -- Stretch full
-          if idx==1 and item[1]==3
+          if idx==1 and (item[1]==F.DI_DOUBLEBOX or item[1]==F.DI_SINGLEBOX)
             item[4]=pr+2
           else
             if item[4]==item[2]
               item[2]+=diff
-            item[4]+=diff
+            if NOTDITEXT
+              item[4]+=diff
         when 1  -- Move half
-          if item[4]==item[2]
+          if NOTDITEXT and item[4]==item[2]
             item[4]+=diff/2
           item[2]+=diff/2
         when 2  -- Stretch half
           if item[4]==item[2]
             item[2]+=diff/2
-          item[4]+=diff/2
+          if NOTDITEXT
+            item[4]+=diff/2
         when 3  -- Move full
-          if item[4]==item[2]
+          if NOTDITEXT and item[4]==item[2]
             item[4]+=diff
           item[2]+=diff
         when 4  -- Move left
           item[2]=pl
         when 5  -- Move half & Stretch full
-          if item[4]==item[2]
-            item[4]+=diff/2
+          if NOTDITEXT
+            if item[4]==item[2]
+              item[4]+=diff/2
+            if diff>=0
+              item[4]+=diff
           item[2]+=diff/2
-          if diff>=0
-            item[4]+=diff
         when 6  -- Move relative by X
           x=tonumber match ref,re1
           item[2]+=x
-          item[4]+=x
+          if NOTDITEXT
+            item[4]+=x
         when 7  -- Move relative by Y
           y=tonumber match ref,re1
           item[3]+=y
@@ -186,11 +191,13 @@ Proc=(id,hDlg)->
         when 9  -- Move & Size relative by X1 & X2
           x1,x2 = match ref,re2
           item[2]+=tonumber x1
-          item[4]+=tonumber x2
+          if NOTDITEXT
+            item[4]+=tonumber x2
         when 10  -- Align to ref.X
           ref=tonumber ref
           t=_XScale[id][ref]
-          item[4]=item[4]+t[2]-item[2]
+          if NOTDITEXT
+            item[4]=item[4]+t[2]-item[2]
           item[2]=t[2]
         when 11  -- Align to ref.Y
           ref=tonumber ref
@@ -217,13 +224,15 @@ Proc=(id,hDlg)->
           x1,x2,y1,y2 = match ref,re5
           item[2]+=tonumber x1
           item[3]+=tonumber y1
-          item[4]+=tonumber x2
+          if NOTDITEXT
+            item[4]+=tonumber x2
           item[5]+=tonumber y2
         when 14  -- Free Move & Stretch Absolute
           x1,x2,y1,y2 = match ref,re5
           item[2]=tonumber x1
           item[3]=tonumber y1
-          item[4]=tonumber x2
+          if NOTDITEXT
+            item[4]=tonumber x2
           item[5]=tonumber y2
         when 15  -- Set text
           item[10]=ref
@@ -232,7 +241,8 @@ Proc=(id,hDlg)->
           x1=tonumber x1
           x2=tonumber x2
           t=_XScale[id][x1]
-          item[4]=item[4]+t[2]-item[2]+x2
+          if NOTDITEXT
+            item[4]=item[4]+t[2]-item[2]+x2
           item[2]=t[2]+x2
       if idx==1
         if item[2]<pl-2
@@ -250,11 +260,8 @@ Proc=(id,hDlg)->
         SendDlgMessage hDlg,F.DM_EDITUNCHANGEDFLAG,idx,f
       else  
         SetDlgItem hDlg,idx,item
-  SendDlgMessage hDlg,F.DM_RESIZEDIALOG,0,{X:dw,Y:dh}
   SendDlgMessage hDlg,F.DM_MOVEDIALOG,1,{X:(cw-dw)/2,Y:(ch-dh)/2}
   SendDlgMessage hDlg,F.DM_ENABLEREDRAW,1,0
-  --SendDlgMessage hDlg,F.DM_REDRAW,0,0
-  --SendDlgMessage hDlg,F.DM_SHOWDIALOG,1,0 -- show dialog
 
 XItems={
          {F.DI_DOUBLEBOX, 0,0,19,2,0,       0,0,       0,  "XScale"}

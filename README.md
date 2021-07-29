@@ -52,9 +52,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.10.3 (12684 bytes, changed 2021-07-27 17:27)*
+  *v1.1.10.4 (12891 bytes, changed 2021-07-29 09:07)*
 
-  *SHA-256 `a3201ce35d7b20673f23883ceb12e1c8cf239f31b73eb327b69b7e8f42ba6c6d`*
+  *SHA-256 `9ea919da55a10599136e509d823c6f04603320bc2c7bb9481f0ebf28d5e53c3a`*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -260,9 +260,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [MessageX.lua](https://github.com/z0hm/far-scripts/blob/master/MessageX.lua "MessageX.lua")
 
-  *v0.6.7.8 (9082 bytes, changed 2021-07-15 10:18)*
+  *v0.6.7.9 (9274 bytes, changed 2021-07-29 07:27)*
 
-  *SHA-256 `92bbaec7a4de2423cd19ba424309971a5696a3c13a9d41bf262ca51ad6a3e444`*
+  *SHA-256 `2652155d44dbc8c2dd2b289a4012283a6de5e0173a3fdd3041306186a59500f1`*
 
   Color **MessageX(Msg,Title,Buttons,Flags,HelpTopic,Guid,ExecDelay)** module with support default button assignments
 
