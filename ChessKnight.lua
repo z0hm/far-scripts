@@ -1,6 +1,6 @@
 -- ChessKnight.lua
 -- v0.9.0.4
--- Finding the path of the chess knight. The path can be closed. The chessboard can be of any size. Rules: previously visited squares and squares with holes are not available for moving.
+-- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
 
@@ -10,7 +10,6 @@ local ret0 = 0 -- =0 без обязательного возврата к кл�
 
 local ffi = require"ffi"
 local C=ffi.C
-ffi.cdef"typedef uint8_t Tree[9]"
 
 local F = far.Flags
 local title="Chess Knight"
@@ -58,12 +57,12 @@ local ttime=far.FarClock()
 local dx=ffi.new("int8_t[8]",{-1,-1, 2,-2, 1, 1,-2, 2})
 local dy=ffi.new("int8_t[8]",{ 2,-2, 1, 1,-2, 2,-1,-1})
 -- создаём чистую доску, свободная клетка содержит -1, либо вектор хода с неё 0-7, либо дыру 8
-local function array(st,...) st=st..string.rep('[$]',#{...}) local array_ct=ffi.typeof(st,...) return array_ct({{ -1 }}) end
-local t00=array('int8_t' ,bx,by) -- слой векторов с дырами
-local t01=array('int16_t',bx,by) -- слой нумерации ходов
+local function array(st,...) st=st..string.rep('[$]',#{...}) local array_ct=ffi.typeof(st,...) return array_ct({{-1}}) end
+local t00=array("int8_t" ,bx,by) -- слой векторов с дырами
+local t01=array("int16_t",bx,by) -- слой нумерации ходов
 for _,v in ipairs(holes) do t00[v[1]-1][v[2]-1]=8 end  -- расставляем дыры 0 based
 
-local Tree=ffi.new("Tree[?]",full) -- дерево, содержащее вектора возможных ходов
+local Tree=ffi.new("uint8_t[?][9]",full) -- дерево, содержащее вектора возможных ходов
 bx,by,x0,y0,full = bx-1,by-1,x0-1,y0-1,full-1 -- align from 1 to 0 based
 
 local t1s,t1v,x,y -- номер текущего хода, последний (текущий) вектор, координаты текущей клетки
@@ -82,12 +81,11 @@ local function around(x,y)
     local x1,y1 = x+dx[i],y+dy[i]
     if x1>=0 and x1<=bx and y1>=0 and y1<=by and t00[x1][y1]<0 then
       tl=tl+1
-      local a=0
+      ta[tl],ti[tl] = 0,i
       for j=7,0,-1 do
         local x2,y2 = x1+dx[j],y1+dy[j]
-        if x2>=0 and x2<=bx and y2>=0 and y2<=by and t00[x2][y2]<0 then a=a+1 end
+        if x2>=0 and x2<=bx and y2>=0 and y2<=by and t00[x2][y2]<0 then ta[tl]=ta[tl]+1 end
       end
-      ta[tl],ti[tl] = a,i
       if tl>0 then
         for i1=tl,1,-1 do
           local i0=i1-1
@@ -159,8 +157,8 @@ t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходи�
 goto START -- следующий ход
 ::FINISH::
 if log then if pB>0 then C.fwrite(obuf,1,pB,f_out) pB=0 end C.fclose(f_out) end -- logging
-ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 
+ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 -- Вывод результатов на экран и в %TEMP%\ChessKnight.txt
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
 local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string.format(fbx,x0)..string.format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")

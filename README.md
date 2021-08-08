@@ -20,11 +20,11 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.0.4 (12601 bytes, changed 2021-07-28 00:15)*
+  *v0.9.0.4 (12598 bytes, changed 2021-08-08 05:41)*
 
-  *SHA-256 `33d5c93100ddad5ea9d9bfec5ec79c9f7c4d5145d82cd6da8c21385e5d7395da`*
+  *SHA-256 `a43ad6a3a98eb03e499514b216183f1b31379c425c06d74b468c7163463e737d`*
 
-  Finding the path of the chess knight. The path can be closed. The chessboard can be of any size. Rules: previously visited squares and squares with holes are not available for moving.
+  Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 
   ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 
@@ -52,7 +52,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.10.4 (12891 bytes, changed 2021-07-29 09:07)*
+  *v1.1.10.4 (12891 bytes, changed 2021-08-04 13:02)*
 
   *SHA-256 `9ea919da55a10599136e509d823c6f04603320bc2c7bb9481f0ebf28d5e53c3a`*
 
