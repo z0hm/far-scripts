@@ -20,9 +20,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.0.4 (12598 bytes, changed 2021-08-08 05:41)*
+  *v0.9.0.5 (12744 bytes, changed 2021-08-10 16:28)*
 
-  *SHA-256 `a43ad6a3a98eb03e499514b216183f1b31379c425c06d74b468c7163463e737d`*
+  *SHA-256 `11606b80d025bcd4a9355d9d4268772d5963e20af886be41881d1ab84e8ac2e8`*
 
   Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 
@@ -568,9 +568,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.Files2HEX_ffi.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.Files2HEX_ffi.lua "Panel.Files2HEX_ffi.lua")
 
-  *v1.0.0.1 (2692 bytes, changed 2021-07-24 14:21)*
+  *v1.0.0.2 (2751 bytes, changed 2021-08-10 21:12)*
 
-  *SHA-256 `44d11a2bf931cf37983915f5c6b81ec01d57cf1e2d9acc1078276d4c5ba30b30`*
+  *SHA-256 `1267a5362b2d63d09bf74d450a621d8cbd98c6021193735d7243046c466b32bc`*
 
   (un)HEX selected files, VERY FAST!
 

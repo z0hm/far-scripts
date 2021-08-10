@@ -1,5 +1,5 @@
 ﻿-- Panel.Files2HEX_ffi.lua
--- v1.0.0.1
+-- v1.0.0.2
 -- (un)HEX selected files, VERY FAST!
 -- Keys: launch from Macro Browser alt.
 -- author Shmuel, co-author AleXH
@@ -15,6 +15,9 @@ ffi.cdef[[
   FILE* _wfopen(const wchar_t*,const wchar_t*);
   int fclose(FILE*);
 ]]
+
+local b=bit
+local lshift,rshift = b.lshift,b.rshift
 
 Macro {
   area="Shell"; flags="NoPluginPanels NoFolders"; description="(un)HEX Files ffi";
@@ -43,7 +46,7 @@ Macro {
             local low  = ibuf[i+i+1]
             high = high<65 and high-48 or high-55
             low  = low<65  and low-48  or low-55
-            obuf[i] = high*16+low
+            obuf[i] = lshift(high,4)+low
           end
           C.fwrite(obuf,1,n/2,f_out)
         end
@@ -55,7 +58,7 @@ Macro {
           if n==0 then break end
           for i=0,n-1 do
             local low  = ibuf[i]%16 --bit.band(ibuf[i],0xf)
-            local high = bit.rshift(ibuf[i],4)
+            local high = rshift(ibuf[i],4)
             obuf[i+i]   = high<10 and high+48 or high+55
             obuf[i+i+1] = low<10  and low+48  or low+55
           end

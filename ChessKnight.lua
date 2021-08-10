@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.0.4
+-- v0.9.0.5
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -7,9 +7,11 @@
 -- Обход конём шахматной доски произвольного размера, посещённые ранее клетки и клетки с дырами для ходов недоступны.
 local log  = 0 -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1 byte storing xy
 local ret0 = 0 -- =0 без обязательного возврата к клетке старта, =1 с возвратом (замкнутый путь)
+local logname = "ChessKnight.log"
 
 local ffi = require"ffi"
 local C=ffi.C
+local NULL = ffi.cast("void*",0)
 
 local F = far.Flags
 local title="Chess Knight"
@@ -71,8 +73,8 @@ init()
 
 local cx=ffi.new("int8_t[8]",{-1}) -- массив с x координатами клеток 1-го хода (финиша)
 local cy=ffi.new("int8_t[8]",{-1}) -- массив с y координатами клеток 1-го хода (финиша)
-local ti=ffi.new("int8_t[8]",{-1}) -- массив с индексами векторов на клетки, доступные для хода с клетки x,y
-local ta=ffi.new("int8_t[8]",{-1}) -- массив с количеством векторов у доступных для хода клеток
+local ti=ffi.new("uint8_t[8]") -- массив с индексами векторов на клетки, доступные для хода с клетки x,y
+local ta=ffi.new("uint8_t[8]") -- массив с количеством векторов у доступных для хода клеток
 -- сортируем вектора по убыванию количества векторов у целевых клеток, обеспечивая приоритет обхода клеток с наименьшим количеством входов
 -- алгоритм сохраняет очерёдность одинаковых значений, обеспечивая неизменность маршрутов и их конечное количество
 local function around(x,y)
@@ -111,11 +113,14 @@ local lshift,pB,buf_size,fname,name_out,mode_out,f_out,obuf = bit.lshift
 if bx>15 or by>15 then log=false end
 if log then
   pB,buf_size = 0,0x1000000
-  fname = win.GetEnv"TEMP".."\\ChessKnight.log" 
+  fname = win.GetEnv"TEMP".."\\"..logname 
   name_out = win.Utf8ToUtf16(fname).."\0"
   mode_out = "\119\0\98\0\0" -- win.Utf8ToUtf16("wb").."\0"
   f_out=assert(C._wfopen(ffi.cast("wchar_t*", name_out), ffi.cast("wchar_t*", mode_out)))
-  obuf = ffi.new("unsigned char[?]",buf_size)
+  if   f_out==NULL
+  then log=false print("I can't create a "..logname)
+  else obuf = ffi.new("unsigned char[?]",buf_size)
+  end
 end
 
 ::START::
@@ -139,7 +144,7 @@ repeat -- откат
   if t1s<0 then -- достигнута клетка старта?
     if ret -- маршрут замкнутый?
     then if cn<cl then cn=cn+1 else cn,ret = 0,false end init() goto START -- выбираем другую клетку для финиша
-    else goto FINISH -- все пути испробованы, путь не найден
+    else quit=true goto FINISH -- все пути испробованы, путь не найден
     end
   end
   t00[x][y],t01[x][y] = -1,-1 -- освобождаем клетку x,y
