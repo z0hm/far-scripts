@@ -11,6 +11,7 @@ local logname = "ChessKnight.log"
 
 local ffi = require"ffi"
 local C=ffi.C
+local copy=ffi.copy
 local NULL = ffi.cast("void*",0)
 
 local F = far.Flags
@@ -126,7 +127,7 @@ end
 ::START::
 if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
 t1v=around(x,y)+1 -- указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
-ffi.copy(Tree[t1s]+1,ti,t1v) -- записываем вектора в дерево со смещением 1
+copy(Tree[t1s]+1,ti,t1v) -- записываем вектора в дерево со смещением 1
 Tree[t1s][0]=t1v -- сохраняем указатель на активный (последний) вектор
 if t1v>0 then
   v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
