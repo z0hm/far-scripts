@@ -56,8 +56,8 @@ local ttime=far.FarClock()
 -- порядок следования векторов в массиве определяет приоритет выбора клетки для хода среди клеток с одинаковым количеством доступных для движения векторов
 --local dx=ffi.new("int8_t[8]",{-1,-2,-2,-1, 1, 2, 2, 1})
 --local dy=ffi.new("int8_t[8]",{ 2, 1,-1,-2,-2,-1, 1, 2})
-local dx=ffi.new("int8_t[8]",{-1,-1, 2,-2, 1, 1,-2, 2})
-local dy=ffi.new("int8_t[8]",{ 2,-2, 1, 1,-2, 2,-1,-1})
+local dx=ffi.new("const int8_t[8]",{-1,-1, 2,-2, 1, 1,-2, 2})
+local dy=ffi.new("const int8_t[8]",{ 2,-2, 1, 1,-2, 2,-1,-1})
 -- создаём чистую доску, свободная клетка содержит -1, либо вектор хода с неё 0-7, либо дыру 8
 local function array(st,...) st=st..string.rep('[$]',#{...}) local array_ct=ffi.typeof(st,...) return array_ct({{-1}}) end
 local t00=array("int8_t" ,bx,by) -- слой векторов с дырами
