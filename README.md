@@ -20,11 +20,11 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
 
-  *v0.8 (11475 bytes, changed 2021-08-12 20:37)*
+  *v0.8 (11499 bytes, changed 2021-08-12 20:59)*
 
-  *SHA-256 `e05213e46a7e3d50cd5f2243f3817d25e27fceb1ce53a319acc06ddb123b0de7`*
+  *SHA-256 `ae73ae303a19afe2c79adf85bc3c19a232e24f12910c1ee95a0a6e0ddb482956`*
 
-  Put the compiled ChessKnight.exe to one folder with ChessKnight.lua
+  For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
 
 
@@ -771,6 +771,26 @@ a very wide range of tasks using the Far and Windows API's.
   Create btpolicy.xml for uTorrent, with priority peering zone (example for Belarus users)
 
   Keys: launch from Macro Browser alt.
+
+
+
+
+[&nbsp;](#user-content-gccbat)
+
+## [gcc.bat](https://github.com/z0hm/far-scripts/blob/master/gcc.bat "gcc.bat")
+
+  *v0.5 (597 bytes, changed 2021-08-12 21:08)*
+
+  *SHA-256 `a7aaba80d62e1ec0cc471a72aebbd510b34096ef66c556102eeee44b72e4a1ef`*
+
+  Compile optimized for speed EXE file using gcda profile
+
+
+
+
+[&nbsp;](#user-content-git-createbat)
+
+## [git-create.bat](https://github.com/z0hm/far-scripts/blob/master/git-create.bat "git-create.bat")
 
 
 

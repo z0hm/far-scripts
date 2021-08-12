@@ -1,6 +1,6 @@
 ﻿// ChessKnight.c
 // v0.8
-// Put the compiled ChessKnight.exe to one folder with ChessKnight.lua
+// For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
 #include <stdint.h>
 #include <stdio.h>
