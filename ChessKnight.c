@@ -1,0 +1,272 @@
+﻿// ChessKnight.c
+// v0.8
+// Put the compiled ChessKnight.exe to one folder with ChessKnight.lua
+
+#include <stdint.h>
+#include <stdio.h>
+
+char* getenv(const char* name);
+char* strcat(char* dest, const char* source);
+char* strcpy(char* dest, const char* source);
+
+const char *pTemp;
+const char *logname="\\ChessKnight.log";
+const char *txtname="\\ChessKnight.txt";
+uint8_t bx; // ширина доски
+uint8_t by; // высота доски
+uint8_t x00; // X координата старта
+uint8_t y00; // Y координата старта
+uint8_t ret0; // замкнутый путь (0/1)
+uint8_t log0; // вывод лога (0/1)
+int8_t x,y; // номер текущего хода, последний (текущий) вектор, координаты текущей клетки
+uint32_t fw; // счётчик ходов вперёд
+uint32_t rb; // счётчик возвратов (откатов)
+const uint32_t buf_size=0x80000; // размер кэширующего буфера в памяти для последующей записи лога на диск
+// {dx,dy} - вектор хода
+// порядок следования векторов в массиве определяет приоритет выбора клетки для хода среди клеток с одинаковым количеством доступных для движения векторов
+const int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
+const int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
+uint8_t ti[8]; // массив с индексами векторов на клетки, доступные для хода с клетки x,y
+uint8_t ta[8]; // массив с количеством векторов у доступных для хода клеток
+// 5 6 3 2 1 1 -- 13-14s
+// сортируем вектора по убыванию количества векторов у целевых клеток, обеспечивая приоритет обхода клеток с наименьшим количеством входов
+// алгоритм сохраняет очерёдность одинаковых значений, обеспечивая неизменность маршрутов и их конечное количество
+//int8_t around(int8_t x,int8_t y)
+//{
+//  int8_t tl=-1;
+//  for(int8_t i=7; i>=0; i--)
+//  {
+//    int8_t x1=x+dx[i];
+//    int8_t y1=y+dy[i];
+//    if(x1>=0 && x1<=bx && y1>=0 && y1<=by && t00[x1][y1]<0)
+//    {
+//      tl++;
+//      uint8_t a=0;
+//      for(int8_t j=7; j>=0; j--)
+//      {
+//        int8_t x2=x1+dx[j];
+//        int8_t y2=y1+dy[j];
+//        if(x2>=0 && x2<=bx && y2>=0 && y2<=by && t00[x2][y2]<0){a++;}
+//      }
+//      ta[tl]=a; ti[tl]=i;
+//      if(tl>0)
+//      {
+//        for(int8_t i1=tl; i1>0; i1--)
+//        {
+//          int8_t i0=i1-1;
+//          if(ta[i1]>ta[i0])
+//          {
+//            uint8_t tmp;
+//            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
+//            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
+//          }
+//          else break;
+//        }
+//      }
+//    }
+//  }
+//  return tl;
+//}
+
+int main(int argc, char *argv[])
+{
+  pTemp=getenv("TEMP");
+  if(argc<7){printf("\nArgumets: bx by x0 y0 ret log( hx hy)*\n"); return 1;}
+  int tmp;
+  sscanf(argv[1], "%d", &tmp); bx   = tmp;
+  sscanf(argv[2], "%d", &tmp); by   = tmp;
+  sscanf(argv[3], "%d", &tmp); x00  = tmp;
+  sscanf(argv[4], "%d", &tmp); y00  = tmp;
+  sscanf(argv[5], "%d", &tmp); ret0 = tmp;
+  sscanf(argv[6], "%d", &tmp); log0 = tmp;
+  int8_t  t00[bx][by]; // слой векторов с дырами
+  int16_t t01[bx][by]; // слой нумерации ходов
+  int16_t full = argc>7 ? bx*by-((argc-7)>>1) : bx*by;
+  uint8_t Tree[full][9]; // дерево, содержащее вектора возможных ходов
+  bx--; by--; x00--; y00--; full--; // align from 1 to 0 based
+  for(uint8_t x=0; x<=bx; x++){for(uint8_t y=0; y<=by; y++){t00[x][y]=-1; t01[x][y]=-1;}} // инициализация t00, t01 {{-1}}
+  // расставляем дыры
+  if(argc>7)
+  {
+    uint8_t x,y;
+    for(uint8_t i=7; i<argc; i++,i++)
+    {
+      sscanf(argv[i  ], "%d", &tmp); x = tmp;
+      sscanf(argv[i+1], "%d", &tmp); y = tmp;
+      t00[x-1][y-1] = 8;
+    }
+  }
+  
+  int16_t t1s;
+  int8_t t1v;
+  t1s=0; t1v=0; x=x00; y=y00; // инициализация
+  
+  int8_t cx[8]; // массив с x координатами клеток 1-го хода (финиша)
+  int8_t cy[8]; // массив с y координатами клеток 1-го хода (финиша)
+  uint8_t cn=0; // индекс клетки финиша, количество клеток на расстоянии 1 хода от старта
+
+  //int8_t cl=around(x,y); // индекс клетки финиша, количество клеток на расстоянии 1 хода от старта
+  int8_t cl=-1;
+  for(uint8_t i=0; i<=7; i++)
+  {
+    int8_t x1=x+dx[i];
+    int8_t y1=y+dy[i];
+    if(x1>=0 && x1<=bx && y1>=0 && y1<=by && t00[x1][y1]<0)
+    {
+      cl++;
+      uint8_t a=0;
+      for(uint8_t j=0; j<=7; j++)
+      {
+        int8_t x2=x1+dx[j];
+        int8_t y2=y1+dy[j];
+        if(x2>=0 && x2<=bx && y2>=0 && y2<=by && t00[x2][y2]<0){a++;}
+      }
+      ta[cl]=a; ti[cl]=i;
+      if(cl>0)
+      {
+        for(int8_t i1=cl; i1>0; i1--)
+        {
+          int8_t i0=i1-1;
+          if(ta[i1]>ta[i0])
+          {
+            uint8_t tmp;
+            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
+            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
+          }
+          else break;
+        }
+      }
+    }
+  }
+  for(uint8_t i=0; i<=cl; i++)
+  {
+    cx[i]=x+dx[ti[i]];
+    cy[i]=y+dy[ti[i]];
+  } // массив координат клеток на расстоянии 1 хода от старта t1s=1
+  
+  fw=1; rb=0;
+  uint8_t ret=ret0; // путь замкнут
+  int16_t full1=full-1; // предпоследний ход
+  uint8_t v; // вспомогательные переменные
+  int8_t x2; // вспомогательные переменные
+  int8_t y2; // вспомогательные переменные
+  if(ret!=0 && (full & 1)==0){ret=0;}
+  
+  // logging max board 15x15 - xy stored in 1 byte
+  unsigned char obuf[buf_size];
+  uint32_t bsz=0;
+  FILE *f_out;
+  if(bx>15 || by>15){log0=0;}
+  if(log0!=0)
+  {
+    char pPath[512];
+    strcpy(pPath, pTemp);
+    f_out=fopen(strcat(pPath, logname),"wb");
+    if(f_out==NULL)
+    {
+      printf("Error: can't open the file\n");
+      return 1; // exit
+    }
+  }
+  
+  START:
+  if(log0!=0){if(bsz==buf_size){fwrite(obuf,1,bsz,f_out); bsz=0;} obuf[bsz]=((x+1)<<4)+y+1; bsz++;} // logging
+  //t1v=around(x,y)+1; // указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
+  t1v=-1;
+  for(uint8_t i=0; i<=7; i++)
+  {
+    int8_t x1=x+dx[i];
+    int8_t y1=y+dy[i];
+    if(x1>=0 && x1<=bx && y1>=0 && y1<=by && t00[x1][y1]<0)
+    {
+      t1v++;
+      uint8_t a=0;
+      for(uint8_t j=0; j<=7; j++)
+      {
+        int8_t x2=x1+dx[j];
+        int8_t y2=y1+dy[j];
+        if(x2>=0 && x2<=bx && y2>=0 && y2<=by && t00[x2][y2]<0){a++;}
+      }
+      ta[t1v]=a; ti[t1v]=i;
+      if(t1v>0)
+      {
+        for(int8_t i1=t1v; i1>0; i1--)
+        {
+          int8_t i0=i1-1;
+          if(ta[i1]>ta[i0])
+          {
+            uint8_t tmp;
+            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
+            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
+          }
+          else break;
+        }
+      }
+    }
+  }
+  t1v++;
+  Tree[t1s][0]=t1v; // сохраняем указатель на активный (последний) вектор
+  for(uint8_t i=1; i<=t1v; i++){Tree[t1s][i]=ti[i-1];} // записываем вектора в дерево со смещением 1
+  if(t1v>0)
+  {
+    FORWARD:
+    v=Tree[t1s][t1v]; x2=x+dx[v]; y2=y+dy[v]; // получаем вектор и координаты следующей клетки
+    if(ret!=0 && x2==cx[cn] && y2==cy[cn] && t1s<full1)
+    { // вектор указывает на клетку финиша?
+      t1v--; Tree[t1s][0]=t1v; // перемещаем указатель на предыдущий вектор
+      if(t1v==0){goto ROLLBACK;}else{v=Tree[t1s][t1v]; x2=x+dx[v]; y2=y+dy[v];} // получаем вектор и координаты следующей клетки, если векторов больше нет, то
+    }
+    t00[x][y]=v; t01[x][y]=t1s; x=x2; y=y2; fw++; t1s++; // переходим на следующую клетку
+    goto START; // следующий ход
+  }
+  if(t1s==full && (ret==0 || (x==cx[cn] && y==cy[cn]))){t01[x][y]=t1s; goto FINISH;} // последняя клетка?
+  ROLLBACK: // откат
+  t1s--; // откатываем последний неудачный ход
+  if(t1s<0)
+  { // достигнута клетка старта?
+    if(ret!=0) // маршрут замкнутый?
+    {
+      if(cn<cl){cn++;}else{cn=0; ret=0;} // резервируем следующую финишную клетку, либо размыкаем путь
+      t1s=0; t1v=0; x=x00; y=y00; // инициализация
+      goto START; // выбираем другую клетку для финиша
+    }
+    else goto FINISH; // все пути испробованы, путь не найден
+  }
+  t00[x][y]=-1; t01[x][y]=-1; // освобождаем клетку x,y
+  t1v=Tree[t1s][0]; // восстанавливаем указатель на приведший на неё вектор
+  v=Tree[t1s][t1v]; x-=dx[v]; y-=dy[v]; rb++; // получаем вектор и возвращаемся на клетку с которой пришли
+  if(log0!=0){if(bsz==buf_size){fwrite(obuf,1,bsz,f_out); bsz=0;} obuf[bsz]=((x+1)<<4)+y+1; bsz++;} // logging
+  t1v--; Tree[t1s][0]=t1v; // перемещаем указатель на предыдущий вектор
+  if(t1v==0){goto ROLLBACK;}else{goto FORWARD;} // следующий ход
+
+  FINISH:
+  if (log0!=0){if(bsz>0){fwrite(obuf,1,bsz,f_out);} fclose(f_out);} // logging
+
+  // экспорт данных для ChessKnight.lua
+  char pPath[512];
+  strcpy(pPath, pTemp);
+  f_out=fopen(strcat(pPath, txtname),"wb");
+  if(f_out==NULL)
+  {
+    printf("Error: can't open the file\n");
+    return 1; // exit
+  }
+  fwrite(&x,1,sizeof(x),f_out); // X координата финиша
+  fwrite(&y,1,sizeof(y),f_out); // Y координата финиша
+  fwrite(&t1s,1,sizeof(t1s),f_out); // количество ходов
+  fwrite(&fw,1,sizeof(fw),f_out); // количество ходов вперёд
+  fwrite(&rb,1,sizeof(rb),f_out); // количество откатов
+  fwrite(t00,1,sizeof(t00),f_out);
+  fwrite(t01,1,sizeof(t01),f_out);
+  fwrite(Tree,1,sizeof(Tree),f_out);
+  fclose(f_out);
+
+  printf("Board size: %dx%d, ret: %d, log: %d", ++bx, ++by, ret0, log0);
+  printf("\n Start x y: %d %d", ++x00, ++y00);
+  printf("\nFinish x y: %d %d", ++x, ++y);
+  printf("\nVisited squares: %d/%d", ++t1s, ++full);
+  printf("\n   Moves: %d", fw+rb);
+  printf("\n Forward: %d", fw);
+  printf("\nRollback: %d", rb);
+  return 0; // exit
+}
