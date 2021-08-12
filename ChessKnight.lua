@@ -90,14 +90,14 @@ if win.GetFileAttr(exename) then
     local h=io.open(temp..txtname,"rb")
     if h then
       local s
-      s=h:read(1) x=string.byte(s)
-      s=h:read(1) y=string.byte(s)
-      s=h:read(2) t1s=string.byte(s,2,2)*256+string.byte(s,1,1)
-      s=h:read(4) fw=string.byte(s,4,4)*16777216+string.byte(s,3,3)*65536+string.byte(s,2,2)*256+string.byte(s,1,1)
-      s=h:read(4) rb=string.byte(s,4,4)*16777216+string.byte(s,3,3)*65536+string.byte(s,2,2)*256+string.byte(s,1,1)
-      for x=0,bx   do for y=0,by do s=h:read(1) t00[x][y]=string.byte(s) end end
-      for x=0,bx   do for y=0,by do s=h:read(2) t01[x][y]=string.byte(s,2,2)*256+string.byte(s,1,1) end end
-      for x=0,full do for y=0,8  do s=h:read(1) Tree[x][y]=string.byte(s) end end
+      s=h:read(1) x=string_byte(s)
+      s=h:read(1) y=string_byte(s)
+      s=h:read(2) t1s=string_byte(s,2,2)*256+string_byte(s,1,1)
+      s=h:read(4) fw=string_byte(s,4,4)*16777216+string_byte(s,3,3)*65536+string_byte(s,2,2)*256+string_byte(s,1,1)
+      s=h:read(4) rb=string_byte(s,4,4)*16777216+string_byte(s,3,3)*65536+string_byte(s,2,2)*256+string_byte(s,1,1)
+      for x=0,bx   do for y=0,by do s=h:read(1) t00[x][y]=string_byte(s) end end
+      for x=0,bx   do for y=0,by do s=h:read(2) t01[x][y]=string_byte(s,2,2)*256+string_byte(s,1,1) end end
+      for x=0,full do for y=0,8  do s=h:read(1) Tree[x][y]=string_byte(s) end end
       h:close()
       goto RESULTS
     end
