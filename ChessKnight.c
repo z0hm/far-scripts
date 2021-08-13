@@ -1,5 +1,5 @@
 ﻿// ChessKnight.c
-// v0.8
+// v0.9
 // For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
 #include <stdint.h>
@@ -71,19 +71,31 @@ uint8_t ta[8]; // массив с количеством векторов у д�
 int main(int argc, char *argv[])
 {
   pTemp=getenv("TEMP");
-  if(argc<7){printf("\nArgumets: bx by x0 y0 ret log( hx hy)*\n"); return 1;}
   int tmp;
-  sscanf(argv[1], "%d", &tmp); bx   = tmp;
-  sscanf(argv[2], "%d", &tmp); by   = tmp;
-  sscanf(argv[3], "%d", &tmp); x00  = tmp;
-  sscanf(argv[4], "%d", &tmp); y00  = tmp;
-  sscanf(argv[5], "%d", &tmp); ret0 = tmp;
-  sscanf(argv[6], "%d", &tmp); log0 = tmp;
+  if(argc==1){printf("\nArgumets: bx by x0 y0 ret log hx hy...\n Example: ChessKnight.exe 7 7 1 1 1 0 4 4 4 3 4 2\nMax board size 127x127\nMax logging board size 15x15\nSee ChessKnight.log in %%TEMP%%\n"); return 1;}
+  if(argc>=2){sscanf(argv[1], "%d", &tmp); bx   = tmp & 127;}else{bx   = 8;}
+  if(argc>=3){sscanf(argv[2], "%d", &tmp); by   = tmp & 127;}else{by   = 8;}
+  if(argc>=4){sscanf(argv[3], "%d", &tmp); x00  = tmp & 127;}else{x00  = 1;}
+  if(argc>=5){sscanf(argv[4], "%d", &tmp); y00  = tmp & 127;}else{y00  = 1;}
+  if(argc>=6){sscanf(argv[5], "%d", &tmp); ret0 = tmp &   1;}else{ret0 = 0;}
+  if(argc>=7){sscanf(argv[6], "%d", &tmp); log0 = tmp &   1;}else{log0 = 0;}
+  uint8_t ret=ret0;
   int8_t  t00[bx][by]; // слой векторов с дырами
   int16_t t01[bx][by]; // слой нумерации ходов
+  printf("Looking for a solution...\n");
+  printf("\nBoard size: %dx%d, ret %d, log %d", bx, by, ret0, log0);
+  if(argc>7){printf("\nHoles:"); for(uint8_t i=0; i<argc-7; i++,i++){if(i>1) printf(","); printf(" h%d %s %s", i>>1, argv[i+7], argv[i+8]);}}
   int16_t full = argc>7 ? bx*by-((argc-7)>>1) : bx*by;
+  if(ret!=0 && (full & 1)!=0){ret=0;}
   uint8_t Tree[full][9]; // дерево, содержащее вектора возможных ходов
   bx--; by--; x00--; y00--; full--; // align from 1 to 0 based
+  if(ret!=ret0 || (log0!=0 && (bx>15 || by>15)))
+  {
+    printf("\nUse:");
+    if(ret!=ret0){printf(" ret %d", ret);}
+    if(log0!=0 && (bx>15 || by>15)){log0=0; if(ret!=ret0){printf(",");} printf(" log %d", log0);}
+  }
+  printf("\n Start: %d %d", x00+1, y00+1);
   for(uint8_t x=0; x<=bx; x++){for(uint8_t y=0; y<=by; y++){t00[x][y]=-1; t01[x][y]=-1;}} // инициализация t00, t01 {{-1}}
   // расставляем дыры
   if(argc>7)
@@ -91,8 +103,8 @@ int main(int argc, char *argv[])
     uint8_t x,y;
     for(uint8_t i=7; i<argc; i++,i++)
     {
-      sscanf(argv[i  ], "%d", &tmp); x = tmp;
-      sscanf(argv[i+1], "%d", &tmp); y = tmp;
+      sscanf(argv[i  ], "%d", &tmp); x = tmp & 127;
+      sscanf(argv[i+1], "%d", &tmp); y = tmp & 127;
       t00[x-1][y-1] = 8;
     }
   }
@@ -145,28 +157,21 @@ int main(int argc, char *argv[])
   } // массив координат клеток на расстоянии 1 хода от старта t1s=1
   
   fw=1; rb=0;
-  uint8_t ret=ret0; // путь замкнут
   int16_t full1=full-1; // предпоследний ход
   uint8_t v; // вспомогательные переменные
   int8_t x2; // вспомогательные переменные
   int8_t y2; // вспомогательные переменные
-  if(ret!=0 && (full & 1)==0){ret=0;}
   
   // logging max board 15x15 - xy stored in 1 byte
   unsigned char obuf[buf_size];
   uint32_t bsz=0;
   FILE *f_out;
-  if(bx>15 || by>15){log0=0;}
   if(log0!=0)
   {
     char pPath[512];
     strcpy(pPath, pTemp);
     f_out=fopen(strcat(pPath, logname),"wb");
-    if(f_out==NULL)
-    {
-      printf("Error: can't open the file\n");
-      return 1; // exit
-    }
+    if(f_out==NULL){printf("Error: can't open the file\n"); return 1;} // exit
   }
   
   START:
@@ -246,11 +251,7 @@ int main(int argc, char *argv[])
   char pPath[512];
   strcpy(pPath, pTemp);
   f_out=fopen(strcat(pPath, txtname),"wb");
-  if(f_out==NULL)
-  {
-    printf("Error: can't open the file\n");
-    return 1; // exit
-  }
+  if(f_out==NULL){printf("Error: can't open the file\n"); return 1;} // exit
   fwrite(&x,1,sizeof(x),f_out); // X координата финиша
   fwrite(&y,1,sizeof(y),f_out); // Y координата финиша
   fwrite(&t1s,1,sizeof(t1s),f_out); // количество ходов
@@ -261,12 +262,11 @@ int main(int argc, char *argv[])
   fwrite(Tree,1,sizeof(Tree),f_out);
   fclose(f_out);
 
-  printf("Board size: %dx%d, ret: %d, log: %d", ++bx, ++by, ret0, log0);
-  printf("\n Start x y: %d %d", ++x00, ++y00);
-  printf("\nFinish x y: %d %d", ++x, ++y);
+  printf("\nFinish: %d %d", ++x, ++y);
   printf("\nVisited squares: %d/%d", ++t1s, ++full);
   printf("\n   Moves: %d", fw+rb);
   printf("\n Forward: %d", fw);
   printf("\nRollback: %d", rb);
+  printf("\n\nDone!");
   return 0; // exit
 }

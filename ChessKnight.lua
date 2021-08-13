@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.1.0
+-- v0.9.1.1
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -86,7 +86,7 @@ if win.GetFileAttr(exename) then
   local args=" "..(bx+1).." "..(by+1).." "..(x0+1).." "..(y0+1).." "..(ret and 1 or 0).." "..(log and 1 or 0)
   if #holes>0 then for _,v in ipairs(holes) do args=args.." "..v[1].." "..v[2] end end
   local ans=io.popen('"'..exename..args..'"',"rb"):read"*all"
-  if ans and string.find(ans,"^Board size:") and win.GetFileAttr(temp..txtname) then
+  if ans and string.find(ans,"Done!$") and win.GetFileAttr(temp..txtname) then
     local h=io.open(temp..txtname,"rb")
     if h then
       local s
