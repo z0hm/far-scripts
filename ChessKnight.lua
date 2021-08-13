@@ -27,7 +27,7 @@ local temp=win.GetEnv"TEMP".."\\"
 ::ANSWER::
 local answer = far.InputBox(uuid,title,"board 6x6, start 1 1, ret 1, log 1, holes 42,43: 6 6 1 1 1 1 42 43","ChessKnight.lua",nil,nil,nil,F.FIB_NONE) or ""
 local holes,bx,by,fbx,fby,x0,y0 = {}
-if answer=="" then bx,by,x0,y0 = 6,6,1,1
+if answer=="" then bx,by,x0,y0 = 8,8,1,1
 elseif string.find(answer,"^%d+%s+%d+$") then x0,y0,bx,by = 1,1,string.match(answer,"(%d+)%s+(%d+)") bx,by = tonumber(bx),tonumber(by)
 else
   local t={}
@@ -201,8 +201,9 @@ ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 -- Вывод результатов на экран и в %TEMP%\ChessKnight.txt
 local function chk(x,y) for i=0,7 do if x+dx[i]==x0 and y+dy[i]==y0 then return true end end return false end
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
+local res1,res2 = t1s+1==full,not ret0 or ret0 and chk(x+1,y+1)
 local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string.format(fbx,x0)..string.format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")
-s0=s0.."\n\nSolution: "..(t1s+1==full and (not ret0 or ret0 and chk(x+1,y+1)) and "found " or "not found ").."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
+s0=s0.."\n\nSolution: "..(res1 and res2 and "found " or (res1 and "partially found " or "not found ")).."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
 local s1="\nPath: "..string.format(fbx,x0)..string.format(fby,y0)
 x2,y2 = x0,y0
 for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2) end
@@ -215,7 +216,7 @@ local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:clo
 local MessageX=require"MessageX"
 
 local function fine(x)
-  s0=string.find(s0,"not found") and string.gsub(s0," not found ","<#c4>%1<#rr>") or string.gsub(s0," found ","<#a2>%1<#rr>")
+  s0=res1 and res2 and string.gsub(s0," found ","<#a2>%1<#rr>") or (res1 and string.gsub(s0," partially found ","<#b3>%1<#rr>") or string.gsub(s0," not found ","<#c4>%1<#rr>"))
   if x then
     s2=string.gsub(s2,"%[(.-)%]","<#f1> %1 <#rr>")
     s2=string.gsub(s2,string.rep(" ",sf).."0 ","<#ec>%1<#rr>")
