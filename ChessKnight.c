@@ -1,5 +1,5 @@
 ﻿// ChessKnight.c
-// v0.9.1
+// v0.9.1.0
 // For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
 #include <stdint.h>
@@ -270,6 +270,5 @@ int main(int argc, char *argv[])
   printf("\n Forward: %d", fw);
   printf("\nRollback: %d", rb);
   printf("\n  Status: %d", status);
-  printf("\n\nDone!");
   return 0; // exit
 }

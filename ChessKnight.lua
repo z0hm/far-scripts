@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.2.0
+-- v0.9.2.1
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -86,20 +86,20 @@ init()
 if win.GetFileAttr(exename) then
   local args=" "..(bx+1).." "..(by+1).." "..(x0+1).." "..(y0+1).." "..(ret and 1 or 0).." "..(log and 1 or 0)
   if #holes>0 then for _,v in ipairs(holes) do args=args.." "..v[1].." "..v[2] end end
-  local ans=io.popen('"'..exename..args..'"',"rb"):read"*all"
+  local ans=io.popen('"'..exename..args..'"',"rb"):read("*all")
   if ans and win.GetFileAttr(temp..txtname) then
     local h=io.open(temp..txtname,"rb")
     if h then
-      local s
-      s=h:read(1) status=string_byte(s)
-      s=h:read(1) x=string_byte(s)
-      s=h:read(1) y=string_byte(s)
-      s=h:read(2) t1s=string_byte(s,2,2)*256+string_byte(s,1,1)
-      s=h:read(4) fw=string_byte(s,4,4)*16777216+string_byte(s,3,3)*65536+string_byte(s,2,2)*256+string_byte(s,1,1)
-      s=h:read(4) rb=string_byte(s,4,4)*16777216+string_byte(s,3,3)*65536+string_byte(s,2,2)*256+string_byte(s,1,1)
-      for x=0,bx   do for y=0,by do s=h:read(1) t00[x][y]=string_byte(s) end end
-      for x=0,bx   do for y=0,by do s=h:read(2) t01[x][y]=string_byte(s,2,2)*256+string_byte(s,1,1) end end
-      for x=0,full do for y=0,8  do s=h:read(1) Tree[x][y]=string_byte(s) end end
+      local i,s = 1,h:read("*all")
+      status=string_byte(s,i,i) i=i+1
+      x=string_byte(s,i,i) i=i+1
+      y=string_byte(s,i,i) i=i+1
+      t1s=string_byte(s,i+1,i+1)*256+string_byte(s,i,i) t1s=t1s==65535 and -1 or t1s i=i+2
+      fw=string_byte(s,i+3,i+3)*16777216+string_byte(s,i+2,i+2)*65536+string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+4
+      rb=string_byte(s,i+3,i+3)*16777216+string_byte(s,i+2,i+2)*65536+string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+4
+      for x=0,bx   do for y=0,by do t00[x][y]=string_byte(s,i,i) i=i+1 end end
+      for x=0,bx   do for y=0,by do t01[x][y]=string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+2 end end
+      for x=0,full do for y=0,8  do Tree[x][y]=string_byte(s,i,i) i=i+1 end end
       h:close()
       goto RESULTS
     end
@@ -211,7 +211,7 @@ for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s
 t1s,s1 = t1s+1,s1.."\n"
 local s2,sf = "\n",#tostring(full)
 for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string.format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
-local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb
+local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb.."\n  Status: "..status
 local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:close()
 
 local MessageX=require"MessageX"
@@ -225,7 +225,7 @@ local function fine(x)
 end
 
 local rr=far.AdvControl"ACTL_GETFARRECT"
-local Width,Height = rr.Right-rr.Left-3,rr.Bottom-rr.Top-15
+local Width,Height = rr.Right-rr.Left-3,rr.Bottom-rr.Top-16
 
 local hs1,ws2 = math.ceil((#s1-1)/Width)+by+1<=Height,(#s2-1)/by-1<=Width
 if hs1 and ws2 then if MessageX then fine(1) MessageX(s0..s1..s2..s3,title,nil,"c") else far.Message(s0..s1..s2..s3,title) end
