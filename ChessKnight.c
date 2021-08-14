@@ -1,17 +1,18 @@
 ﻿// ChessKnight.c
-// v0.9
+// v0.9.1
 // For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
 #include <stdint.h>
 #include <stdio.h>
 
-char* getenv(const char* name);
-char* strcat(char* dest, const char* source);
-char* strcpy(char* dest, const char* source);
+char *getenv(const char *name);
+char *strcat(char *dest, const char *source);
+char *strcpy(char *dest, const char *source);
 
 const char *pTemp;
 const char *logname="\\ChessKnight.log";
 const char *txtname="\\ChessKnight.txt";
+uint8_t status;
 uint8_t bx; // ширина доски
 uint8_t by; // высота доски
 uint8_t x00; // X координата старта
@@ -21,7 +22,8 @@ uint8_t log0; // вывод лога (0/1)
 int8_t x,y; // номер текущего хода, последний (текущий) вектор, координаты текущей клетки
 uint32_t fw; // счётчик ходов вперёд
 uint32_t rb; // счётчик возвратов (откатов)
-const uint32_t buf_size=0x80000; // размер кэширующего буфера в памяти для последующей записи лога на диск
+const uint32_t buf_size=0x10000000; // размер кэширующего буфера в памяти для последующей записи лога на диск
+unsigned char obuf[0x10000000];
 // {dx,dy} - вектор хода
 // порядок следования векторов в массиве определяет приоритет выбора клетки для хода среди клеток с одинаковым количеством доступных для движения векторов
 const int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -163,7 +165,6 @@ int main(int argc, char *argv[])
   int8_t y2; // вспомогательные переменные
   
   // logging max board 15x15 - xy stored in 1 byte
-  unsigned char obuf[buf_size];
   uint32_t bsz=0;
   FILE *f_out;
   if(log0!=0)
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
     f_out=fopen(strcat(pPath, logname),"wb");
     if(f_out==NULL){printf("Error: can't open the file\n"); return 1;} // exit
   }
-  
+
   START:
   if(log0!=0){if(bsz==buf_size){fwrite(obuf,1,bsz,f_out); bsz=0;} obuf[bsz]=((x+1)<<4)+y+1; bsz++;} // logging
   //t1v=around(x,y)+1; // указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
@@ -224,7 +225,7 @@ int main(int argc, char *argv[])
     t00[x][y]=v; t01[x][y]=t1s; x=x2; y=y2; fw++; t1s++; // переходим на следующую клетку
     goto START; // следующий ход
   }
-  if(t1s==full && (ret==0 || (x==cx[cn] && y==cy[cn]))){t01[x][y]=t1s; goto FINISH;} // последняя клетка?
+  if(t1s==full && (ret==0 || (x==cx[cn] && y==cy[cn]))){t01[x][y]=t1s; status=ret==ret0 ? 1 : 2; goto FINISH;} // последняя клетка?
   ROLLBACK: // откат
   t1s--; // откатываем последний неудачный ход
   if(t1s<0)
@@ -235,7 +236,7 @@ int main(int argc, char *argv[])
       t1s=0; t1v=0; x=x00; y=y00; // инициализация
       goto START; // выбираем другую клетку для финиша
     }
-    else goto FINISH; // все пути испробованы, путь не найден
+    else{goto FINISH;} // все пути испробованы, путь не найден
   }
   t00[x][y]=-1; t01[x][y]=-1; // освобождаем клетку x,y
   t1v=Tree[t1s][0]; // восстанавливаем указатель на приведший на неё вектор
@@ -252,6 +253,7 @@ int main(int argc, char *argv[])
   strcpy(pPath, pTemp);
   f_out=fopen(strcat(pPath, txtname),"wb");
   if(f_out==NULL){printf("Error: can't open the file\n"); return 1;} // exit
+  fwrite(&status,1,sizeof(status),f_out); // статус
   fwrite(&x,1,sizeof(x),f_out); // X координата финиша
   fwrite(&y,1,sizeof(y),f_out); // Y координата финиша
   fwrite(&t1s,1,sizeof(t1s),f_out); // количество ходов
@@ -267,6 +269,7 @@ int main(int argc, char *argv[])
   printf("\n   Moves: %d", fw+rb);
   printf("\n Forward: %d", fw);
   printf("\nRollback: %d", rb);
+  printf("\n  Status: %d", status);
   printf("\n\nDone!");
   return 0; // exit
 }

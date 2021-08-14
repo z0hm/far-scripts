@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.1.1
+-- v0.9.2.0
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -23,6 +23,7 @@ local F = far.Flags
 local title="Chess Knight"
 local uuid=win.Uuid"F625937B-B79A-4D58-92B7-9B40BC374F21"
 local temp=win.GetEnv"TEMP".."\\"
+local status=0
 
 ::ANSWER::
 local answer = far.InputBox(uuid,title,"board 6x6, start 1 1, ret 1, log 1, holes 42,43: 6 6 1 1 1 1 42 43","ChessKnight.lua",nil,nil,nil,F.FIB_NONE) or ""
@@ -86,10 +87,11 @@ if win.GetFileAttr(exename) then
   local args=" "..(bx+1).." "..(by+1).." "..(x0+1).." "..(y0+1).." "..(ret and 1 or 0).." "..(log and 1 or 0)
   if #holes>0 then for _,v in ipairs(holes) do args=args.." "..v[1].." "..v[2] end end
   local ans=io.popen('"'..exename..args..'"',"rb"):read"*all"
-  if ans and string.find(ans,"Done!$") and win.GetFileAttr(temp..txtname) then
+  if ans and win.GetFileAttr(temp..txtname) then
     local h=io.open(temp..txtname,"rb")
     if h then
       local s
+      s=h:read(1) status=string_byte(s)
       s=h:read(1) x=string_byte(s)
       s=h:read(1) y=string_byte(s)
       s=h:read(2) t1s=string_byte(s,2,2)*256+string_byte(s,1,1)
@@ -169,7 +171,7 @@ do
     t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходим на следующую клетку
     goto START -- следующий ход
   end
-  if t1s==full and (not ret or x==cx[cn] and y==cy[cn]) then t01[x][y]=t1s goto FINISH end -- последняя клетка?
+  if t1s==full and (not ret or x==cx[cn] and y==cy[cn]) then t01[x][y]=t1s status=ret==ret0 and 1 or 2 goto FINISH end -- последняя клетка?
   ::ROLLBACK::
   repeat -- откат
     t1s=t1s-1 -- откатываем последний неудачный ход
@@ -201,9 +203,8 @@ ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 -- Вывод результатов на экран и в %TEMP%\ChessKnight.txt
 local function chk(x,y) for i=0,7 do if x+dx[i]==x0 and y+dy[i]==y0 then return true end end return false end
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
-local res1,res2 = t1s+1==full,not ret0 or ret0 and chk(x+1,y+1)
 local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string.format(fbx,x0)..string.format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")
-s0=s0.."\n\nSolution: "..(res1 and res2 and "found " or (res1 and "partially found " or "not found ")).."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
+s0=s0.."\n\nSolution: "..(status==1 and "found " or (status==2 and "partially found " or "not found ")).."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
 local s1="\nPath: "..string.format(fbx,x0)..string.format(fby,y0)
 x2,y2 = x0,y0
 for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2) end
@@ -216,7 +217,7 @@ local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:clo
 local MessageX=require"MessageX"
 
 local function fine(x)
-  s0=res1 and res2 and string.gsub(s0," found ","<#a2>%1<#rr>") or (res1 and string.gsub(s0," partially found ","<#b3>%1<#rr>") or string.gsub(s0," not found ","<#c4>%1<#rr>"))
+  s0=status==1 and string.gsub(s0," found ","<#a2>%1<#rr>") or (status==2 and string.gsub(s0," partially found ","<#b3>%1<#rr>") or string.gsub(s0," not found ","<#c4>%1<#rr>"))
   if x then
     s2=string.gsub(s2,"%[(.-)%]","<#f1> %1 <#rr>")
     s2=string.gsub(s2,string.rep(" ",sf).."0 ","<#ec>%1<#rr>")
