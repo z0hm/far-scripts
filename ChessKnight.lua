@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.2.1
+-- v0.9.2.2
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -23,7 +23,7 @@ local F = far.Flags
 local title="Chess Knight"
 local uuid=win.Uuid"F625937B-B79A-4D58-92B7-9B40BC374F21"
 local temp=win.GetEnv"TEMP".."\\"
-local status=0
+local status,variants = 0
 
 ::ANSWER::
 local answer = far.InputBox(uuid,title,"board 6x6, start 1 1, ret 1, log 1, holes 42,43: 6 6 1 1 1 1 42 43","ChessKnight.lua",nil,nil,nil,F.FIB_NONE) or ""
@@ -84,6 +84,7 @@ local function init() t1s,t1v,x,y = 0,0,x0,y0 end -- инициализация
 init()
 
 if win.GetFileAttr(exename) then
+  print("Use: "..exename)
   local args=" "..(bx+1).." "..(by+1).." "..(x0+1).." "..(y0+1).." "..(ret and 1 or 0).." "..(log and 1 or 0)
   if #holes>0 then for _,v in ipairs(holes) do args=args.." "..v[1].." "..v[2] end end
   local ans=io.popen('"'..exename..args..'"',"rb"):read("*all")
@@ -97,6 +98,7 @@ if win.GetFileAttr(exename) then
       t1s=string_byte(s,i+1,i+1)*256+string_byte(s,i,i) t1s=t1s==65535 and -1 or t1s i=i+2
       fw=string_byte(s,i+3,i+3)*16777216+string_byte(s,i+2,i+2)*65536+string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+4
       rb=string_byte(s,i+3,i+3)*16777216+string_byte(s,i+2,i+2)*65536+string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+4
+      variants=string_byte(s,i+3,i+3)*16777216+string_byte(s,i+2,i+2)*65536+string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+4
       for x=0,bx   do for y=0,by do t00[x][y]=string_byte(s,i,i) i=i+1 end end
       for x=0,bx   do for y=0,by do t01[x][y]=string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+2 end end
       for x=0,full do for y=0,8  do Tree[x][y]=string_byte(s,i,i) i=i+1 end end
@@ -105,6 +107,7 @@ if win.GetFileAttr(exename) then
     end
   end
 end
+print("Use: "..name..".lua")
 
 do
   local cx=ffi.new("int8_t[8]",{-1}) -- массив с x координатами клеток 1-го хода (финиша)
@@ -156,7 +159,7 @@ do
     else obuf = ffi.new("unsigned char[?]",buf_size)
     end
   end
-  
+
   ::START::
   if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
   t1v=around(x,y)+1 -- указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
@@ -207,11 +210,18 @@ local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string.
 s0=s0.."\n\nSolution: "..(status==1 and "found " or (status==2 and "partially found " or "not found ")).."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
 local s1="\nPath: "..string.format(fbx,x0)..string.format(fby,y0)
 x2,y2 = x0,y0
-for i=0,t1s-1 do x2,y2 = x2+dx[Tree[i][Tree[i][0]]],y2+dy[Tree[i][Tree[i][0]]] s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2) end
+local vs
+if not variants then vs,variants = true,0 end
+for i=0,t1s-1 do
+  t1v=Tree[i][0] v=Tree[i][t1v]
+  if vs then variants=variants+t1v end
+  x2,y2 = x2+dx[v],y2+dy[v]
+  s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2)
+end
 t1s,s1 = t1s+1,s1.."\n"
 local s2,sf = "\n",#tostring(full)
 for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string.format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
-local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb.."\n  Status: "..status
+local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb.."\nVariants: "..variants.."\n  Status: "..status
 local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:close()
 
 local MessageX=require"MessageX"
@@ -225,7 +235,7 @@ local function fine(x)
 end
 
 local rr=far.AdvControl"ACTL_GETFARRECT"
-local Width,Height = rr.Right-rr.Left-3,rr.Bottom-rr.Top-16
+local Width,Height = rr.Right-rr.Left-3,rr.Bottom-rr.Top-17
 
 local hs1,ws2 = math.ceil((#s1-1)/Width)+by+1<=Height,(#s2-1)/by-1<=Width
 if hs1 and ws2 then if MessageX then fine(1) MessageX(s0..s1..s2..s3,title,nil,"c") else far.Message(s0..s1..s2..s3,title) end

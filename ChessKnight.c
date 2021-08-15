@@ -1,5 +1,5 @@
 ﻿// ChessKnight.c
-// v0.9.1.0
+// v0.9.1.1
 // For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
 #include <stdint.h>
@@ -253,12 +253,15 @@ int main(int argc, char *argv[])
   strcpy(pPath, pTemp);
   f_out=fopen(strcat(pPath, txtname),"wb");
   if(f_out==NULL){printf("Error: can't open the file\n"); return 1;} // exit
+  uint32_t variants=0;
+  if(t1s>0){for(int16_t i=t1s; i>=0; i--){variants+=Tree[i][0];}}else{variants=0;}
   fwrite(&status,1,sizeof(status),f_out); // статус
   fwrite(&x,1,sizeof(x),f_out); // X координата финиша
   fwrite(&y,1,sizeof(y),f_out); // Y координата финиша
   fwrite(&t1s,1,sizeof(t1s),f_out); // количество ходов
   fwrite(&fw,1,sizeof(fw),f_out); // количество ходов вперёд
   fwrite(&rb,1,sizeof(rb),f_out); // количество откатов
+  fwrite(&variants,1,sizeof(variants),f_out); // сумма вариантов ходов
   fwrite(t00,1,sizeof(t00),f_out);
   fwrite(t01,1,sizeof(t01),f_out);
   fwrite(Tree,1,sizeof(Tree),f_out);
@@ -269,6 +272,7 @@ int main(int argc, char *argv[])
   printf("\n   Moves: %d", fw+rb);
   printf("\n Forward: %d", fw);
   printf("\nRollback: %d", rb);
+  printf("\nVariants: %d", variants);
   printf("\n  Status: %d", status);
   return 0; // exit
 }
