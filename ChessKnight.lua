@@ -17,7 +17,7 @@ local C=ffi.C
 local NULL = ffi.cast("void*",0)
 local ffi_copy=ffi.copy
 local s=string
-local string_byte=s.byte
+local string_byte,string_format = s.byte,s.format
 
 local F = far.Flags
 local title="Chess Knight"
@@ -42,12 +42,12 @@ local fbx,fby = "%0"..#tostring(bx).."d","%0"..#tostring(by).."d"
 local function holes_check(x,y) for _,v in ipairs(holes) do if v[1]==x and v[2]==y then return true end end return false end
 local function holes_show()
   if #holes==0 then return "no" end
-  local s="" for _,v in ipairs(holes) do s=s..string.format(fbx,v[1])..string.format(fby,v[2]).."," end
+  local s="" for _,v in ipairs(holes) do s=s..string_format(fbx,v[1])..string_format(fby,v[2]).."," end
   return string.sub(s,1,-2)
 end
 local function console()
   panel.GetUserScreen()
-  io.write("Board: "..bx.."x"..by..", Start: "..string.format(fbx,x0)..string.format(fby,y0)..", Closed path: "..(ret0 and "yes" or "no")..", Logging: "..(log and "yes" or "no")..", Holes: "..holes_show())
+  io.write("Board: "..bx.."x"..by..", Start: "..string_format(fbx,x0)..string_format(fby,y0)..", Closed path: "..(ret0 and "yes" or "no")..", Logging: "..(log and "yes" or "no")..", Holes: "..holes_show())
   panel.SetUserScreen()
 end
 local function Msg() far.Message("For a closed path, the number of squares must be even, add"..(#holes==0 and "" or "/remove").." a hole.",title) end
@@ -76,6 +76,8 @@ for _,v in ipairs(holes) do t00[v[1]-1][v[2]-1]=8 end  -- расставляем
 local Tree=ffi.new("uint8_t[?][9]",full) -- дерево, содержащее вектора возможных ходов
 
 bx,by,x0,y0,full = bx-1,by-1,x0-1,y0-1,full-1 -- align from 1 to 0 based
+for x=0,full do for y=0,8 do Tree[x][y]=255 end end
+
 local fw,rb,ret,full1,v,x2,y2 = 1,0,ret0,full-1 -- счётчики: ходов вперёд, возвратов (откатов)
 if ret and math.fmod(full,2)==0 then ret=false end
 local t1s,t1v,x,y -- номер текущего хода, последний (текущий) вектор, координаты текущей клетки
@@ -206,23 +208,25 @@ ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 -- Вывод результатов на экран и в %TEMP%\ChessKnight.txt
 local function chk(x,y) for i=0,7 do if x+dx[i]==x0 and y+dy[i]==y0 then return true end end return false end
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
-local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string.format(fbx,x0)..string.format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")
+local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string_format(fbx,x0)..string_format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")
 s0=s0.."\n\nSolution: "..(status==1 and "found " or (status==2 and "partially found " or "not found ")).."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
-local s1="\nPath: "..string.format(fbx,x0)..string.format(fby,y0)
+local s1="\nPath: "..string_format(fbx,x0)..string_format(fby,y0)
 x2,y2 = x0,y0
-local vs
+local s4,vs = ""
 if not variants then vs,variants = true,0 end
 for i=0,t1s-1 do
   t1v=Tree[i][0] v=Tree[i][t1v]
   if vs then variants=variants+t1v end
   x2,y2 = x2+dx[v],y2+dy[v]
-  s1=s1.." "..string.format(fbx,x2)..string.format(fby,y2)
+  s1=s1.." "..string_format(fbx,x2)..string_format(fby,y2)
+  local s=string_format(" %02X ",i) for j=0,8 do s=s..string_format(" %02X",Tree[i][j]) end s4=s4..s.."\n"
 end
+local s=string_format(" %02X ",t1s) for j=0,8 do s=s..string_format(" %02X",Tree[t1s][j]) end s4=s4..s.."\n"
 t1s,s1 = t1s+1,s1.."\n"
 local s2,sf = "\n",#tostring(full)
-for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string.format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
+for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string_format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
 local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb.."\nVariants: "..variants.."\n  Status: "..status
-local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3) h:close()
+local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3.."\n\n"..s4) h:close()
 
 local MessageX=require"MessageX"
 
