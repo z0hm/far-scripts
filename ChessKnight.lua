@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.2.2
+-- v0.9.2.3
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -73,10 +73,11 @@ local function array(st,...) st=st..string.rep('[$]',#{...}) local array_ct=ffi.
 local t00=array("int8_t" ,bx,by) -- слой векторов с дырами
 local t01=array("int16_t",bx,by) -- слой нумерации ходов
 for _,v in ipairs(holes) do t00[v[1]-1][v[2]-1]=8 end  -- расставляем дыры 0 based
-local Tree=ffi.new("uint8_t[?][9]",full) -- дерево, содержащее вектора возможных ходов
+local Tree=ffi.new("uint8_t[?][8]",full) -- дерево, содержащее вектора возможных ходов
+local tv=ffi.new("uint8_t[?]",full) -- указатель на активный (последний) вектор
 
 bx,by,x0,y0,full = bx-1,by-1,x0-1,y0-1,full-1 -- align from 1 to 0 based
-for x=0,full do for y=0,8 do Tree[x][y]=255 end end
+for x=0,full do tv[x]=0xFF for y=0,7 do Tree[x][y]=0xFF end end
 
 local fw,rb,ret,full1,v,x2,y2 = 1,0,ret0,full-1 -- счётчики: ходов вперёд, возвратов (откатов)
 if ret and math.fmod(full,2)==0 then ret=false end
@@ -103,7 +104,8 @@ if win.GetFileAttr(exename) then
       variants=string_byte(s,i+3,i+3)*16777216+string_byte(s,i+2,i+2)*65536+string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+4
       for x=0,bx   do for y=0,by do t00[x][y]=string_byte(s,i,i) i=i+1 end end
       for x=0,bx   do for y=0,by do t01[x][y]=string_byte(s,i+1,i+1)*256+string_byte(s,i,i) i=i+2 end end
-      for x=0,full do for y=0,8  do Tree[x][y]=string_byte(s,i,i) i=i+1 end end
+      for x=0,full do for y=0,7  do Tree[x][y]=string_byte(s,i,i) i=i+1 end end
+      for x=0,full do tv[x]=string_byte(s,i,i) i=i+1 end
       h:close()
       goto RESULTS
     end
@@ -164,14 +166,14 @@ do
 
   ::START::
   if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
-  t1v=around(x,y)+1 -- указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
-  ffi_copy(Tree[t1s]+1,ti,t1v) -- записываем вектора в дерево со смещением 1
-  Tree[t1s][0]=t1v -- сохраняем указатель на активный (последний) вектор
-  if t1v>0 then
-    v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
+  t1v=around(x,y) -- указатель, хранящий количество векторов на доступные для хода клетки, указывает на активный (последний) вектор
+  if t1v>=0 then
+    ffi_copy(Tree[t1s],ti,t1v+1) -- записываем вектора в дерево
+    -- сохраняем указатель на активный (последний) вектор
+    tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
     if ret and x2==cx[cn] and y2==cy[cn] and t1s<full1 then -- вектор указывает на клетку финиша?
-      t1v=t1v-1 Tree[t1s][0]=t1v -- перемещаем указатель на предыдущий вектор
-      if t1v==0 then goto ROLLBACK else v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] end -- больше векторов нет?
+      t1v=t1v-1 -- перемещаем указатель на предыдущий вектор
+      if t1v<0 then goto ROLLBACK else tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] end -- больше векторов нет?
     end
     t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходим на следующую клетку
     goto START -- следующий ход
@@ -179,6 +181,7 @@ do
   if t1s==full and (not ret or x==cx[cn] and y==cy[cn]) then t01[x][y]=t1s status=ret==ret0 and 1 or 2 goto FINISH end -- последняя клетка?
   ::ROLLBACK::
   repeat -- откат
+    tv[t1s]=0xFF
     t1s=t1s-1 -- откатываем последний неудачный ход
     if t1s<0 then -- достигнута клетка старта?
       if ret -- маршрут замкнутый?
@@ -187,15 +190,15 @@ do
       end
     end
     t00[x][y],t01[x][y] = -1,-1 -- освобождаем клетку x,y
-    t1v=Tree[t1s][0] -- восстанавливаем указатель на приведший на неё вектор
+    t1v=tv[t1s] -- восстанавливаем указатель на приведший на неё вектор
     v=Tree[t1s][t1v] x,y = x-dx[v],y-dy[v] rb=rb+1 -- получаем вектор и возвращаемся на клетку с которой пришли
     if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
-    t1v=t1v-1 Tree[t1s][0]=t1v -- выбираем другой вектор хода
-  until t1v>0
-  v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
+    t1v=t1v-1 -- выбираем другой вектор хода
+  until t1v>=0
+  tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
   if ret and x2==cx[cn] and y2==cy[cn] then -- вектор указывает на клетку финиша?
-    t1v=t1v-1 Tree[t1s][0]=t1v -- перемещаем указатель на предыдущий вектор
-    if t1v==0 then goto ROLLBACK else v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] end -- больше векторов нет?
+    t1v=t1v-1 -- перемещаем указатель на предыдущий вектор
+    if t1v<0 then goto ROLLBACK else tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] end -- больше векторов нет?
   end
   t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходим на следующую клетку
   goto START -- следующий ход
@@ -215,18 +218,18 @@ x2,y2 = x0,y0
 local s4,vs = ""
 if not variants then vs,variants = true,0 end
 for i=0,t1s-1 do
-  t1v=Tree[i][0] v=Tree[i][t1v]
-  if vs then variants=variants+t1v end
+  t1v=tv[i] v=Tree[i][t1v]
+  if vs then variants=variants+t1v+1 end
   x2,y2 = x2+dx[v],y2+dy[v]
   s1=s1.." "..string_format(fbx,x2)..string_format(fby,y2)
-  local s=string_format(" %02X ",i) for j=0,8 do s=s..string_format(" %02X",Tree[i][j]) end s4=s4..s.."\n"
+  local s=string_format(" %02X  %02X",i,tv[i]) for j=0,7 do s=s..string_format(" %02X",Tree[i][j]) end s4=s4..s.."\n"
 end
-local s=string_format(" %02X ",t1s) for j=0,8 do s=s..string_format(" %02X",Tree[t1s][j]) end s4=s4..s.."\n"
+if t1s>=0 then local s=string_format(" %02X  %02X",t1s,tv[t1s]) for j=0,7 do s=s..string_format(" %02X",Tree[t1s][j]) end s4=s4..s.."\n" end
 t1s,s1 = t1s+1,s1.."\n"
 local s2,sf = "\n",#tostring(full)
-for y=by,1,-1 do for x=1,bx do local dd=t01[x-1][y-1]+1 s2=s2..string_format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
+for y=by-1,0,-1 do for x=0,bx-1 do local dd=t01[x][y]+1 s2=s2..string_format((dd==1 or dd==t1s) and "[%"..sf.."d]" or " %"..sf.."d ",dd) end s2=s2.."\n" end
 local s3="\n   Moves: "..(fw+rb).."\n Forward: "..fw.."\nRollback: "..rb.."\nVariants: "..variants.."\n  Status: "..status
-local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3.."\n\n"..s4) h:close()
+local h=io.open(temp..txtname,"wb") h:write(title.."\n\n"..s0..s1..s2..s3..(s4~="" and "\n\n"..s4 or "")) h:close()
 
 local MessageX=require"MessageX"
 
