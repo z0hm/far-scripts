@@ -20,7 +20,7 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
 
-  *v0.9.2.1 (23960 bytes, changed 2021-08-20 20:55)*
+  *v0.9.2.1 (23960 bytes, changed 2021-08-20 22:17)*
 
   *SHA-256 `1dd88b4a4362456184775e915f80546be5cf0013530ae99e0e29b7963f95a0b9`*
 
