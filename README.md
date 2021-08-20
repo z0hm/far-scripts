@@ -20,9 +20,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
 
-  *v0.9.2.1 (25009 bytes, changed 2021-08-20 16:39)*
+  *v0.9.2.1 (23960 bytes, changed 2021-08-20 20:55)*
 
-  *SHA-256 `22ade7e7ccd56eff5d7b60d568fd81e710a6b1757477066d4c9ce7f94f400244`*
+  *SHA-256 `1dd88b4a4362456184775e915f80546be5cf0013530ae99e0e29b7963f95a0b9`*
 
   For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
@@ -779,9 +779,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [gcc.bat](https://github.com/z0hm/far-scripts/blob/master/gcc.bat "gcc.bat")
 
-  *v0.5 (597 bytes, changed 2021-08-20 16:50)*
+  *v0.5 (641 bytes, changed 2021-08-20 21:04)*
 
-  *SHA-256 `a7aaba80d62e1ec0cc471a72aebbd510b34096ef66c556102eeee44b72e4a1ef`*
+  *SHA-256 `a87eeecb7ab8b52b78dfe5d509074c8ad0cf6790ee7bf02e245fda155886f83e`*
 
   Compile optimized for speed EXE file using gcda profile
 

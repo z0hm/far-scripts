@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     }
   }
   
-  t1s=0; t1v=0; x=x00; y=y00; // инициализация
+  t1s=0; x=x00; y=y00; // инициализация
   
   int8_t cx[8]; // массив с x координатами клеток 1-го хода (финиша)
   int8_t cy[8]; // массив с y координатами клеток 1-го хода (финиша)
@@ -182,376 +182,312 @@ int main(int argc, char *argv[])
     // разворачивание 2-x вложенных циклов + распараллеливание
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    int8_t x8=x-1;
-    int8_t y8=y+2;
-    uint8_t xx=(x8>=0) && (x8<=bx);
-    uint8_t yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v=0; ta[0]=a; ti[0]=0;
-    }
-    //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
-    //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x-1;
-    y8=y-2;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
-    {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=1;
-      if(t1v>0)
+      int8_t x8=x-1;
+      int8_t y8=y+2;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        int8_t i1=t1v;
-        int8_t i0=i1-1;
-        if(ta[i1]>ta[i0])
-        {
-          uint8_t tmp;
-          tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-          tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
-        }
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=0;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x+2;
-    y8=y+1;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=2;
-      if(t1v>0)
+      int8_t x8=x-1;
+      int8_t y8=y-2;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        for(int8_t i1=t1v; i1>0; i1--)
-        {
-          int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
-          {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
-          }
-          else break;
-        }
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=1;
+      }
+    } 
+    //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
+    //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
+    {
+      int8_t x8=x+2;
+      int8_t y8=y+1;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
+      {
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=2;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x-2;
-    y8=y+1;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=3;
-      if(t1v>0)
+      int8_t x8=x-2;
+      int8_t y8=y+1;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        for(int8_t i1=t1v; i1>0; i1--)
-        {
-          int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
-          {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
-          }
-          else break;
-        }
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=3;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x+1;
-    y8=y-2;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=4;
-      if(t1v>0)
+      int8_t x8=x+1;
+      int8_t y8=y-2;
+       uint8_t xx=(x8>=0) && (x8<=bx);
+       uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        for(int8_t i1=t1v; i1>0; i1--)
-        {
-          int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
-          {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
-          }
-          else break;
-        }
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=4;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x+1;
-    y8=y+2;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=5;
-      if(t1v>0)
+      int8_t x8=x+1;
+      int8_t y8=y+2;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        for(int8_t i1=t1v; i1>0; i1--)
-        {
-          int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
-          {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
-          }
-          else break;
-        }
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=5;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x-2;
-    y8=y-1;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=6;
-      if(t1v>0)
+      int8_t x8=x-2;
+      int8_t y8=y-1;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        for(int8_t i1=t1v; i1>0; i1--)
-        {
-          int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
-          {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
-          }
-          else break;
-        }
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=6;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
     //int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
-    x8=x+2;
-    y8=y-1;
-    xx=(x8>=0) && (x8<=bx);
-    yy=(y8>=0) && (y8<=by);
-    if((xx>0) && (yy>0) && (t00[x8][y8]<0))
     {
-      int8_t x8m1=x8-1;
-      int8_t x8m2=x8-2;
-      int8_t x8p1=x8+1;
-      int8_t x8p2=x8+2;
-      int8_t y8m1=y8-1;
-      int8_t y8m2=y8-2;
-      int8_t y8p1=y8+1;
-      int8_t y8p2=y8+2;
-      uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
-      uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
-      uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
-      uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
-      uint8_t ym1=(y8m1>=0) && (y8m1<=by);
-      uint8_t ym2=(y8m2>=0) && (y8m2<=by);
-      uint8_t yp1=(y8p1>=0) && (y8p1<=by);
-      uint8_t yp2=(y8p2>=0) && (y8p2<=by);
-      uint8_t a=0;
-      if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
-      if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
-      if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
-      if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
-      if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
-      if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
-      if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
-      if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-      t1v++; ta[t1v]=a; ti[t1v]=7;
-      if(t1v>0)
+      int8_t x8=x+2;
+      int8_t y8=y-1;
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
+      if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
-        for(int8_t i1=t1v; i1>0; i1--)
+        int8_t x8m1=x8-1;
+        int8_t x8m2=x8-2;
+        int8_t x8p1=x8+1;
+        int8_t x8p2=x8+2;
+        int8_t y8m1=y8-1;
+        int8_t y8m2=y8-2;
+        int8_t y8p1=y8+1;
+        int8_t y8p2=y8+2;
+        uint8_t xm1=(x8m1>=0) && (x8m1<=bx);
+        uint8_t xm2=(x8m2>=0) && (x8m2<=bx);
+        uint8_t xp1=(x8p1>=0) && (x8p1<=bx);
+        uint8_t xp2=(x8p2>=0) && (x8p2<=bx);
+        uint8_t ym1=(y8m1>=0) && (y8m1<=by);
+        uint8_t ym2=(y8m2>=0) && (y8m2<=by);
+        uint8_t yp1=(y8p1>=0) && (y8p1<=by);
+        uint8_t yp2=(y8p2>=0) && (y8p2<=by);
+        uint8_t a=0;
+        if((xm2>0) && (yp1>0) && (t00[x8m2][y8p1]<0)){a++;}
+        if((xm2>0) && (ym1>0) && (t00[x8m2][y8m1]<0)){a++;}
+        if((xm1>0) && (yp2>0) && (t00[x8m1][y8p2]<0)){a++;}
+        if((xm1>0) && (ym2>0) && (t00[x8m1][y8m2]<0)){a++;}
+        if((xp1>0) && (ym2>0) && (t00[x8p1][y8m2]<0)){a++;}
+        if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
+        if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
+        if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
+        t1v++; ta[t1v]=a; ti[t1v]=7;
+      }
+    }
+    if(t1v>0)
+    {
+      for(uint8_t i2=t1v; i2>0; i2--)
+      {
+        for(int8_t i0=0; i0<i2; i0++)
         {
-          int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
+          int8_t i1=i0+1;
+          if(ta[i0]<ta[i1])
           {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
+            uint8_t tmp1=ta[i1]; ta[i1]=ta[i0]; ta[i0]=tmp1;
+            uint8_t tmp2=ti[i1]; ti[i1]=ti[i0]; ti[i0]=tmp2;
           }
-          else break;
         }
       }
     }
@@ -563,7 +499,7 @@ int main(int argc, char *argv[])
     {
       // сохраняем указатель на активный (последний) вектор
       tv[t1s]=t1v; uint8_t v=Tree[t1s][t1v]; uint8_t x2=x+dx[v]; uint8_t y2=y+dy[v]; // получаем вектор и координаты следующей клетки
-      if((ret!=0) && (x2==cx[cn]) && (y2==cy[cn]) && (t1s<full1))
+      if(((ret!=0) && (t1s<full1)) && ((x2==cx[cn]) && (y2==cy[cn])))
       { // вектор указывает на клетку финиша?
         t1v--; // перемещаем указатель на предыдущий вектор
         if(t1v<0){goto ROLLBACK;}else{tv[t1s]=t1v; v=Tree[t1s][t1v]; x2=x+dx[v]; y2=y+dy[v];} // получаем вектор и координаты следующей клетки, если векторов больше нет, то
@@ -582,7 +518,7 @@ int main(int argc, char *argv[])
       if(ret!=0) // маршрут замкнутый?
       {
         if(cn<cl){cn++;}else{cn=0; ret=0;} // резервируем следующую финишную клетку, либо размыкаем путь
-        t1s=0; t1v=0; x=x00; y=y00; // инициализация
+        t1s=0; x=x00; y=y00; // инициализация
         goto START; // выбираем другую клетку для финиша
       }
       else{goto FINISH;} // все пути испробованы, путь не найден
