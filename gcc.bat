@@ -4,7 +4,8 @@
 
 @ECHO OFF
 REM Compile EXE file with gcda optimization profile
-SET line=gcc.exe -O3 -march=native -mtune=native -mthreads -mmmx -msse -msse2 -msse3 -m3dnow -Wall -fmessage-length=0 -MMD -MP -MF"%~n1.d" -MT"%~n1.d" -o "%~n1.exe"
+::SET line=gcc.exe -O4 -flto -march=native -mtune=native -mthreads -mmmx -msse -msse2 -msse3 -m3dnow -Wall -fmessage-length=0 -MMD -MP -MF"%~n1.d" -MT"%~n1.d" -o "%~n1.exe"
+SET line=gcc.exe -O3 -march=native -mtune=native -mthreads -Wall -fmessage-length=0 -MMD -MP -MF"%~n1.d" -MT"%~n1.d" -o "%~n1.exe"
 IF EXIST "%~n1.gcda" (
 ECHO.
 ECHO Step 2/2:

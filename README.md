@@ -20,9 +20,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
 
-  *v0.9.2.1 (23960 bytes, changed 2021-08-20 22:17)*
+  *v0.9.2.1 (28275 bytes, changed 2021-08-21 07:46)*
 
-  *SHA-256 `1dd88b4a4362456184775e915f80546be5cf0013530ae99e0e29b7963f95a0b9`*
+  *SHA-256 `7d72d9df2e16681075c9b4dc1516f2c353f223e70b5d2933e30d6ed0e8af6181`*
 
   For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
@@ -33,9 +33,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.2.3 (15509 bytes, changed 2021-08-20 16:58)*
+  *v0.9.2.3 (15826 bytes, changed 2021-08-24 06:26)*
 
-  *SHA-256 `e93ce8a5ce36e9fcf410d379ad7173b7943c2c28a3edfad11621ac2461e5612b`*
+  *SHA-256 `c8712ace7aaa4a4eb515a768a3bb53498893b919c389184bd4bbe48c4b0a200c`*
 
   Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 
@@ -760,6 +760,37 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
+[&nbsp;](#user-content-ansicolorslua)
+
+## [ansicolors.lua](https://github.com/z0hm/far-scripts/blob/master/ansicolors.lua "ansicolors.lua")
+
+  *v1.1 (4703 bytes, changed 2021-08-26 14:19)*
+
+  *SHA-256 `5e1d7be786a10e5b783ddf5956e741651cd213fa5227a21a96b76353fe416840`*
+
+  Ansi colors for console
+
+  ![Ansi Colors](http://i.piccy.info/i9/5302080eb549332b420c736af1a1a8da/1629987471/985/1439927/180392021_08_26_171510.png)
+
+  Tags format: **<#xya>**, **x** - foreground color **0..f**, **y** - background color **0..f**, **a** - attributes [rbdiul]
+
+  **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
+
+  Examples:
+
+  ``` lua
+
+    local colors = require'ansicolors'
+
+    print(colors('%{bright italic red underline}hello'))
+
+    print(colors('<#ecuib>Hello<#rrr>, World!'))
+
+  ```
+
+
+
+
 [&nbsp;](#user-content-btpolicyxmllua)
 
 ## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")
@@ -779,9 +810,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [gcc.bat](https://github.com/z0hm/far-scripts/blob/master/gcc.bat "gcc.bat")
 
-  *v0.5 (641 bytes, changed 2021-08-20 21:04)*
+  *v0.5 (781 bytes, changed 2021-08-22 19:34)*
 
-  *SHA-256 `a87eeecb7ab8b52b78dfe5d509074c8ad0cf6790ee7bf02e245fda155886f83e`*
+  *SHA-256 `a50ec848824e22e34d980bca435296285ea7acdf49e16235f69c1d1526cfbf86`*
 
   Compile optimized for speed EXE file using gcda profile
 

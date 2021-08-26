@@ -9,7 +9,6 @@ local log  = 0 -- logging in %TEMP%\ChessKnight.log, max board 15x15, 1 move = 1
 local ret0 = 0 -- =0 без обязательного возврата к клетке старта, =1 с возвратом (замкнутый путь)
 local name="ChessKnight"
 local logname = name..".log"
-local exename = name..".exe"
 local txtname = name..".txt"
 
 local ffi = require"ffi"
@@ -86,8 +85,18 @@ local t1s,t1v,x,y -- номер текущего хода, последний (�
 local function init() t1s,t1v,x,y = 0,0,x0,y0 end -- инициализация
 init()
 
-if win.GetFileAttr(exename) then
-  print("Use: "..exename)
+local exename=name
+if     not log and not ret then exename=exename.."_noRetLog"
+elseif not log and ret then exename=exename.."_noLog"
+elseif log and not ret then exename=exename.."_noRet"
+end
+exename=exename..".exe"
+
+local exe
+if win.GetFileAttr(exename) then exe=true print("Use: "..exename)
+elseif win.GetFileAttr(name..".exe") then exe=true exename=name..".exe" print("Use: "..exename)
+end
+if exe then
   local args=" "..(bx+1).." "..(by+1).." "..(x0+1).." "..(y0+1).." "..(ret and 1 or 0).." "..(log and 1 or 0)
   if #holes>0 then for _,v in ipairs(holes) do args=args.." "..v[1].." "..v[2] end end
   local ans=io.popen('"'..exename..args..'"',"rb"):read("*all")

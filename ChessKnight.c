@@ -32,6 +32,8 @@ int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
 int8_t dy[8]={ 2,-2, 1, 1,-2, 2,-1,-1};
 uint8_t ti[8]; // массив с индексами векторов на клетки, доступные для хода с клетки x,y
 uint8_t ta[8]; // массив с количеством векторов у доступных для хода клеток
+uint8_t ta8,ta7,ta6,ta5,ta4,ta3,ta2,ta1,ta0;
+uint8_t ti8,ti7,ti6,ti5,ti4,ti3,ti2,ti1,ti0;
 // 5 6 3 2 1 1 -- 13-14s
 // сортируем вектора по убыванию количества векторов у целевых клеток, обеспечивая приоритет обхода клеток с наименьшим количеством входов
 // алгоритм сохраняет очерёдность одинаковых значений, обеспечивая неизменность маршрутов и их конечное количество
@@ -214,7 +216,8 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=0;
+        t1v++; //ta[t1v]=a; ti[t1v]=0;
+        ta0=a; ti0=0;
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -251,7 +254,10 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=1;
+        t1v++; //ta[t1v]=a; ti[t1v]=1;
+        if     (t1v==0){ta0=a; ti0=1;}
+        else if(t1v==1){ta1=a; ti1=1;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     } 
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -288,7 +294,12 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=2;
+        t1v++; //ta[t1v]=a; ti[t1v]=2;
+        if     (t1v==0){ta0=a; ti0=2;}
+        else if(t1v==1){ta1=a; ti1=2;}
+        else if(t1v==2){ta2=a; ti2=2;}
+        if((t1v>1) && (ta2>ta1)){ta8=ta2; ti8=ti2; ta2=ta1; ti2=ti1; ta1=ta8; ti1=ti8;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -325,7 +336,14 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=3;
+        t1v++; //ta[t1v]=a; ti[t1v]=3;
+        if     (t1v==0){ta0=a; ti0=3;}
+        else if(t1v==1){ta1=a; ti1=3;}
+        else if(t1v==2){ta2=a; ti2=3;}
+        else if(t1v==3){ta3=a; ti3=3;}
+        if((t1v>2) && (ta3>ta2)){ta8=ta3; ti8=ti3; ta3=ta2; ti3=ti2; ta2=ta8; ti2=ti8;}
+        if((t1v>1) && (ta2>ta1)){ta8=ta2; ti8=ti2; ta2=ta1; ti2=ti1; ta1=ta8; ti1=ti8;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -333,8 +351,8 @@ int main(int argc, char *argv[])
     {
       int8_t x8=x+1;
       int8_t y8=y-2;
-       uint8_t xx=(x8>=0) && (x8<=bx);
-       uint8_t yy=(y8>=0) && (y8<=by);
+      uint8_t xx=(x8>=0) && (x8<=bx);
+      uint8_t yy=(y8>=0) && (y8<=by);
       if((xx>0) && (yy>0) && (t00[x8][y8]<0))
       {
         int8_t x8m1=x8-1;
@@ -362,7 +380,16 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=4;
+        t1v++; //ta[t1v]=a; ti[t1v]=4;
+        if     (t1v==0){ta0=a; ti0=4;}
+        else if(t1v==1){ta1=a; ti1=4;}
+        else if(t1v==2){ta2=a; ti2=4;}
+        else if(t1v==3){ta3=a; ti3=4;}
+        else if(t1v==4){ta4=a; ti4=4;}
+        if((t1v>3) && (ta4>ta3)){ta8=ta4; ti8=ti4; ta4=ta3; ti4=ti3; ta3=ta8; ti3=ti8;}
+        if((t1v>2) && (ta3>ta2)){ta8=ta3; ti8=ti3; ta3=ta2; ti3=ti2; ta2=ta8; ti2=ti8;}
+        if((t1v>1) && (ta2>ta1)){ta8=ta2; ti8=ti2; ta2=ta1; ti2=ti1; ta1=ta8; ti1=ti8;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -399,7 +426,18 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=5;
+        t1v++; //ta[t1v]=a; ti[t1v]=5;
+        if     (t1v==0){ta0=a; ti0=5;}
+        else if(t1v==1){ta1=a; ti1=5;}
+        else if(t1v==2){ta2=a; ti2=5;}
+        else if(t1v==3){ta3=a; ti3=5;}
+        else if(t1v==4){ta4=a; ti4=5;}
+        else if(t1v==5){ta5=a; ti5=5;}
+        if((t1v>4) && (ta5>ta4)){ta8=ta5; ti8=ti5; ta5=ta4; ti5=ti4; ta4=ta8; ti4=ti8;}
+        if((t1v>3) && (ta4>ta3)){ta8=ta4; ti8=ti4; ta4=ta3; ti4=ti3; ta3=ta8; ti3=ti8;}
+        if((t1v>2) && (ta3>ta2)){ta8=ta3; ti8=ti3; ta3=ta2; ti3=ti2; ta2=ta8; ti2=ti8;}
+        if((t1v>1) && (ta2>ta1)){ta8=ta2; ti8=ti2; ta2=ta1; ti2=ti1; ta1=ta8; ti1=ti8;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -436,7 +474,20 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=6;
+        t1v++; //ta[t1v]=a; ti[t1v]=6;
+        if     (t1v==0){ta0=a; ti0=6;}
+        else if(t1v==1){ta1=a; ti1=6;}
+        else if(t1v==2){ta2=a; ti2=6;}
+        else if(t1v==3){ta3=a; ti3=6;}
+        else if(t1v==4){ta4=a; ti4=6;}
+        else if(t1v==5){ta5=a; ti5=6;}
+        else if(t1v==6){ta6=a; ti6=6;}
+        if((t1v>5) && (ta6>ta5)){ta8=ta6; ti8=ti6; ta6=ta5; ti6=ti5; ta5=ta8; ti5=ti8;}
+        if((t1v>4) && (ta5>ta4)){ta8=ta5; ti8=ti5; ta5=ta4; ti5=ti4; ta4=ta8; ti4=ti8;}
+        if((t1v>3) && (ta4>ta3)){ta8=ta4; ti8=ti4; ta4=ta3; ti4=ti3; ta3=ta8; ti3=ti8;}
+        if((t1v>2) && (ta3>ta2)){ta8=ta3; ti8=ti3; ta3=ta2; ti3=ti2; ta2=ta8; ti2=ti8;}
+        if((t1v>1) && (ta2>ta1)){ta8=ta2; ti8=ti2; ta2=ta1; ti2=ti1; ta1=ta8; ti1=ti8;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     }
     //int8_t dx[8]={-1,-1, 2,-2, 1, 1,-2, 2};
@@ -473,28 +524,51 @@ int main(int argc, char *argv[])
         if((xp1>0) && (yp2>0) && (t00[x8p1][y8p2]<0)){a++;}
         if((xp2>0) && (yp1>0) && (t00[x8p2][y8p1]<0)){a++;}
         if((xp2>0) && (ym1>0) && (t00[x8p2][y8m1]<0)){a++;}
-        t1v++; ta[t1v]=a; ti[t1v]=7;
+        t1v++; //ta[t1v]=a; ti[t1v]=7;
+        if     (t1v==0){ta0=a; ti0=7;}
+        else if(t1v==1){ta1=a; ti1=7;}
+        else if(t1v==2){ta2=a; ti2=7;}
+        else if(t1v==3){ta3=a; ti3=7;}
+        else if(t1v==4){ta4=a; ti4=7;}
+        else if(t1v==5){ta5=a; ti5=7;}
+        else if(t1v==6){ta6=a; ti6=7;}
+        else if(t1v==7){ta7=a; ti7=7;}
+        if((t1v>6) && (ta7>ta6)){ta8=ta7; ti8=ti7; ta7=ta6; ti7=ti6; ta6=ta8; ti6=ti8;}
+        if((t1v>5) && (ta6>ta5)){ta8=ta6; ti8=ti6; ta6=ta5; ti6=ti5; ta5=ta8; ti5=ti8;}
+        if((t1v>4) && (ta5>ta4)){ta8=ta5; ti8=ti5; ta5=ta4; ti5=ti4; ta4=ta8; ti4=ti8;}
+        if((t1v>3) && (ta4>ta3)){ta8=ta4; ti8=ti4; ta4=ta3; ti4=ti3; ta3=ta8; ti3=ti8;}
+        if((t1v>2) && (ta3>ta2)){ta8=ta3; ti8=ti3; ta3=ta2; ti3=ti2; ta2=ta8; ti2=ti8;}
+        if((t1v>1) && (ta2>ta1)){ta8=ta2; ti8=ti2; ta2=ta1; ti2=ti1; ta1=ta8; ti1=ti8;}
+        if((t1v>0) && (ta1>ta0)){ta8=ta1; ti8=ti1; ta1=ta0; ti1=ti0; ta0=ta8; ti0=ti8;}
       }
     }
-    if(t1v>0)
-    {
-      for(uint8_t i2=t1v; i2>0; i2--)
-      {
-        for(int8_t i0=0; i0<i2; i0++)
-        {
-          int8_t i1=i0+1;
-          if(ta[i0]<ta[i1])
-          {
-            uint8_t tmp1=ta[i1]; ta[i1]=ta[i0]; ta[i0]=tmp1;
-            uint8_t tmp2=ti[i1]; ti[i1]=ti[i0]; ti[i0]=tmp2;
-          }
-        }
-      }
-    }
+    //if(t1v>0)
+    //{
+    //  for(uint8_t i2=t1v; i2>0; i2--)
+    //  {
+    //    for(int8_t i0=0; i0<i2; i0++)
+    //    {
+    //      int8_t i1=i0+1;
+    //      if(ta[i0]<ta[i1])
+    //      {
+    //        uint8_t tmp1=ta[i1]; ta[i1]=ta[i0]; ta[i0]=tmp1;
+    //        uint8_t tmp2=ti[i1]; ti[i1]=ti[i0]; ti[i0]=tmp2;
+    //      }
+    //    }
+    //  }
+    //}
   }
   if(t1v>=0)
   {
-    for(uint8_t i=0; i<=t1v; i++){Tree[t1s][i]=ti[i];} // записываем вектора в дерево со смещением 1
+    //for(uint8_t i=0; i<=t1v; i++){Tree[t1s][i]=ti[i];} // записываем вектора в дерево со смещением 1
+    if(t1v>6){Tree[t1s][7]=ti7;}
+    if(t1v>5){Tree[t1s][6]=ti6;}
+    if(t1v>4){Tree[t1s][5]=ti5;}
+    if(t1v>3){Tree[t1s][4]=ti4;}
+    if(t1v>2){Tree[t1s][3]=ti3;}
+    if(t1v>1){Tree[t1s][2]=ti2;}
+    if(t1v>0){Tree[t1s][1]=ti1;}
+    Tree[t1s][0]=ti0; 
     FORWARD:
     {
       // сохраняем указатель на активный (последний) вектор
