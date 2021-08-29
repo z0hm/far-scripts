@@ -16,6 +16,39 @@ a very wide range of tasks using the Far and Windows API's.
 ## A brief summary of scripts in the repository:
 
 
+[&nbsp;](#user-content-ansicolorslua)
+
+## [AnsiColors.lua](https://github.com/z0hm/far-scripts/blob/master/AnsiColors.lua "AnsiColors.lua")
+
+  ansicolors.lua
+
+  *v1.1.2 (4699 bytes, changed 2021-08-29 07:11)*
+
+  *SHA-256 `6a7d31b6961a6fe717fb522479f016295a9940be7274b471bf46ddaf3a8a4f73`*
+
+  Ansi colors for console
+
+  ![Ansi Colors](http://i.piccy.info/i9/5302080eb549332b420c736af1a1a8da/1629987471/985/1439927/180392021_08_26_171510.png)
+
+  Tags format: **<#xya>**, **x** - foreground color **0..f**, **y** - background color **0..f**, **a** - attributes [rbdiul]
+
+  **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
+
+  Examples:
+
+  ``` lua
+
+    local colors = require'ansicolors'
+
+    print(colors('%{bright italic red underline}hello'))
+
+    print(colors('<#ecuib>Hello<#rrr>, World!'))
+
+  ```
+
+
+
+
 [&nbsp;](#user-content-chessknightc)
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
@@ -756,37 +789,6 @@ a very wide range of tasks using the Far and Windows API's.
   Keys: <kbd>AltG</kbd>
 
   Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=2600#19
-
-
-
-
-[&nbsp;](#user-content-ansicolorslua)
-
-## [ansicolors.lua](https://github.com/z0hm/far-scripts/blob/master/ansicolors.lua "ansicolors.lua")
-
-  *v1.1 (4703 bytes, changed 2021-08-26 14:19)*
-
-  *SHA-256 `5e1d7be786a10e5b783ddf5956e741651cd213fa5227a21a96b76353fe416840`*
-
-  Ansi colors for console
-
-  ![Ansi Colors](http://i.piccy.info/i9/5302080eb549332b420c736af1a1a8da/1629987471/985/1439927/180392021_08_26_171510.png)
-
-  Tags format: **<#xya>**, **x** - foreground color **0..f**, **y** - background color **0..f**, **a** - attributes [rbdiul]
-
-  **r** - restore default color for foreground/background, **s** - skip, don't change foreground/background color
-
-  Examples:
-
-  ``` lua
-
-    local colors = require'ansicolors'
-
-    print(colors('%{bright italic red underline}hello'))
-
-    print(colors('<#ecuib>Hello<#rrr>, World!'))
-
-  ```
 
 
 
