@@ -22,9 +22,9 @@ a very wide range of tasks using the Far and Windows API's.
 
   ansicolors.lua
 
-  *v1.1.2 (4699 bytes, changed 2021-08-29 07:11)*
+  *v1.1.2 (4974 bytes, changed 2021-09-03 05:20)*
 
-  *SHA-256 `6a7d31b6961a6fe717fb522479f016295a9940be7274b471bf46ddaf3a8a4f73`*
+  *SHA-256 `411afd16e69c2b7b4bc63fe0804a5b081a5892dba4c4a3874efa90d04d66edda`*
 
   Ansi colors for console
 

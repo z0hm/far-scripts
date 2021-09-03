@@ -57,6 +57,7 @@ local keys = {
   -- attributes
   b         = 1, -- bold for 8..15 color value
   bright    = 1, -- bold for 8..15 color value
+  bold      = 60,
   d         = 2, -- dim
   dim       = 2,
   i         = 3, -- italic
@@ -102,9 +103,9 @@ local colors = {
   --[[7]] 7  -- white
 }
 
-local esc,pbuffer,buffer = char(27).."["
+local esc,pbuffer,buffer = char(27) .. "["
 
-local function escapeNumber(number) pbuffer = pbuffer + 1 buffer[pbuffer] = esc..tostring(number).."m" end
+local function escapeNumber(number) pbuffer = pbuffer + 1 buffer[pbuffer] = esc .. tostring(number) .. "m" end
 
 local function color(symbol, base)
   local number
@@ -119,10 +120,15 @@ local function color(symbol, base)
 end
 
 local function attributes(str, mask)
-  for word in gmatch(str,mask) do
+  local bold
+  for word in gmatch(str, mask) do if word == "bold" then bold = true break end end
+  for word in gmatch(str, mask) do
     local number = keys[word]
-    assert(number, "Unknown key: "..word)
-    escapeNumber(number)
+    assert(number, "Unknown key: " .. word)
+    if number ~= 60 then 
+      if bold and number >= 30 and number <= 37 or number >= 40 and number <= 47 then number = number + 60 end
+      escapeNumber(number)
+    end
   end
 end
 
@@ -139,11 +145,11 @@ local function escapeKeys(str)
 end
 
 local function replaceCodes(str)
-  str = gsub(str, "(%%{([a-z ]-)})", function(_,str) return escapeKeys(str) end)
+  str = gsub(str, "(%%{([a-z ]-)})", function(_, str) return escapeKeys(str) end)
   str = gsub(str, "(<(#[%xsr][%xsr][rbdiul]*)>)", function(_, str) return escapeKeys(str) end)
   return str
 end
 
-local function ansicolors(str) return replaceCodes("%{reset}"..tostring(str or '').."%{reset}") end
+local function ansicolors(str) return replaceCodes("%{reset}".. tostring(str or '') .. "%{reset}") end
 
 return setmetatable({noReset = replaceCodes}, {__call = function (_, str) return ansicolors(str) end})
