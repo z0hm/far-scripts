@@ -1,6 +1,6 @@
 ﻿-- HTML-XML.OneLine-MultiLine.lua
 -- v1.0.0.1
--- Visual improvement of HTML-XML code, creates a new file name~2.ext
+-- Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 -- Keys: launch from Macro Browser alt.
 
 Macro {

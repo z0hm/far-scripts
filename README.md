@@ -291,11 +291,11 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [HTML-XML.OneLine-MultiLine.lua](https://github.com/z0hm/far-scripts/blob/master/HTML-XML.OneLine-MultiLine.lua "HTML-XML.OneLine-MultiLine.lua")
 
-  *v1.0.0.1 (1126 bytes, changed 2021-05-18 12:28)*
+  *v1.0.0.1 (1141 bytes, changed 2021-09-18 18:37)*
 
-  *SHA-256 `55bd5af4890d4c81645a367ec28f27bcea61d6ed121e6cef9a410320240d21c7`*
+  *SHA-256 `ce36e646892a094635e51ce545f8aecd32fee17bf5d44c056b91740b0a796151`*
 
-  Visual improvement of HTML-XML code, creates a new file name~2.ext
+  Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 
   Keys: launch from Macro Browser alt.
 
@@ -812,9 +812,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [gcc.bat](https://github.com/z0hm/far-scripts/blob/master/gcc.bat "gcc.bat")
 
-  *v0.5 (781 bytes, changed 2021-08-22 19:34)*
+  *v0.5 (836 bytes, changed 2021-09-11 08:20)*
 
-  *SHA-256 `a50ec848824e22e34d980bca435296285ea7acdf49e16235f69c1d1526cfbf86`*
+  *SHA-256 `165e606a6c1da9378bec1a354be0250739d168e559dbf6f2ef10367940785429`*
 
   Compile optimized for speed EXE file using gcda profile
 
