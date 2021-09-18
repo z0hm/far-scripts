@@ -812,9 +812,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [gcc.bat](https://github.com/z0hm/far-scripts/blob/master/gcc.bat "gcc.bat")
 
-  *v0.5 (836 bytes, changed 2021-09-11 08:20)*
+  *v0.5 (801 bytes, changed 2021-09-18 18:40)*
 
-  *SHA-256 `165e606a6c1da9378bec1a354be0250739d168e559dbf6f2ef10367940785429`*
+  *SHA-256 `0ccc2108cdcb2779514b1c8600d074e4ace3e3932f7913ff6b365a4fcf5ad294`*
 
   Compile optimized for speed EXE file using gcda profile
 
