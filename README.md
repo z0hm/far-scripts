@@ -808,19 +808,6 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-[&nbsp;](#user-content-gccbat)
-
-## [gcc.bat](https://github.com/z0hm/far-scripts/blob/master/gcc.bat "gcc.bat")
-
-  *v0.5 (801 bytes, changed 2021-09-18 18:40)*
-
-  *SHA-256 `0ccc2108cdcb2779514b1c8600d074e4ace3e3932f7913ff6b365a4fcf5ad294`*
-
-  Compile optimized for speed EXE file using gcda profile
-
-
-
-
 [&nbsp;](#user-content-git-createbat)
 
 ## [git-create.bat](https://github.com/z0hm/far-scripts/blob/master/git-create.bat "git-create.bat")
