@@ -808,13 +808,6 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-[&nbsp;](#user-content-git-createbat)
-
-## [git-create.bat](https://github.com/z0hm/far-scripts/blob/master/git-create.bat "git-create.bat")
-
-
-
-
 [&nbsp;](#user-content-iptvlua)
 
 ## [iptv.lua](https://github.com/z0hm/far-scripts/blob/master/iptv.lua "iptv.lua")
