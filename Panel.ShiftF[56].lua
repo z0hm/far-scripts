@@ -1,18 +1,29 @@
 ﻿-- Panel.ShiftF[56].lua
--- v1.3.2
+-- v1.3.4.0
 -- Extend Panel (Shift)?F[56] Dialog
+-- Hint: Press CtrlR and set replace [x] data for copy the source file to the target file with multiple hardlinks
 -- Required: FAR3 build >= 5467
 -- Keys: none, to use put in the scripts folder
 
-local TGuid={
-[win.Uuid("FCEF11C4-5490-451D-8B4A-62FA03F52759")]="F5",
-[win.Uuid("431A2F37-AC01-4ECD-BB6F-8CDE584E5A03")]="F6",
-[win.Uuid("502D00DF-EE31-41CF-9028-442D2E352990")]="SF5",
-[win.Uuid("89664EF4-BB8C-4932-A8C0-59CAFD937ABA")]="SF6"
+local repkey,desc,repdata,Act,pSIN,hDlg = "CtrlR","Replace data for Copy/Move Dialog",false,""
+local TDlg={
+far.Guids.CopyFilesId, -- "F5"
+far.Guids.MoveFilesId, -- "F6"
+far.Guids.CopyCurrentOnlyFileId, -- "SF5"
+far.Guids.MoveCurrentOnlyFileId, -- "SF6"
+far.Guids.CopyOverwriteId  -- Warning
 }
-local btnOK=18 -- dialog execution button
+local TGuid={
+[win.Uuid(TDlg[1])]="F5",
+[win.Uuid(TDlg[2])]="F6",
+[win.Uuid(TDlg[3])]="SF5",
+[win.Uuid(TDlg[4])]="SF6"
+}
+local wDlg=win.Uuid(TDlg[5])
+local btnOK=18        -- dialog execution button
+local btnOverwrite=10 -- dialog overwrite button
 
-local lng,key,btn
+local lng,key,btn,wrn
 local lang={
   English={re=regex.new("^(Copy|Clone|Rename or move|Rename|Move)"),
     Copy="Copy",Clone="Clone",Move="Move",Rename="Rename",
@@ -27,11 +38,15 @@ local F=far.Flags
 local Proc=function(hDlg,PF,txt)
   local ret
   if txt:find(":$") or PF==txt:gsub(":%s*$","") then ret=true else ret=txt:find("[\\/]") end
-  local Act=""
-  if key.F5 then Act=(ret or panel.GetPanelInfo(nil,1).SelectedItemsNumber>1) and lang[lng].Copy or lang[lng].Clone
-  elseif key.F6 then Act=(ret or panel.GetPanelInfo(nil,1).SelectedItemsNumber>1) and lang[lng].Move or lang[lng].Rename
-  elseif key.SF5 then Act=ret and lang[lng].Copy or lang[lng].Clone
-  elseif key.SF6 then Act=ret and lang[lng].Move or lang[lng].Rename
+  Act,pSIN = ""
+  if key.F5 or key.F6 then
+    pSIN=panel.GetPanelInfo(nil,1).SelectedItemsNumber
+    if pSIN>1 then repdata=false end
+  end
+  if     key.F5 then Act=(ret or pSIN>1) and lang[lng].Copy or lang[lng].Clone
+  elseif key.F6 then Act=(ret or pSIN>1) and lang[lng].Move or lang[lng].Rename
+  elseif key.SF5 then pSIN=1 Act=ret and lang[lng].Copy or lang[lng].Clone
+  elseif key.SF6 then pSIN=1 Act=ret and lang[lng].Move or lang[lng].Rename
   end
   hDlg:send(F.DM_SETTEXT,1,(key.F5 or key.F6) and Act or "[Shift] "..Act)
   txt=hDlg:send(F.DM_GETTEXT,2)
@@ -48,25 +63,46 @@ Event {
       local id=Param.hDlg:send(F.DM_GETDIALOGINFO)
       id=id and id.Id or ""
       btn=TGuid[id]
+      wrn=wDlg==id
+      if btn and pSIN==1 then
+        hDlg=Param.hDlg
+        far.SendDlgMessage(hDlg,F.DM_SETTEXT,1,Act.." and replace ["..(repdata and "x" or " ").."] data [ "..repkey.." ]")
+      end
       lng=Far.GetConfig('Language.Main')
-      return btn and (lng=='English' or lng=='Russian')
+      return btn and (lng=='English' or lng=='Russian') or wrn
     end
   end;
   action=function(Event,Param)
-    key={F5=false,F6=false,SF5=false,SF6=false}
-    key[btn]=true
-    local PF,PP = PPanel.Format,PPanel.Path
-    if PP:match("^[A-Za-z]:$") then PP=PP.."\\" end
-    if Param.Msg==F.DN_INITDIALOG then
-      local txt=PF=="" and PP or PF..":"
-      Param.hDlg:send(F.DM_SETTEXT,3,Proc(Param.hDlg,PF,txt) and txt or APanel.Current)
-    elseif Param.Msg==F.DN_EDITCHANGE and Param.Param1==3 then
+    if btn then
+      key={F5=false,F6=false,SF5=false,SF6=false}
+      key[btn]=true
+    end
+    local PF,PP,AP,AC = PPanel.Format,PPanel.Path,APanel.Path,APanel.Current
+    if PP:find("^[A-Za-z]:$") then PP=PP.."\\" end
+    if btn and Param.Msg==F.DN_INITDIALOG then
+        repdata=false
+        local txt=PF=="" and PP or PF..":"
+        Param.hDlg:send(F.DM_SETTEXT,3,Proc(Param.hDlg,PF,txt) and txt or AC)
+    elseif btn and Param.Msg==F.DN_EDITCHANGE and Param.Param1==3 then
       Proc(Param.hDlg,PF,Param.hDlg:send(F.DM_GETTEXT,3))
-    elseif Param.Msg==F.DN_CLOSE and Param.Param1==btnOK and Param.hDlg:send(F.DM_GETTEXT,3)=="" then
+    elseif btn and Param.Msg==F.DN_CLOSE and Param.Param1==btnOK and Param.hDlg:send(F.DM_GETTEXT,3)=="" then
       far.Message(lang[lng].MsgTXT,lang[lng].MsgHdr,nil,"w")
       Param.hDlg:send(F.DM_SETFOCUS,3)
       return 0
+    elseif wrn and repdata and Param.Msg==F.DN_CLOSE and Param.Param1==btnOverwrite then
+      local source=AP..(AP:sub(-1,-1)=="\\" and "" or "\\")..AC
+      local target=PP..(AP:sub(-1,-1)=="\\" and "" or "\\")..AC
+      if     key.F5 or key.SF5 then win.CopyFile(source,target)
+      --elseif key.F6 or key.SF6 then win.MoveFile(source,target,'r') disabled, don't work
+      end
+      return 1
     end
     return false
   end
+}
+
+Macro {
+  area="Dialog"; key=repkey; description=desc.." Macro";
+  condition = function() return hDlg and (Dlg.Id==TDlg[1] or Dlg.Id==TDlg[2] or Dlg.Id==TDlg[3] or Dlg.Id==TDlg[4]) end;
+  action = function() repdata = pSIN and pSIN==1 and not repdata or false end;
 }

@@ -722,11 +722,13 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")
 
-  *v1.3.2 (3080 bytes, changed 2020-05-21 07:09)*
+  *v1.3.4.0 (4529 bytes, changed 2021-10-07 15:21)*
 
-  *SHA-256 `8bd3c215284a5028cdbcdc91d6b038391c19371a54a61e366ae62cfd249c4e3c`*
+  *SHA-256 `3868f7674a3095526cc2b8767af8d3de5a013924d859472812ab7cc61a82349b`*
 
   Extend Panel (Shift)?F[56] Dialog
+
+  Hint: Press <kbd>CtrlR</kbd> and set replace [x] data for copy the source file to the target file with multiple hardlinks
 
   Required: FAR3 build >= 5467
 
