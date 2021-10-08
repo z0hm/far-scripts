@@ -79,10 +79,10 @@ Event {
     end
     local PF,PP,AP,AC = PPanel.Format,PPanel.Path,APanel.Path,APanel.Current
     if btn and Param.Msg==F.DN_INITDIALOG then
-        repdata=false
-        if PP:find("^[A-Za-z]:$") then PP=PP.."\\" end
-        local txt=PF=="" and PP or PF..":"
-        Param.hDlg:send(F.DM_SETTEXT,3,Proc(Param.hDlg,PF,txt) and txt or AC)
+      repdata=false
+      if PP:find("^[A-Za-z]:$") then PP=PP.."\\" end
+      local txt=PF=="" and PP or PF..":"
+      Param.hDlg:send(F.DM_SETTEXT,3,Proc(Param.hDlg,PF,txt) and txt or AC)
     elseif btn and Param.Msg==F.DN_EDITCHANGE and Param.Param1==3 then
       Proc(Param.hDlg,PF,Param.hDlg:send(F.DM_GETTEXT,3))
     elseif btn and Param.Msg==F.DN_CLOSE and Param.Param1==btnOK and Param.hDlg:send(F.DM_GETTEXT,3)=="" then
@@ -95,7 +95,7 @@ Event {
       if     key.F5 or key.SF5 then win.CopyFile(source,target)
       elseif key.F6 or key.SF6 then win.CopyFile(source,target) win.DeleteFile(source)
       end
-      return true
+      return 1
     end
     return false
   end

@@ -722,9 +722,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")
 
-  *v1.3.4.0 (4532 bytes, changed 2021-10-08 05:51)*
+  *v1.3.4.0 (4521 bytes, changed 2021-10-08 08:58)*
 
-  *SHA-256 `0ea30c0121f4d6ae0cf4d13e10d93e40615cc9c270400698ade5704c1c0e3a41`*
+  *SHA-256 `ef7819ce5fb6d781a3af37fd8d0a0b48b19c1a56da6500e5c3fe752ce72fdfa2`*
 
   Extend Panel (Shift)?F[56] Dialog
 
