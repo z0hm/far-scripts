@@ -78,9 +78,9 @@ Event {
       key[btn]=true
     end
     local PF,PP,AP,AC = PPanel.Format,PPanel.Path,APanel.Path,APanel.Current
-    if PP:find("^[A-Za-z]:$") then PP=PP.."\\" end
     if btn and Param.Msg==F.DN_INITDIALOG then
         repdata=false
+        if PP:find("^[A-Za-z]:$") then PP=PP.."\\" end
         local txt=PF=="" and PP or PF..":"
         Param.hDlg:send(F.DM_SETTEXT,3,Proc(Param.hDlg,PF,txt) and txt or AC)
     elseif btn and Param.Msg==F.DN_EDITCHANGE and Param.Param1==3 then
@@ -91,11 +91,11 @@ Event {
       return 0
     elseif wrn and repdata and Param.Msg==F.DN_CLOSE and Param.Param1==btnOverwrite then
       local source=AP..(AP:sub(-1,-1)=="\\" and "" or "\\")..AC
-      local target=PP..(AP:sub(-1,-1)=="\\" and "" or "\\")..AC
+      local target=PP..(PP:sub(-1,-1)=="\\" and "" or "\\")..AC
       if     key.F5 or key.SF5 then win.CopyFile(source,target)
-      --elseif key.F6 or key.SF6 then win.MoveFile(source,target,'r') disabled, don't work
+      elseif key.F6 or key.SF6 then win.CopyFile(source,target) win.DeleteFile(source)
       end
-      return 1
+      return true
     end
     return false
   end
