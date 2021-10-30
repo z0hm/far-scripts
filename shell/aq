@@ -1,7 +1,7 @@
 #!/bin/bash
 # Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 # ![aq script](http://i.piccy.info/i9/ce0b78c019db240a75a21f00089bfd7a/1600717787/7655/1397248/2020_09_21_221429.png)
-# ![aq script](http://i.piccy.info/i9/b978141af12e993afff139bb461039db/1600717816/39618/1397248/946922020_09_21_223718.png)
+# ![aq script](http://i.piccy.info/i9/6a2f4b8ed7066946775f0ac6e184d2e8/1635585258/21204/1446513/VeraMatveeva.png)
 # Commands:
 # **h** - help, **e** - exit, **x** - exit with save path
 # **.** - play all music files in folder, just **Enter** - repeat last command
