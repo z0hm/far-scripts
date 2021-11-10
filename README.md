@@ -854,15 +854,15 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *21696 bytes, changed 2021-10-30 09:15*
+  *21844 bytes, changed 2021-11-10 12:26*
 
-  *SHA-256 `d3c5c6295d6e7f5651ce4b936f9b3cf38d7893079f5170ddb45214ecf17587af`*
+  *SHA-256 `de4ed09ba650f3015c05c4c44979aa8d7e66700c9621b72cd5aa5d2137847f4f`*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 
   ![aq script](http://i.piccy.info/i9/ce0b78c019db240a75a21f00089bfd7a/1600717787/7655/1397248/2020_09_21_221429.png)
 
-  ![aq script](http://i.piccy.info/i9/6a2f4b8ed7066946775f0ac6e184d2e8/1635585258/21204/1446513/VeraMatveeva.png)
+  ![aq script](http://i.piccy.info/i9/b978141af12e993afff139bb461039db/1600717816/39618/1397248/946922020_09_21_223718.png)
 
   Commands:
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 # ![aq script](http://i.piccy.info/i9/ce0b78c019db240a75a21f00089bfd7a/1600717787/7655/1397248/2020_09_21_221429.png)
-# ![aq script](http://i.piccy.info/i9/6a2f4b8ed7066946775f0ac6e184d2e8/1635585258/21204/1446513/VeraMatveeva.png)
+# ![aq script](http://i.piccy.info/i9/b978141af12e993afff139bb461039db/1600717816/39618/1397248/946922020_09_21_223718.png)
 # Commands:
 # **h** - help, **e** - exit, **x** - exit with save path
 # **.** - play all music files in folder, just **Enter** - repeat last command
@@ -30,7 +30,7 @@ app=/usr/ap
 appath=$app/path.txt
 applay=$app/play.txt
 pglen=100
-exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA)
+exts=(WAV FLAC APE WV OGG TAK ALAC AIFF DFF DSF MP3 MP4 AAC OPUS WMA RAD)
 arr0=()  # array files in folder
 arr1=()  # array files type: directory=true
 arr2=()  # array music files attribute
@@ -48,6 +48,7 @@ from=""
 msg=""
 strS="                                                                                "
 utf=true
+brk=false
 
 # colors
 rk="\e[1;31;40m"
@@ -72,6 +73,9 @@ lnup(){ echo -ne "\e[1A\r"; }
 
 # exit
 bye(){ echo -e "$yb bye! $te\n"; exit 0; }
+
+# link ap
+lnapp(){ if [ -f "$app/ap$apex" ]; then ln -f $app/ap$apex $app/ap; fi; }
 
 # view files
 vname=""; vpath=""
@@ -229,7 +233,7 @@ infopl(){
   id=0; vpath=""; vname=""
   while read line
   do
-    if   [[ $line =~ ^ap$ ]]
+    if   [[ $line =~ /ap$ ]]
     then
       if [ -f "$applay" ] && [[ $(cat "$applay") =~ ^([0-9]+):(/.+)/([^/]+)$ ]]
       then
@@ -238,7 +242,7 @@ infopl(){
         vname="${BASH_REMATCH[3]}"
       fi
       break
-    elif [[ $line =~ ^ap[' '](/.+)/([^/]+?\.[A-Za-z]+)([' '][0-9\.:]+)?$ ]]
+    elif [[ $line =~ /ap[' '](/.+)/([^/]+?\.[A-Za-z]+)([' '][0-9\.:]+)?$ ]]
     then
       local n=0
       vpath="${BASH_REMATCH[1]}"
@@ -254,7 +258,7 @@ infopl(){
 # kill ap
 killap(){
   while read line
-  do if [[ $line =~ ^ap([' ']/.+)?$ ]]; then killall ap; sleep 1s; break; fi
+  do if [[ $line =~ /ap([' ']/.+)?$ ]]; then killall ap; sleep 1s; break; fi
   done <<< "$(ps -o args)"
 }
 
@@ -276,7 +280,7 @@ cdir(){
     elif [ $jdir -eq 0 ]; then jump=("$path" "${jump[@]:$jptr}"); jptr=0
     fi
   fi
-  break #goto :show
+  brk=true #break
 }
 
 steppl(){
@@ -284,8 +288,8 @@ steppl(){
   if [[ $oldnum =~ ^[np]$ ]]; then num=$lastnum; else num=$oldnum; fi
   if [[ $num =~ ^[0-9]+$ ]]
   then oldnum=$tmp
-    if   [ "$tmp" == "p" ]; then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; break; else lnup; fi
-    elif [ "$tmp" == "n" ]; then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; break; else lnup; fi
+    if   [ "$tmp" == "p" ]; then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; brk=true; else lnup; fi
+    elif [ "$tmp" == "n" ]; then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; brk=true; else lnup; fi
     fi
   fi
 }
@@ -326,8 +330,8 @@ apset(){
   if [ "$timeshift" == "00:00" ]; then timeshift=0; fi
   if $apmode
   then
-    if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; ln -f $app/ap$apex $app/ap
-    elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; ln -f $app/ap$apex $app/ap
+    if   [ "$timeshift" == "0" ] && [ $apex -ne 1 ]; then apex=1; lnapp
+    elif [ "$timeshift" != "0" ] && [ $apex -ne 2 ]; then apex=2; lnapp
     fi
   fi
 }
@@ -338,7 +342,7 @@ jhis(){
   then num=0
   else curpath=$path; path="$newpath"; seekid; num=$id; path="$curpath"
   fi
-  break
+  brk=true #break
 }
 
 setjptr(){
@@ -376,9 +380,8 @@ plist(){
   for ((i=0;i<=$((${#mus[*]}-1));i++)); do echo "$path/${arr0[${mus[$i]}]}" >> "$appath"; done
 }
 
-
 # Main()
-ln -f $app/ap$apex $app/ap
+lnapp
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
 echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te\n"
 # load settings
@@ -419,14 +422,14 @@ do
         echo -e "\n$yb ${tm[0]} play:$wb 1/${#mus[*]}$gb ${mus[0]} $gk ${arr0[${mus[0]}]}$te"
         cd "$app"
         if [ ${#mus[*]} -eq 1 ]
-        then if [ $apex -ne 1 ]; then apex=1; ln -f $app/ap$apex $app/ap; fi; ap "$path/${arr0[${mus[0]}]}" 0
-        else if [ $apex -ne 2 ]; then apex=2; ln -f $app/ap$apex $app/ap; fi; plist; ap
+        then if [ $apex -ne 1 ]; then apex=1; lnapp; fi; ./ap "$path/${arr0[${mus[0]}]}" 0
+        else if [ $apex -ne 2 ]; then apex=2; lnapp; fi; plist; ./ap
         fi
         tight=false; break
       elif [ "$num" == "i" ]; then infopl; if [ $id -gt 0 ]; then ffmpeg -hide_banner -i "$vpath/$vname"; fi; tight=false
       elif [ "$num" == "ap" ]; then apinfo; tight=false
       elif [ "$num" == "ap0" ]; then apmode=true; apinfo; tight=false
-      elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; ln -f $app/ap$apex $app/ap; apinfo; tight=false
+      elif [[ $num =~ ^ap([12])$ ]]; then apmode=false; apex=${BASH_REMATCH[1]}; lnapp; apinfo; tight=false
       elif [[ $num =~ ^([1-9][0-9]*)\.([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -le ${#arr0[*]} ] && ${arr2[${BASH_REMATCH[1]}]} && [ ${BASH_REMATCH[2]} -le ${#cuetm[*]} ]
       then num=${BASH_REMATCH[1]}; timeshift=${cuetm[${BASH_REMATCH[2]}]}; oldnum=$num; break
       elif [[ $num =~ ^\.([1-9][0-9]*)$ ]] && [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ] && [ ${mus[0]} -lt ${#arr0[*]} ] && ${arr2[${mus[0]}]} && [ ${BASH_REMATCH[1]} -le ${#cuetm[*]} ]
@@ -469,7 +472,7 @@ do
             ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
             tmshow
             echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
-            apset; cd "$app"; ap "/tmp/out.wav" 0
+            apset; cd "$app"; ./ap "/tmp/out.wav" 0
             tight=false
           fi
         fi
@@ -480,8 +483,8 @@ do
       elif [[ $num =~ ^rm([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; rm "$path/$vname"; tight=false
       fi
       if   [ "$oldnum" != "r" ] && [ "$num" == "" ]; then num=$oldnum
-      elif [ "$oldnum" == "r" ] && [ "$num" == "" ]; then setjptr
-      elif [ "$num" == "r" ]; then oldnum=$num; ((jdir=!jdir)); setjptr
+      elif [ "$oldnum" == "r" ] && [ "$num" == "" ]; then setjptr; if $brk; then brk=false; break; fi
+      elif [ "$num" == "r" ]; then oldnum=$num; ((jdir=!jdir)); setjptr; if $brk; then brk=false; break; fi
       fi
       if   [ "$num" == "s" ]; then echo -e "\n$yb stop $te"; killap
       elif [ "$num" == "t" ]; then oldnum=$num; tmdiff; echo -e "\n$wb time:$yb ${tm[0]}$df $te"
@@ -489,7 +492,7 @@ do
       elif [ "$num" == "l" ]; then echo; shpage
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
-      elif [[ $num =~ ^[np]$ ]]; then steppl
+      elif [[ $num =~ ^[np]$ ]]; then steppl; if $brk; then brk=false; break; fi
       elif [[ $num =~ ^[0-9]+$ ]] && [ $num -lt ${#arr0[*]} ]
       then oldnum=$((10#$num)); break
       else if $tight; then lnup; fi
@@ -503,24 +506,19 @@ do
       from="${path##*/}"
       if [ "$path" == "$home" ]
       then bye
-      else
-        seekid
-        page=$(($id/$pglen))
-        id=-1
-        path="${path%/*}"
-        cdir
+      else seekid; page=$(($id/$pglen)); id=-1; path="${path%/*}"; cdir; if $brk; then brk=false; break; fi
       fi
     else  #cddn
       from=""
       vpath="$path/${arr0[$num]}"
-      if ${arr1[$num]}; then echo; page=0; id=$num; path="$vpath"; cdir
+      if ${arr1[$num]}; then echo; page=0; id=$num; path="$vpath"; cdir; if $brk; then brk=false; break; fi
       elif [ -f "$vpath" ]
       then
         if ${arr2[$num]}
         then
           killap; tmshow
           echo -e "\n$yb ${tm[0]} play:$gb $num $gk ${arr0[$num]}$te"
-          infoln; apset; cd "$app"; ap "$vpath" $timeshift
+          infoln; apset; cd "$app"; ./ap "$vpath" $timeshift
         else
           vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext^^}"
           if   [ "$ext" == ".CUE" ]; then echo; rdcue; shcue; aqsave
