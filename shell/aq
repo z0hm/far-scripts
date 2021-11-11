@@ -108,15 +108,13 @@ fview(){
   exec 6<&- 7<&-  # close descriptors #6 & #7
 }
 
-# read cue
-rdcue(){
-  local track=0; unset cuenm; cuenm=(); unset cuepf; cuepf=(); unset cuefl; cuefl=(); unset cuetm; cuetm=(); unset cueln; cueln=(); cuewd=0
+lncue(){
   while read line
   do
     if   [[ $line =~ TRACK[' ']([0-9][0-9])[' ']AUDIO ]]; then track=$(($track+1))
     elif [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]
     then cuenm[$track]=${BASH_REMATCH[1]}
-      if [ $track -gt 0 ]
+      if [[ "${cueln[$track]}" == "" ]] && [[ $track -gt 0 ]]
       then cueln[$track]=${#cuenm[$track]}
         if [ ${cueln[$track]} -gt $cuewd ]; then cuewd=${cueln[$track]}; fi
         if [ ${cueln[$track]} -gt 64 ]; then cuewd=67; fi
@@ -126,18 +124,18 @@ rdcue(){
     elif [[ $line =~ INDEX[' ']01[' ']([0-9]+:[0-9]+) ]]; then cuetm[$track]=${BASH_REMATCH[1]}
     fi
   done <<< "$(cat "$vpath")"
+}
+
+# read cue
+rdcue(){
+  local track=0; unset cuenm; cuenm=(); unset cuepf; cuepf=(); unset cuefl; cuefl=(); unset cuetm; cuetm=(); unset cueln; cueln=(); cuewd=0
+  lncue
   read -r -N 3 line <<< "$(cat "$vpath")"
   if [[ ! ( ${line:0:1} == $'\xEF' && ${line:1:1} == $'\xBB' && ${line:2:1} == $'\xBF' ) ]] && [[ $(cat "$vpath") =~ [^\000-\127] ]]
-  then local tmp="$vpath"; vpath="/tmp/$vname"; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
+  then
+    local tmp="$vpath"; vpath="/tmp/$vname"; if [ "$tmp" != "$home/temp/$vname" ]; then iconv -c -f CP1251 -t UTF-8 "$tmp" > "$vpath"; fi
     track=0; unset cuenm; cuenm=(); unset cuepf; cuepf=(); unset cuefl; cuefl=()
-    while read line
-    do
-      if   [[ $line =~ TRACK[' ']([0-9][0-9])[' ']AUDIO ]]; then track=$(($track+1))
-      elif [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]; then cuenm[$track]=${BASH_REMATCH[1]}
-      elif [[ $line =~ PERFORMER[' ']\"[' ']*(.+)[' ']*\" ]]; then cuepf[$track]=${BASH_REMATCH[1]}
-      elif [[ $line =~ FILE[' ']\"[' ']*(.+)[' ']*\" ]]; then cuefl[$track]=${BASH_REMATCH[1]}
-      fi
-    done <<< "$(cat "$vpath")"
+    lncue
   fi
 }
 
