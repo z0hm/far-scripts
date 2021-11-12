@@ -115,7 +115,7 @@ lncue(){
     if   [[ $line =~ TRACK[' ']([0-9][0-9])[' ']AUDIO ]]; then track=$(($track+1))
     elif [[ $line =~ TITLE[' ']\"[' ']*(.+)[' ']*\" ]]
     then cuenm[$track]=${BASH_REMATCH[1]}
-      if [[ "${cueln[$track]}" == "" ]] && [[ $track -gt 0 ]]
+      if [ "${cueln[$track]}" == "" ] && [ $track -gt 0 ]
       then cueln[$track]=${#cuenm[$track]}
         if [ ${cueln[$track]} -gt $cuewd ]; then cuewd=${cueln[$track]}; fi
         if [ ${cueln[$track]} -gt 64 ]; then cuewd=67; fi
