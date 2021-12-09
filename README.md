@@ -260,9 +260,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.7.10 (11205 bytes, changed 2021-06-02 14:51)*
+  *v1.7.11 (11221 bytes, changed 2021-12-09 04:37)*
 
-  *SHA-256 `590cf1f91426ec2d56ee2fef889397fa879267dc9b72e697b79a7520d6f67c80`*
+  *SHA-256 `1087a59d0e5aac158159e5e7099ab89878b3c2360b1a2caceb4871da3d6349c9`*
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -722,9 +722,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.ShiftF[56].lua](https://github.com/z0hm/far-scripts/blob/master/Panel.ShiftF[56].lua "Panel.ShiftF[56].lua")
 
-  *v1.3.4.0 (4521 bytes, changed 2021-10-08 08:58)*
+  *v1.3.4.0 (4537 bytes, changed 2021-11-30 11:47)*
 
-  *SHA-256 `ef7819ce5fb6d781a3af37fd8d0a0b48b19c1a56da6500e5c3fe752ce72fdfa2`*
+  *SHA-256 `dc009dbb1ae9451ac9a976696408ec22ac699dfe75e5c9e47cfff7ed4384b88d`*
 
   Extend Panel (Shift)?F[56] Dialog
 

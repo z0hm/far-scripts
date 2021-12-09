@@ -69,7 +69,7 @@ Event {
         far.SendDlgMessage(hDlg,F.DM_SETTEXT,1,Act.." and replace ["..(repdata and "x" or " ").."] data [ "..repkey.." ]")
       end
       lng=Far.GetConfig('Language.Main')
-      return btn and (lng=='English' or lng=='Russian') or wrn
+      return Area.Dialog and btn and (lng=='English' or lng=='Russian') or wrn
     end
   end;
   action=function(Event,Param)

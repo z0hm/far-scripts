@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.10
+-- v1.7.11
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -85,7 +85,7 @@ local function GetFileList(page,items)
         local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
         if date then date=' '..date:gsub("T"," "):gsub("Z","") else date='' end
         local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
-        table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname})
+        if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname}) end
       end
       table.insert(pages,page)
     end
