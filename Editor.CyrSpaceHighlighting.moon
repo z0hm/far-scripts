@@ -1,5 +1,5 @@
 ﻿-- Editor.CyrSpaceHighlighting.moon
--- v1.1.3.5
+-- v1.1.3.6
 -- Highlighting Cyrillic and space symbols
 -- ![Highlight ON](http://i62.fastpic.ru/big/2014/0603/18/0f2bf6171580c92d52a09ead18b86e18.png)
 -- ![Highlight ON](http://i.piccy.info/i9/7223f0c8d8e8b124e0849af1cdd4e5de/1587815203/7934/1374955/2020_04_25_134822.png)
@@ -143,13 +143,13 @@ Macro
         colors[2][2].BackgroundColor=VisibilityColor+8+fmod BackgroundColor+3,8
       colors[1][2].ForegroundColor=ForegroundColor
       colors[1][2].BackgroundColor=BackgroundColor
-      Editor.Set 20,1
+      editor.SetParam id,F.ESPT_SHOWWHITESPACE,1
       editors[id]=
         start:0
         finish:0
       Msg "\nStatus: <#a2> ON  <#rr>"
     else
-      Editor.Set 20,0
+      editor.SetParam id,F.ESPT_SHOWWHITESPACE,0
       ProcessColors id,(data)->
         data.start=1
         data.finish=1

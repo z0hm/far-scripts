@@ -1,5 +1,5 @@
 ﻿-- Editor.LatCyrMixHighlighting.moon
--- v1.1.3.5
+-- v1.1.3.6
 -- Highlighting mixed Latin and Cyrillic letters in the editor
 -- ![Mixed latin and cyrillic letters](http://i.piccy.info/i9/3a9b767a03d92b5970f5be786dca6d04/1585845951/933/1370793/2020_04_02_194011.png)
 -- Required: MessageX.lua in modules folder
@@ -143,13 +143,13 @@ Macro
         colors[2][2].BackgroundColor=VisibilityColor+8+fmod BackgroundColor+3,8
       colors[1][2].ForegroundColor=ForegroundColor
       colors[1][2].BackgroundColor=BackgroundColor
-      Editor.Set 20,1
+      editor.SetParam id,F.ESPT_SHOWWHITESPACE,1
       editors[id]=
         start:0
         finish:0
       Msg "\nStatus: <#a2> ON  <#rr>"
     else
-      Editor.Set 20,0
+      editor.SetParam id,F.ESPT_SHOWWHITESPACE,0
       ProcessColors id,(data)->
         data.start=1
         data.finish=1
