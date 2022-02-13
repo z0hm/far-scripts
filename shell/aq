@@ -49,6 +49,7 @@ msg=""
 strS="                                                                                "
 utf=true
 brk=false
+flash=flash
 
 # colors
 rk="\e[1;31;40m"
@@ -307,7 +308,8 @@ aqhelp(){
   echo -e "\n$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
   echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
   echo -e "\n$gk ro<num>$wk  remount partition as RO,$gk rw<num>$wk  remount partition as RW$te"
-  echo -e "$gk cp<num>$wk  copy file to $home/flash,$gk mv<num>$wk  move file,$gk rm<num>$wk  remove file$te"
+  echo -e "$gk cp<num>$wk  copy file to $home/$flash,$gk mv<num>$wk  move file to $home/$flash$te"
+  echo -e "$gk rm<num>$wk  remove file,$gk ex<num>$wk  execute file$te"
 }
 
 apinfo(){
@@ -382,11 +384,14 @@ plist(){
 lnapp
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
 echo -e "\n$gk h$wk  help,$gk e$wk  exit,$gk x$wk  exit with save path$te\n"
+# Yocto support
+if [ -f "$home/downloads/restore.conf" ]; then flash=downloads; fi
 # load settings
 if [ -s "$aqpage" ]; then page=$(<$aqpage); fi
 if [ -s "$aqjump" ]; then while read line; do jump+=("$line"); done <<< "$(cat "$aqjump")"; else jump[0]="$home"; fi
 if [ -s "$aqjptr" ]; then jptr=$(<$aqjptr); else jptr=$((${#jump[*]}-1)); fi
 if [ -s "$aqjdir" ]; then jdir=$(<$aqjdir); else jdir=1; fi
+
 #path=${jump[@]:(-1)}
 path=${jump[$jptr]}
 
@@ -476,9 +481,10 @@ do
         fi
       elif [[ $num =~  ^v([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; utf=false; fview; tight=false
       elif [[ $num =~  ^u([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; vpath="$path/$vname"; utf=true; fview; tight=false
-      elif [[ $num =~ ^cp([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; cp "$path/$vname" "$home/flash"; tight=false
-      elif [[ $num =~ ^mv([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; mv "$path/$vname" "$home/flash"; tight=false
+      elif [[ $num =~ ^cp([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; cp "$path/$vname" "$home/$flash"; tight=false
+      elif [[ $num =~ ^mv([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; mv "$path/$vname" "$home/$flash"; tight=false
       elif [[ $num =~ ^rm([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; rm "$path/$vname"; tight=false
+      elif [[ $num =~ ^ex([1-9][0-9]*)$ ]] && [ ${BASH_REMATCH[1]} -lt ${#arr0[*]} ]; then vname=${arr0[${BASH_REMATCH[1]}]}; echo; "$path/$vname"; tight=false
       fi
       if   [ "$oldnum" != "r" ] && [ "$num" == "" ]; then num=$oldnum
       elif [ "$oldnum" == "r" ] && [ "$num" == "" ]; then setjptr; if $brk; then brk=false; break; fi
