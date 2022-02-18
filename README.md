@@ -224,15 +224,15 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.TagGoto.lua](https://github.com/z0hm/far-scripts/blob/master/Editor.TagGoto.lua "Editor.TagGoto.lua")
 
-  *v1.1.1 (5835 bytes, changed 2021-07-14 05:37)*
+  *v1.1.2 (6180 bytes, changed 2022-02-18 13:18)*
 
-  *SHA-256 `62efb301fecd7c7c0ddb2a40445c354412047b705947e5565848b186a33ee864`*
+  *SHA-256 `10eb2e8768dbb5ecd904125a1d6ac670484894eb044f0d177ed26aa01a001b37`*
 
   Tag navigation in files opened in the editor: [dgmsx]?html?, xslt?, [xy]ml
 
   Required: plugin LFSearch (LuaFAR Search) by Shmuel
 
-  Keys: <kbd>Alt[JKL]</kbd>
+  Keys: <kbd>Alt[JKLP]</kbd>
 
 
 
@@ -291,9 +291,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [HTML-XML.OneLine-MultiLine.lua](https://github.com/z0hm/far-scripts/blob/master/HTML-XML.OneLine-MultiLine.lua "HTML-XML.OneLine-MultiLine.lua")
 
-  *v1.0.0.1 (1141 bytes, changed 2021-09-18 18:37)*
+  *v1.0.0.2 (1224 bytes, changed 2022-02-18 13:24)*
 
-  *SHA-256 `ce36e646892a094635e51ce545f8aecd32fee17bf5d44c056b91740b0a796151`*
+  *SHA-256 `ced9c13da8abbeb0a969f93bcd6661465f6b2b70585bdaf30644bd30c1884a9d`*
 
   Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 

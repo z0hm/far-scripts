@@ -1,15 +1,17 @@
 ﻿-- HTML-XML.OneLine-MultiLine.lua
--- v1.0.0.1
+-- v1.0.0.2
 -- Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 -- Keys: launch from Macro Browser alt.
 
 Macro {
-description="HTML-XML.OneLine->MultiLine"; area="Shell";
+description="HTML-XML.OneLine->MultiLine"; area="Shell Editor";
 action = function()
-  local tab="\t"
-  local AP,AC = APanel.Path0,APanel.Current
-  local fname,fext = AC:match("^(.*)%.([^%.]*)$")
-  local fin,fout = AP.."\\"..AC,AP.."\\"..fname.."~2."..fext
+  local tab,fin = "\t",""
+  if Area.Shell then fin=APanel.Path0.."\\"..APanel.Current
+  elseif Area.Editor then fin=Editor.FileName
+  end
+  local fname,fext = fin:match("^(.*)(%.[^%.\\]*)$")
+  local fout = fext and fname.."~2"..fext or fin.."~2"
   local w=io.open(fout,"wb") w:write("") w:close()
   local r=io.open(fin, "rb")
   local a=io.open(fout,"ab")

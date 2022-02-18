@@ -1,8 +1,8 @@
 ﻿-- Editor.TagGoto.lua
--- v1.1.1
+-- v1.1.2
 -- Tag navigation in files opened in the editor: [dgmsx]?html?, xslt?, [xy]ml
 -- Required: plugin LFSearch (LuaFAR Search) by Shmuel
--- Keys: <kbd>Alt[JKL]</kbd>
+-- Keys: <kbd>Alt[JKLP]</kbd>
 
 local SelectFound=true -- Select Found true=yes, false=no
 
@@ -15,9 +15,9 @@ local XCursor=function(x)
 end
 
 local patt="(<\\/?(?:\\w+?|xsl:\\w+?-?\\w+?))[ >]|(\\/>)"
-local SearchTag=function(direction)
+local SearchTag=function(direction,pattern)
   local Data={
-    sSearchPat=patt,
+    sSearchPat=pattern or patt,
     sRegexLib="oniguruma", --"far" (default), "oniguruma", "pcre" or "pcre2"
     bRegExpr=true,
     bSearchBack=direction=="left"
@@ -126,6 +126,13 @@ nFound=SearchTag(direction)
 if nFound==0 then return end
 ]]
 
+local TagParent=[[
+direction,pattern,pos = "left",...
+nFound=SearchTag(direction,pattern)
+if nFound==0 then return end
+XCursor(pos)
+]]
+
 local Proc=function(eid,X1,Y1,X2,Y2)
   if SelectFound and X1 and Y1 and X2 and Y2 then
     local F=far.Flags
@@ -158,11 +165,18 @@ Macro {
   area="Editor"; key="AltJ";
   condition=cond;
   action=function()
-    --local ttime=far.FarClock()
     local eid,X1,Y1,X2,Y2 = Plugin.SyncCall(LFS_Guid,"code",Code..Algo)
-    --ttime = far.FarClock()-ttime
     Proc(eid,X1,Y1,X2,Y2)
-    --far.Message("Time: "..ttime.." mcs","Report",nil,"l")
+  end
+}
+
+Macro {
+  description="TagGoto:  <= Parent";
+  area="Editor"; key="AltP";
+  --condition=cond;
+  action=function()
+    local _,pos = editor.GetString(nil,Editor.CurLine,3):find('^(\t+)[^\t]')
+    if pos then Plugin.SyncCall(LFS_Guid,"code",Code..TagParent,"^\\t{"..(pos-2).."}[^\\t]",pos-1) end
   end
 }
 
