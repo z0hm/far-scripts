@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.11
+-- v1.7.12
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -59,36 +59,42 @@ local function FarUpdate(FileName)
   fwrite(tmp..'FarUpdExc.txt',l)
 end
 
+local function FLFAR()
+  local urlh='https://farmanager.com/nightly'
+  local text=GetPage(urlh..'.php')
+  -- fwrite(tmp..'nightly.php',text)
+  -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
+  for fname,build,xx,year,month,day,ext in text:gmatch('"nightly%/(Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d)%.([^"]-))"') do
+    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname}) end
+  end
+end
+
+local function FLGIT(page,items)
+  items=items or GitItemsPerPage
+  local text=GetPage('--get "https://api.github.com/repos/FarGroup/FarManager/releases" --data "page='..page..'&per_page='..items..'"')
+  -- /Far.x64.3.0.5523.1332.0e89356681209509d3db8c5dcfbe6a82194d14a4.pdb.7z
+  local patt='%},(%c%c-[^%}%{]-"browser_download_url" ?: ?"(http[^"]-)"[^%}%{]-)%}'
+  for txt,url in text:gmatch(patt) do
+    local size=txt:match('"size" ?: ?(%d+)')
+    if size then size=math.floor(tonumber(size)/100000+1)/10 size=' '..tostring(size)..'MB' else size='' end
+    -- 2019-12-10T18:59:06Z
+    local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
+    if date then date=' '..date:gsub("T"," "):gsub("Z","") else date='' end
+    local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
+    if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname}) end
+  end
+end
+
 local function GetFileList(page,items)
   local brk
   if not page then page=box[1] and 0 or 1 end
   for _,v in pairs(pages) do if page==v then brk=true break end end
   if not brk then
-    if page==0 then
-      local urlh='https://farmanager.com/nightly'
-      local text=GetPage(urlh..'.php')
-      -- fwrite(tmp..'nightly.php',text)
-      -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
-      for fname,build,xx,year,month,day,ext in text:gmatch('"nightly%/(Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d)%.([^"]-))"') do
-        if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname}) end
-      end
-      table.insert(pages,0)
-    else
-      items=items or GitItemsPerPage
-      local text=GetPage('--get "https://api.github.com/repos/FarGroup/FarManager/releases" --data "page='..page..'&per_page='..items..'"')
-      -- /Far.x64.3.0.5523.1332.0e89356681209509d3db8c5dcfbe6a82194d14a4.pdb.7z
-      local patt='%},(%c%c-[^%}%{]-"browser_download_url" ?: ?"(http[^"]-)"[^%}%{]-)%}'
-      for txt,url in text:gmatch(patt) do
-        local size=txt:match('"size" ?: ?(%d+)')
-        if size then size=math.floor(tonumber(size)/100000+1)/10 size=' '..tostring(size)..'MB' else size='' end
-        -- 2019-12-10T18:59:06Z
-        local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
-        if date then date=' '..date:gsub("T"," "):gsub("Z","") else date='' end
-        local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
-        if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname}) end
-      end
-      table.insert(pages,page)
+    if page==0
+    then FLFAR() if #FileList==0 then page=1 FLGIT(page,items) end
+    else FLGIT(page,items) if #FileList==0 then page=0 FLFAR() end
     end
+    table.insert(pages,page)
   end
 end
 
@@ -149,11 +155,11 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     RealPos=SelectPos==0 and RealPos or SelectPos
     if Msg==F.DN_EDITCHANGE and str and str:sub(1,1)=="*"
     then
-      if str==ListActions[1] then
+      if str==ListActions[1] and FileList[#FileList] then
         RemoveListActions(LastPos)
         GetFileList(FileList[#FileList][3]+1)
         PosProtect=true
-      elseif str==ListActions[2] then
+      elseif str==ListActions[2] and FileList[#FileList] then
         RemoveListActions(LastPos)
         local page=FileList[#FileList][3]
         table.remove(pages)
@@ -195,7 +201,11 @@ action=function()
   local f=tmp..changelog
   --fwrite(f,GetPage('-L https://github.com/FarGroup/FarManager/raw/master/far/changelog'))
   fwrite(f,GetPage('https://raw.githubusercontent.com/FarGroup/FarManager/master/far/changelog'))
-  GetFileList()
+  repeat
+    GetFileList()
+    if #FileList>0 then break end
+  until far.Message("Servers don't answer\n\nTry again?","WARNING!",";YesNo","w")~=1
+  if #FileList==0 then return end
   editor.Editor(f,nil,0,0,-1,-1,bit64.bor(F.EF_NONMODAL,F.EF_IMMEDIATERETURN,F.EF_OPENMODE_USEEXISTING),1,1,nil)
   EGI=editor.GetInfo()
   if EGI then
@@ -214,10 +224,10 @@ action=function()
   local w=far.AdvControl(F.ACTL_GETFARRECT)
   local res=far.Dialog(uGuid,w.Right-items[1][4]-2,w.Bottom-w.Top-7,w.Right-2,w.Bottom-w.Top-2,nil,items,F.FDLG_SMALLDIALOG,DlgProc)
   if res==#items-2 or res==#items-1 then
-    if FileName then
+    if FileName and #FileList>0 then
       local url
       for _,v in pairs(FileList) do if v[1]==FileName then url,FileName = v[2],v[4] break end end
-      if not win.GetFileInfo(tmp..FileName) or far.Message("Download it again?","WARNING! File exist",";YesNo","w")==1
+      if url and (not win.GetFileInfo(tmp..FileName) or far.Message("Download it again?","WARNING! File exist",";YesNo","w")==1)
       then panel.GetUserScreen() win.system('curl.exe -g -L --location-trusted "'..url..'" -o "'..tmp..FileName..'"') panel.SetUserScreen()
       end
       if res==#items-2 then

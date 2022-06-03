@@ -260,9 +260,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.7.11 (11237 bytes, changed 2021-12-09 04:46)*
+  *v1.7.12 (11561 bytes, changed 2022-06-03 06:21)*
 
-  *SHA-256 `c56490a56df7824afd068f191b7e027771056a216e789b80865e5f96741bab9e`*
+  *SHA-256 `e1567f162d6d08ff0e0c5a6d85830768eabe63a1a5c6613437649b0456fb9041`*
 
   Opening changelog and updating Far Manager to any version available on the site
 
