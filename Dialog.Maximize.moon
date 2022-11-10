@@ -63,6 +63,7 @@ transform=
   [Uuid"622AAD65-B7CA-7670-6622-A267028B1A06"]: {1,5,7,16.3} -- Shell: RenameSelectedFiles
   [Uuid"FF1E3A24-0B7A-0149-EFA2-1ED2309F8410"]: {1,3,4.3,14.3,18.3} -- Viewer,Editor: Search (hack: [Presets] is 14 in V, 18 in E)
   [Uuid"411BF77E-5743-D87A-A8E7-0EFDF0C71D79"]: {1,3,5,6.3,7.3,25.3} -- Editor: Replace
+  [Uuid"6CFCADF6-0935-3160-37C3-806484410AB7"]: {1} -- Editor: Replace Question Dialog
   [Uuid"3A6225FC-AD65-75B1-2643-5158B78D6BC4"]: {1,3,4.3,14.3} -- Editor: Filter
   [Uuid"6938029A-B71F-09EE-D09D-9982EE2B40BC"]: {1,3,4.3,15.3} -- Editor: Repeat
   [Uuid"DCDDDA35-A319-1B82-8410-36C04A1390B0"]: {1,3,5,10.3} -- Editor: Transliterate

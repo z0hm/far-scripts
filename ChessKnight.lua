@@ -25,7 +25,7 @@ local temp=win.GetEnv"TEMP".."\\"
 local status,variants = 0
 
 ::ANSWER::
-local answer = far.InputBox(uuid,title,"board 6x6, start 1 1, ret 1, log 1, holes 42,43: 6 6 1 1 1 1 42 43","ChessKnight.lua",nil,nil,nil,F.FIB_NONE) or ""
+local answer = far.InputBox(uuid,title,"board 6x6, start 1 1, ret 1, log 1, holes 42,43: 6 6 1 1 1 1 42 43",name..".lua",nil,nil,nil,F.FIB_NONE) or ""
 local holes,bx,by,fbx,fby,x0,y0 = {}
 if answer=="" then bx,by,x0,y0 = 8,8,1,1
 elseif string.find(answer,"^%d+%s+%d+$") then x0,y0,bx,by = 1,1,string.match(answer,"(%d+)%s+(%d+)") bx,by = tonumber(bx),tonumber(by)

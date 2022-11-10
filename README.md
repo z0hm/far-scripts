@@ -66,9 +66,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.2.3 (15826 bytes, changed 2021-08-24 06:26)*
+  *v0.9.2.3 (15821 bytes, changed 2022-07-10 04:50)*
 
-  *SHA-256 `c8712ace7aaa4a4eb515a768a3bb53498893b919c389184bd4bbe48c4b0a200c`*
+  *SHA-256 `4b1de7d8e27884324adf62065e6d406dd5dcdf19024b3dc5418d6c7571c82e10`*
 
   Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 
@@ -98,9 +98,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.10.4 (12891 bytes, changed 2021-08-04 13:02)*
+  *v1.1.10.4 (12979 bytes, changed 2022-10-03 12:03)*
 
-  *SHA-256 `9ea919da55a10599136e509d823c6f04603320bc2c7bb9481f0ebf28d5e53c3a`*
+  *SHA-256 `1e34d1f6ac1cae7013a951033f13e0a5121bd3fae4049a21f2e632be82c947fd`*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -117,9 +117,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.CyrSpaceHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.CyrSpaceHighlighting.moon "Editor.CyrSpaceHighlighting.moon")
 
-  *v1.1.3.6 (5356 bytes, changed 2021-12-11 09:48)*
+  *v1.1.3.6 (5410 bytes, changed 2022-11-10 17:50)*
 
-  *SHA-256 `2fe19ef3931fb57fcf4d480d40d01b8c9a58a4dc7ad2f98547e592ef72cabcad`*
+  *SHA-256 `abc539767024908eabb9fef9751600c7cdc9faf08d2e0b8fbe762d89ba617300`*
 
   Highlighting Cyrillic and space symbols
 
@@ -165,9 +165,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Editor.LatCyrMixHighlighting.moon](https://github.com/z0hm/far-scripts/blob/master/Editor.LatCyrMixHighlighting.moon "Editor.LatCyrMixHighlighting.moon")
 
-  *v1.1.3.6 (5236 bytes, changed 2021-12-11 09:47)*
+  *v1.1.3.6 (5290 bytes, changed 2022-11-10 17:51)*
 
-  *SHA-256 `17ebed0cee4efbddc9666ec7f794a314f19adccd619a9855286e3810dc418239`*
+  *SHA-256 `377ddf564e8f64af8afc069f0ccaf4e8a194f6d7311bc91174df20ef6cab8e96`*
 
   Highlighting mixed Latin and Cyrillic letters in the editor
 

@@ -105,7 +105,10 @@ Event
                     break
         ttime0=ttime0+FarClock!-ttime
 
+description="Подсветка кириллицы и пробельных символов"
+
 Event
+  description:description
   group:"ExitFAR"
   action:->
     wincount=AdvControl F.ACTL_GETWINDOWCOUNT,0,0
@@ -117,7 +120,7 @@ Event
           data.finish=0
 
 Macro
-  description:"Подсветка кириллицы и пробельных символов"
+  description:description
   area:"Editor"
   key:"F3"
   action:->
