@@ -1,5 +1,5 @@
 ﻿-- Panel.CustomSortByName.lua
--- v1.1.0.2
+-- v1.1.0.3
 -- Very powerful panel file sorting
 -- ![Panel.CustomSortByName](http://i.piccy.info/i9/305c735c17b77b86698f8161f3b6988e/1585847695/9001/1370793/2020_04_02_201018.png)
 -- <details><summary>Сортировки файлов в панели:</summary>
@@ -83,8 +83,8 @@
 --   -- by level Folder
 --     local ffi,BS = require'ffi',[[\\]]
 --     local C=ffi.C
---     local _,x1 = regex.gsubW(ffi.string(_G.sFuncTbl.fp1,tonumber(C.wcslen(_G.sFuncTbl.fp1))*2),BS,"")
---     local _,x2 = regex.gsubW(ffi.string(_G.sFuncTbl.fp2,tonumber(C.wcslen(_G.sFuncTbl.fp2))*2),BS,"")
+--     local _,x1 = regex.gsubW(ffi.string(_G.sFuncTbl.fp1,tonumber(C.wcslen(_G.sFuncTbl.fp1))*2),BS,BS)
+--     local _,x2 = regex.gsubW(ffi.string(_G.sFuncTbl.fp2,tonumber(C.wcslen(_G.sFuncTbl.fp2))*2),BS,BS)
 --     return x1-x2
 --   ```
 -- </details>
@@ -102,6 +102,35 @@
 --       return num
 --     end
 --     return p(_G.sFuncTbl.fp1)-p(_G.sFuncTbl.fp2)
+--   ```
+-- </details>
+-- <details><summary>LastWriteTime in Day</summary>
+--
+--   ``` lua
+--     -- by LastWriteTime in Day
+--     local guid="8EA08735-AF4A-4B90-A79F-6D453ADFA3B6"
+--     local ffi = require "ffi"
+--     local C = ffi.C
+--     
+--     if not _G.sFuncTbl[guid] then _G.sFuncTbl[guid]=""
+--     ffi.cdef [[
+--       typedef struct { WORD wYear,wMonth,wDayOfWeek,wDay,wHour,wMinute,wSecond,wMilliseconds; } SYSTEMTIME;
+--       BOOL FileTimeToSystemTime(const FILETIME*, SYSTEMTIME*);
+--       BOOL SystemTimeToTzSpecificLocalTime(void*, const SYSTEMTIME*, SYSTEMTIME*);
+--     ]]
+--     end
+--     
+--     local ft1, ft2, ftmp = ffi.new("SYSTEMTIME"), ffi.new("SYSTEMTIME"), ffi.new("SYSTEMTIME")
+--     
+--     local function ms(st)
+--       return ((st.wHour*60+st.wMinute)*60+st.wSecond)*1000+st.wMilliseconds 
+--     end
+--     
+--     C.FileTimeToSystemTime(_G.sFuncTbl.lwt1, ftmp)
+--     C.SystemTimeToTzSpecificLocalTime(nil, ftmp, ft1)
+--     C.FileTimeToSystemTime(_G.sFuncTbl.lwt2, ftmp)
+--     C.SystemTimeToTzSpecificLocalTime(nil, ftmp, ft2)
+--     return ms(ft1) - ms(ft2)
 --   ```
 -- </details>
 -- </details>
@@ -252,7 +281,7 @@ local Compare = function(p1,p2)
     elseif st10 and st20 then return -2 + C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,st10,len10,st20,len20)
     end
   elseif xFunc then
-    _G.sFuncTbl = {fp1=p1.FileName,fp2=p2.FileName,st1=st1,ln1=len1,st2=st2,ln2=len2}
+    _G.sFuncTbl = {lwt1=p1.LastWriteTime,lwt2=p2.LastWriteTime,fp1=p1.FileName,fp2=p2.FileName,st1=st1,ln1=len1,st2=st2,ln2=len2}
     return sFunc()
   else
     return -2 + C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,st1,len1,st2,len2)

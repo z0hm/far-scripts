@@ -370,9 +370,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.CustomSortByName.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.CustomSortByName.lua "Panel.CustomSortByName.lua")
 
-  *v1.1.0.2 (19285 bytes, changed 2021-07-14 10:19)*
+  *v1.1.0.3 (20461 bytes, changed 2022-11-19 06:51)*
 
-  *SHA-256 `7a213a1997ff5e164bb6b927d764ebe351738537faa9cd9fa14d1668ae614880`*
+  *SHA-256 `4cf377f49c893dd5ccd4d0c89202590279a177a31cb2d1287c846fb073afdca9`*
 
   Very powerful panel file sorting
 
@@ -540,9 +540,9 @@ a very wide range of tasks using the Far and Windows API's.
 
       local C=ffi.C
 
-      local _,x1 = regex.gsubW(ffi.string(_G.sFuncTbl.fp1,tonumber(C.wcslen(_G.sFuncTbl.fp1))*2),BS,"")
+      local _,x1 = regex.gsubW(ffi.string(_G.sFuncTbl.fp1,tonumber(C.wcslen(_G.sFuncTbl.fp1))*2),BS,BS)
 
-      local _,x2 = regex.gsubW(ffi.string(_G.sFuncTbl.fp2,tonumber(C.wcslen(_G.sFuncTbl.fp2))*2),BS,"")
+      local _,x2 = regex.gsubW(ffi.string(_G.sFuncTbl.fp2,tonumber(C.wcslen(_G.sFuncTbl.fp2))*2),BS,BS)
 
       return x1-x2
 
@@ -577,6 +577,64 @@ a very wide range of tasks using the Far and Windows API's.
       end
 
       return p(_G.sFuncTbl.fp1)-p(_G.sFuncTbl.fp2)
+
+    ```
+
+  </details>
+
+  <details><summary>LastWriteTime in Day</summary>
+
+
+
+    ``` lua
+
+      -- by LastWriteTime in Day
+
+      local guid="8EA08735-AF4A-4B90-A79F-6D453ADFA3B6"
+
+      local ffi = require "ffi"
+
+      local C = ffi.C
+
+      
+
+      if not _G.sFuncTbl[guid] then _G.sFuncTbl[guid]=""
+
+      ffi.cdef [[
+
+        typedef struct { WORD wYear,wMonth,wDayOfWeek,wDay,wHour,wMinute,wSecond,wMilliseconds; } SYSTEMTIME;
+
+        BOOL FileTimeToSystemTime(const FILETIME*, SYSTEMTIME*);
+
+        BOOL SystemTimeToTzSpecificLocalTime(void*, const SYSTEMTIME*, SYSTEMTIME*);
+
+      ]]
+
+      end
+
+      
+
+      local ft1, ft2, ftmp = ffi.new("SYSTEMTIME"), ffi.new("SYSTEMTIME"), ffi.new("SYSTEMTIME")
+
+      
+
+      local function ms(st)
+
+        return ((st.wHour*60+st.wMinute)*60+st.wSecond)*1000+st.wMilliseconds 
+
+      end
+
+      
+
+      C.FileTimeToSystemTime(_G.sFuncTbl.lwt1, ftmp)
+
+      C.SystemTimeToTzSpecificLocalTime(nil, ftmp, ft1)
+
+      C.FileTimeToSystemTime(_G.sFuncTbl.lwt2, ftmp)
+
+      C.SystemTimeToTzSpecificLocalTime(nil, ftmp, ft2)
+
+      return ms(ft1) - ms(ft2)
 
     ```
 
