@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.10.4
+-- v1.1.10.5
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -24,6 +24,8 @@ match = s.match
 w=win
 Uuid=w.Uuid
 
+d=({f.AdvControl('ACTL_GETFARMANAGERVERSION',true)})[4]<6061 and 1 or 0  -- no separate Fuzzy Search yet?
+
 Guid_DlgXScale=Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
 
 transform=
@@ -35,7 +37,7 @@ transform=
   [Uuid Guids.MakeFolderId                   ]: {1,3,6,8} -- Shell: mkdir
   [Uuid Guids.HardSymLinkId                  ]: {1,3,11} -- Shell: Link
   [Uuid Guids.FileOpenCreateId               ]: {1,3,6} -- Shell: New
-  [Uuid Guids.FindFileId                     ]: {1,3,6,7,9,15.1,16.1,17.1,18.1,20.1,22.2,23.1} -- Find File
+  [Uuid Guids.FindFileId                     ]: {1,3,6,7,9,16.1-d,17.1-d,18.1-d,19.1-d,21.1-d,23.2-d,24.1-d} -- Find File
   [Uuid Guids.EditorSearchId                 ]: {1,2.3,3.3,5,7,12.1,13.1} -- Editor Search
   [Uuid Guids.EditorReplaceId                ]: {1,2.3,3.3,5,7,12.1,13.1} -- Editor Replace
   [Uuid Guids.FileSaveAsId                   ]: {1,3,6} -- File Save As
