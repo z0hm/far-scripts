@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.10.5
+-- v1.1.10.6
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -24,7 +24,8 @@ match = s.match
 w=win
 Uuid=w.Uuid
 
-d=({f.AdvControl('ACTL_GETFARMANAGERVERSION',true)})[4]<6061 and 1 or 0  -- no separate Fuzzy Search yet?
+build=({f.AdvControl('ACTL_GETFARMANAGERVERSION',true)})[4]
+d=build<6061 and 1 or 0  -- no separate Fuzzy Search yet?
 
 Guid_DlgXScale=Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
 
@@ -39,14 +40,14 @@ transform=
   [Uuid Guids.FileOpenCreateId               ]: {1,3,6} -- Shell: New
   [Uuid Guids.FindFileId                     ]: {1,3,6,7,9,16.1-d,17.1-d,18.1-d,19.1-d,21.1-d,23.2-d,24.1-d} -- Find File
   [Uuid Guids.EditorSearchId                 ]: {1,2.3,3.3,5,7,12.1,13.1} -- Editor Search
-  [Uuid Guids.EditorReplaceId                ]: {1,2.3,3.3,5,7,12.1,13.1} -- Editor Replace
+  [Uuid Guids.EditorReplaceId                ]: {1,2.3,3.3,5,7,12.1,13.1,14.1} -- Editor Replace
   [Uuid Guids.FileSaveAsId                   ]: {1,3,6} -- File Save As
   [Uuid Guids.PluginInformationId            ]: {1,3,5,7,9,11,13,15,17}
   [Uuid Guids.DescribeFileId                 ]: {1,3} -- Describe File
   [Uuid Guids.ApplyCommandId                 ]: {1,3} -- Shell: Apply command (CtrlG)
   [Uuid Guids.EditUserMenuId                 ]: {1,5,8,9,10,11,12,13,14,15,16,17}
   [Uuid Guids.FileAssocModifyId              ]: {1,3,5,8,10,12,14,16,18}
-  [Uuid Guids.ViewerSearchId                 ]: {1,3} -- Viewer Search
+  [Uuid Guids.ViewerSearchId                 ]: build<6078 and {1,3,5,7,8.1,9.1,10.1,11.1} or {1,3,5,7,11.1,12.1} -- Viewer Search
   [Uuid Guids.SelectDialogId                 ]: {1,2} -- Select Gray+
   [Uuid Guids.UnSelectDialogId               ]: {1,2} -- Select Gray-
   --[Uuid Guids.FileAttrDlgId                  ]: {1,37} -- File Attributes
