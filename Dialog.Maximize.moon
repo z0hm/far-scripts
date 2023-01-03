@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.10.7
+-- v1.1.11.0
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -127,7 +127,7 @@ Proc=(id,hDlg)->
     _XScale.cw,_XScale.ch = cw,ch
   dh,pl = _XScale[id].dh,_XScale[id].pl
   df=cw-DX-_XScale[id].dw
-  diff=_XScale.xs*df
+  diff=floor((_XScale.xs*df+1)/2)*2
   dw=_XScale[id].dw+diff
   pr=dw-pl-1
   SendDlgMessage hDlg,F.DM_ENABLEREDRAW,0,0
