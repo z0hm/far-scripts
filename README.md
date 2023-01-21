@@ -98,9 +98,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.11.1 (13273 bytes, changed 2023-01-05 08:25)*
+  *v1.1.11.1 (13261 bytes, changed 2023-01-06 09:07)*
 
-  *SHA-256 `d7dc977305dfa4db6d3607be9f9d58a82bcf386543cce10525899134fd4eb820`*
+  *SHA-256 `d52a47003e3850efc30752c6a3d2b75f828eb3b081db95dd4497c2e44c9f5141`*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -260,9 +260,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.7.12 (11561 bytes, changed 2022-06-03 06:21)*
+  *v1.7.13 (11678 bytes, changed 2023-01-21 10:35)*
 
-  *SHA-256 `e1567f162d6d08ff0e0c5a6d85830768eabe63a1a5c6613437649b0456fb9041`*
+  *SHA-256 `2d7fef812e2a03bdec6ecd40157ad8e4403a9ba45358bf47524fd89ccf78ddfc`*
 
   Opening changelog and updating Far Manager to any version available on the site
 

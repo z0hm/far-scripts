@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.12
+-- v1.7.13
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -38,7 +38,7 @@ local farprofile=win.GetEnv("FARPROFILE")
 local fp7z=farprofile..'.7z'
 local x64=win.IsProcess64bit()
 local pages,FileName = {}
-local GitItemsPerPage,ListActions = 20,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
+local GitItemsPerPage,ListActions = 100,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
 local RealPos,FileList = 1,{}
 local box={true,x64,true,false} -- [ Far ]   [ x64 ]   [ 7z  ]   [ ] Profile BackUp
 local EGI,StringText,build
@@ -64,9 +64,10 @@ local function FLFAR()
   local text=GetPage(urlh..'.php')
   -- fwrite(tmp..'nightly.php',text)
   -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
-  for fname,build,xx,year,month,day,ext in text:gmatch('"nightly%/(Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d)%.([^"]-))"') do
-    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname}) end
+  for fname,name,build,xx,year,month,day,ext in text:gmatch('"nightly%/((Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d))%.([^"]-))"') do
+    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname,name}) end
   end
+  table.sort(FileList,function(a,b) if a[5]==b[5] then return a[4]<b[4] else return a[4]>b[4] end end)
 end
 
 local function FLGIT(page,items)
