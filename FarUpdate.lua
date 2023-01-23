@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.7.13
+-- v1.8.0
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -40,7 +40,7 @@ local x64=win.IsProcess64bit()
 local pages,FileName = {}
 local GitItemsPerPage,ListActions = 100,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
 local RealPos,FileList = 1,{}
-local box={true,x64,true,false} -- [ Far ]   [ x64 ]   [ 7z  ]   [ ] Profile BackUp
+local box={true,x64,1,false} -- [ Far ]   [ x64 ]   [ 1=7z 2=msi 3=pdb.7z ]   [ ] Profile BackUp
 local EGI,StringText,build
 local WaitCloseFar='nircmd.exe waitprocess "'..farhome..'\\Far.exe"'
 local ProfileBackUp='\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log'
@@ -50,13 +50,17 @@ local FarUpdateBat=tmp..'FarUpdate.bat'
 
 -- Create FarUpdate.bat
 local function FarUpdate(FileName)
-  local s=WaitCloseFar
-  if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
-  s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'..StartFar()
-  fwrite(FarUpdateBat,s)
-  local l='*Spa.lng\n*Sky.lng\n*Sky.hlf\n*Ger.lng\n*Ger.hlf\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Cze.hlf\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*\n*Lit.lng'
-  if not string.find(FileName,'%.pdb%.[^%.]+$') then l=l..'\n*.map\n*.pdb' end
-  fwrite(tmp..'FarUpdExc.txt',l)
+  local s,u = '',not string.find(FileName,'%.pdb%.[^%.]+$')
+  if u then
+    s=s..WaitCloseFar
+    if box[4] then win.MoveFile(fp7z,fp7z..'_','r') s=s..ProfileBackUp end
+  end
+  s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'
+  if u then s=s..StartFar() end
+  fwrite(FarUpdateBat,s..'\nExit')
+  s='*Spa.lng\n*Sky.lng\n*Sky.hlf\n*Ger.lng\n*Ger.hlf\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Cze.hlf\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*\n*Lit.lng'
+  if u then s=s..'\n*.map\n*.pdb' end
+  fwrite(tmp..'FarUpdExc.txt',s)
 end
 
 local function FLFAR()
@@ -65,7 +69,7 @@ local function FLFAR()
   -- fwrite(tmp..'nightly.php',text)
   -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
   for fname,name,build,xx,year,month,day,ext in text:gmatch('"nightly%/((Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d))%.([^"]-))"') do
-    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname,name}) end
+    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname,name,ext}) end
   end
   table.sort(FileList,function(a,b) if a[5]==b[5] then return a[4]<b[4] else return a[4]>b[4] end end)
 end
@@ -81,8 +85,8 @@ local function FLGIT(page,items)
     -- 2019-12-10T18:59:06Z
     local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
     if date then date=' '..date:gsub("T"," "):gsub("Z","") else date='' end
-    local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.([^%/]+))$')
-    if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname}) end
+    local fname,name,xx,build,ext = url:match('%/((Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-)%.([^%/]+))$')
+    if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname,name,ext}) end
   end
 end
 
@@ -104,14 +108,14 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
   local function BoxUpdate()
     hDlg:send(F.DM_SETTEXT,2,box[1] and '[ &1 Far ]' or '[ &1 Git ]')
     hDlg:send(F.DM_SETTEXT,3,box[2] and '[ &2 x64 ]' or '[ &2 x86 ]')
-    hDlg:send(F.DM_SETTEXT,4,box[3] and '[ &3 7z  ]' or '[ &3 msi ]')
+    hDlg:send(F.DM_SETTEXT,4,box[3]==1 and '[ &3 7z  ]' or (box[3]==2 and '[ &3 msi ]' or '[ &3 pdb ]'))
   end
   local function RefreshList()
     local ListInfo=hDlg:send(F.DM_LISTINFO,6)
     local LastPos=ListInfo.ItemsNumber
     hDlg:send(F.DM_LISTDELETE,6,{StartIndex=1,Count=LastPos}) ListT={}
     for i=1,#FileList do
-      if FileList[i][4]:find('^Far'..(box[1] and '30b%d-%.' or '%.')..(box[2] and 'x64' or 'x86')..'%..+%.'..(box[3] and '7z' or 'msi'))
+      if FileList[i][4]:find('^Far'..(box[1] and '30b%d-%.' or '%.')..(box[2] and 'x64' or 'x86')..'%..+'..(box[3]==1 and '[^%.]...%.7z' or (box[3]==2 and '%.msi' or '%.pdb%.7z')))
       then hDlg:send(F.DM_LISTADD,6,{{Text=FileList[i][1]}}) table.insert(ListT,{FileList[i][1],FileList[i][3]})
       end
     end
@@ -180,7 +184,8 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     end
     hDlg:send(F.DM_SETTEXT,5,RealPos>1 and mark or ' ')
   elseif Msg==F.DN_BTNCLICK and Param1>=2 and Param1<=4 then   -- [ Far ]  [ x86 ]  [ 7z  ]
-    box[Param1-1]=not box[Param1-1]
+    local p=Param1-1
+    box[p]=p==3 and (box[p]==3 and 1 or box[p]+1) or not box[p]
     BoxUpdate()
     local ListInfo=hDlg:send(F.DM_LISTINFO,6)
     local LastPos=ListInfo.ItemsNumber
