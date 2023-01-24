@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.8.0
+-- v1.8.1
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload Last ]** to reload the list with files
@@ -44,7 +44,7 @@ local box={true,x64,1,false} -- [ Far ]   [ x64 ]   [ 1=7z 2=msi 3=pdb.7z ]   [ 
 local EGI,StringText,build
 local WaitCloseFar='nircmd.exe waitprocess "'..farhome..'\\Far.exe"'
 local ProfileBackUp='\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log'
-local StartFar=function() return '\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"\nexit' end
+local StartFar=function() return '\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"' end
 local FarProfileBackUpBat=tmp..'FarProfileBackUp.bat'
 local FarUpdateBat=tmp..'FarUpdate.bat'
 
@@ -57,7 +57,7 @@ local function FarUpdate(FileName)
   end
   s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'
   if u then s=s..StartFar() end
-  fwrite(FarUpdateBat,s..'\nExit')
+  fwrite(FarUpdateBat,s..'\nexit')
   s='*Spa.lng\n*Sky.lng\n*Sky.hlf\n*Ger.lng\n*Ger.hlf\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Cze.hlf\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*\n*Lit.lng'
   if u then s=s..'\n*.map\n*.pdb' end
   fwrite(tmp..'FarUpdExc.txt',s)
@@ -68,15 +68,15 @@ local function FLFAR()
   local text=GetPage(urlh..'.php')
   -- fwrite(tmp..'nightly.php',text)
   -- nightly%/(Far30b%d-)%.x86%.(%d%d%d%d)(%d%d)(%d%d)%.7z
-  for fname,name,build,xx,year,month,day,ext in text:gmatch('"nightly%/((Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d))%.([^"]-))"') do
-    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname,name,ext}) end
+  for fname,build,xx,year,month,day,ext in text:gmatch('"nightly%/(Far30b(%d-)%.(x%d%d)%.(%d%d%d%d)(%d%d)(%d%d)%.(%w+)[^"]-)"') do
+    if ext then table.insert(FileList,{build..xx..' '..year..'-'..month..'-'..day..' '..ext,urlh..'/'..fname,0,fname}) end
   end
-  table.sort(FileList,function(a,b) if a[5]==b[5] then return a[4]<b[4] else return a[4]>b[4] end end)
 end
 
 local function FLGIT(page,items)
   items=items or GitItemsPerPage
   local text=GetPage('--get "https://api.github.com/repos/FarGroup/FarManager/releases" --data "page='..page..'&per_page='..items..'"')
+  --fwrite(tmp..'nightly.php',text)
   -- /Far.x64.3.0.5523.1332.0e89356681209509d3db8c5dcfbe6a82194d14a4.pdb.7z
   local patt='%},(%c%c-[^%}%{]-"browser_download_url" ?: ?"(http[^"]-)"[^%}%{]-)%}'
   for txt,url in text:gmatch(patt) do
@@ -85,8 +85,8 @@ local function FLGIT(page,items)
     -- 2019-12-10T18:59:06Z
     local date=txt:match('"updated_at" ?: ?"([^"]-)"') or txt:match('"created_at" ?: ?"([^"]-)"')
     if date then date=' '..date:gsub("T"," "):gsub("Z","") else date='' end
-    local fname,name,xx,build,ext = url:match('%/((Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-)%.([^%/]+))$')
-    if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname,name,ext}) end
+    local fname,xx,build,ext = url:match('%/(Far%.(x%d%d)%.3%.0%.(%d-)%.%d-%.[0-9a-f]-%.(%w+).-)$')
+    if ext then table.insert(FileList,{build..xx..date..' '..ext..size,url,page,fname}) end
   end
 end
 
