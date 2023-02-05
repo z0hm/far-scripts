@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.11.2
+-- v1.1.11.3
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -47,7 +47,7 @@ transform=
   [Uuid Guids.ApplyCommandId                 ]: {1,3} -- Shell: Apply command (CtrlG)
   [Uuid Guids.EditUserMenuId                 ]: {1,5,8,9,10,11,12,13,14,15,16,17}
   [Uuid Guids.FileAssocModifyId              ]: {1,3,5,8,10,12,14,16,18}
-  [Uuid Guids.ViewerSearchId                 ]: build<6078 and {1,3,5,7,8.1,9.1,10.1,11.1} or {1,3,5,7,11.1,12.1} -- Viewer Search
+  [Uuid Guids.ViewerSearchId                 ]: build<6078 and {1,3,5,7,8.1,9.1,10.1,11.1} or build<6099 and {1,5,6,11.1,12.1} or {1,7,8,15.1,16.1} -- Viewer Search
   [Uuid Guids.SelectDialogId                 ]: {1,2} -- Select Gray+
   [Uuid Guids.UnSelectDialogId               ]: {1,2} -- Select Gray-
   --[Uuid Guids.FileAttrDlgId                  ]: {1,37} -- File Attributes
