@@ -1,5 +1,5 @@
 ﻿-- RESearch.Grep.lua
--- v1.4.2.1
+-- v1.4.2.2
 -- Comfortable Grep text from files by search pattern to editor
 -- ![RESearch Grep](http://i.piccy.info/i9/23f14ef428e4f1d2f1fc1937da2a549c/1442294013/13901/950058/1.png)
 -- Press AltG, MacroBrowserAlt.lua file will be opened in the editor and the cursor will be set to this position on hDlg.
@@ -17,7 +17,7 @@ local F = far.Flags
 local e=editor
 local GetInfo,GetString,Editor,SetPosition,SetString,SaveFile,Quit = e.GetInfo,e.GetString,e.Editor,e.SetPosition,e.SetString,e.SaveFile,e.Quit
 
-local function GetFileName(l) return regex.match(l,'^(?:\\[\\d+?\\] )?([A-Z]:.+?)(?::|$)') end
+local function GetFileName(l) return regex.match(l,[[^(?:\[\d+?\] )?([A-Z]:.+?)(?: :|:|$)]]) end
 local function GInfo()
   local ei=GetInfo(-1)
   local y,x,p = ei.CurLine,ei.CurPos,ei.LeftPos

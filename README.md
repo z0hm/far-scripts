@@ -824,9 +824,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [RESearch.Grep.lua](https://github.com/z0hm/far-scripts/blob/master/RESearch.Grep.lua "RESearch.Grep.lua")
 
-  *v1.4.2.1 (3735 bytes, changed 2021-07-12 18:29)*
+  *v1.4.2.2 (3737 bytes, changed 2023-03-05 11:17)*
 
-  *SHA-256 `027d2b4124bf17495219021ba11f3a9dd2e22e5818c6bc5e10cfe45c7fc454d0`*
+  *SHA-256 `1e821f3d0c40b2074be4b8608280c2a0fe4271bc648ff360dd3484c98f80f569`*
 
   Comfortable Grep text from files by search pattern to editor
 
