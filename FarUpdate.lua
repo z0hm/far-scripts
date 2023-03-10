@@ -1,12 +1,13 @@
 ﻿-- FarUpdate.lua
--- v1.8.1
+-- v1.9.0
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
--- Far: press **[ Reload Last ]** to reload the list with files
+-- Far: press **[ Reload last ]** to reload the list with files
 -- GitHub: press **[ More >> ]** to get more files
--- GitHub: press **[ Reload Last ]** to reload last page with files
--- GitHub: press **[ Reload All ]** to reload all pages
--- When you run the macro again, the build will be taken from the current position in Far.changelog
+-- GitHub: press **[ Reload last ]** to reload last page with files
+-- GitHub: press **[ Reload all ]** to reload all pages
+-- GitHub: press **[ Goto build ]** to go to enter build number
+-- When you run the macro again, the build will be taken from the current line in Far.changelog
 -- Required: curl.exe, nircmd.exe, 7z.exe, requires tuning for local conditions
 -- Keys: launch from Macro Browser alt.
 -- Url: https://forum.ru-board.com/topic.cgi?forum=5&topic=49572&start=700#19
@@ -38,7 +39,7 @@ local farprofile=win.GetEnv("FARPROFILE")
 local fp7z=farprofile..'.7z'
 local x64=win.IsProcess64bit()
 local pages,FileName = {}
-local GitItemsPerPage,ListActions = 100,{"*  [ More >> ]","*  [ Reload Last ]","*  [ Reload All ]"}
+local GitItemsPerPage,ListActions = 100,{"*  [ More >> ]","*  [ Reload last ]","*  [ Reload all ]","*  [ Goto build ]"}
 local RealPos,FileList = 1,{}
 local box={true,x64,1,false} -- [ Far ]   [ x64 ]   [ 1=7z 2=msi 3=pdb.7z ]   [ ] Profile BackUp
 local EGI,StringText,build
@@ -166,18 +167,29 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
         PosProtect=true
       elseif str==ListActions[2] and FileList[#FileList] then
         RemoveListActions(LastPos)
-        local page=FileList[#FileList][3]
-        table.remove(pages)
-        for i=#FileList,1,-1 do if FileList[i][3]==page then table.remove(FileList,i) else break end end
-        GetFileList(page)
-        local p=ListT[#ListT][2]
-        for i=#ListT,1,-1 do if ListT[i][2]==p then table.remove(ListT,i) else RealPos=i+1 PosProtect=true break end end
+        if #ListT>0 then
+          local page=FileList[#FileList][3]
+          table.remove(pages)
+          for i=#FileList,1,-1 do if FileList[i][3]==page then table.remove(FileList,i) else break end end
+          GetFileList(page)
+          local p=ListT[#ListT][2]
+          for i=#ListT,1,-1 do if ListT[i][2]==p then table.remove(ListT,i) else RealPos=i+1 PosProtect=true break end end
+        end
       elseif str==ListActions[3] then
         RemoveListActions(LastPos)
         local p={} for i=1,#pages do p[i]=pages[i] end
         pages={} FileList={}
         for i=1,#p do GetFileList(p[i]) end
         RealPos=1
+      elseif str==ListActions[4] and FileList[#FileList] then
+        RemoveListActions(LastPos)
+        local res=far.InputBox(nil,"Goto build","Enter build number:",nil,build)
+        if res then res=tonumber(res:match("%d+")) end
+        build=res or build
+        if build and #FileList>0 and build<=tonumber(FileList[1][1]:match("^(%d+)")) then
+          while build<tonumber(FileList[#FileList][1]:match("^(%d+)")) do GetFileList(FileList[#FileList][3]+1) end
+          PosProtect=false
+        end
       end
       RefreshList()
     else FileName=str
