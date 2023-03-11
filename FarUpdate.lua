@@ -56,7 +56,7 @@ XItems={
        }
 
 local function XDlgProc(hDlg,Msg,Param1,Param2)
-  if Msg==F.DN_INITDIALOG then hDlg:send(F.DM_SETTEXT,3,tostring(build))
+  if Msg==F.DN_INITDIALOG then hDlg:send(F.DM_SETTEXT,3,tostring(build or ""))
   elseif Msg==F.DN_CLOSE and Param1==3 then xbuild=tonumber(tostring(hDlg:send(F.DM_GETTEXT,Param1)):match("%d+"))
   end
 end
