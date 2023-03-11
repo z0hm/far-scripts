@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.9.0
+-- v1.9.1
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload last ]** to reload the list with files
@@ -42,12 +42,24 @@ local pages,FileName = {}
 local GitItemsPerPage,ListActions = 100,{"*  [ More >> ]","*  [ Reload last ]","*  [ Reload all ]","*  [ Goto build ]"}
 local RealPos,FileList = 1,{}
 local box={true,x64,1,false} -- [ Far ]   [ x64 ]   [ 1=7z 2=msi 3=pdb.7z ]   [ ] Profile BackUp
-local EGI,StringText,build
+local EGI,StringText,build,xbuild,XD,YD
 local WaitCloseFar='nircmd.exe waitprocess "'..farhome..'\\Far.exe"'
 local ProfileBackUp='\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log'
 local StartFar=function() return '\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"' end
 local FarProfileBackUpBat=tmp..'FarProfileBackUp.bat'
 local FarUpdateBat=tmp..'FarUpdate.bat'
+
+XItems={
+         {F.DI_DOUBLEBOX, 0,0,17,2,0,       0,0,       0,  "Goto"},
+         {F.DI_TEXT,      2,1, 7,1,0,       0,0,       0,"build:"},
+         {F.DI_EDIT,      9,1,15,1,0,       0,0,       0,      ""}
+       }
+
+local function XDlgProc(hDlg,Msg,Param1,Param2)
+  if Msg==F.DN_INITDIALOG then hDlg:send(F.DM_SETTEXT,3,tostring(build))
+  elseif Msg==F.DN_CLOSE and Param1==3 then xbuild=tonumber(tostring(hDlg:send(F.DM_GETTEXT,Param1)):match("%d+"))
+  end
+end
 
 -- Create FarUpdate.bat
 local function FarUpdate(FileName)
@@ -183,9 +195,8 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
         RealPos=1
       elseif str==ListActions[4] and FileList[#FileList] then
         RemoveListActions(LastPos)
-        local res=far.InputBox(nil,"Goto build","Enter build number:",nil,build)
-        if res then res=tonumber(res:match("%d+")) end
-        build=res or build
+        far.Dialog("",XD+7,YD+1,XD+7+XItems[1][4],YD+3,nil,XItems,F.FDLG_SMALLDIALOG+F.FDLG_WARNING,XDlgProc)
+        build=xbuild or build
         if build and #FileList>0 and build<=tonumber(FileList[1][1]:match("^(%d+)")) then
           while build<tonumber(FileList[#FileList][1]:match("^(%d+)")) do GetFileList(FileList[#FileList][3]+1) end
           PosProtect=false
@@ -202,7 +213,7 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     local ListInfo=hDlg:send(F.DM_LISTINFO,6)
     local LastPos=ListInfo.ItemsNumber
     local str=tostring(hDlg:send(F.DM_GETTEXT,6))
-    build=str:match("^%d+")
+    build=tonumber(str:match("^%d+"))
     RemoveListActions(LastPos)
     if Param1==2 then GetFileList() end
     RealPos=1
@@ -233,14 +244,15 @@ action=function()
       if FileName==changelog then
         for CurLine=EGI.CurLine,1,-1 do
           StringText=editor.GetString(EGI.EditorID,CurLine).StringText
-          if StringText then build=StringText:match(' build (%d+)%s*$') end
+          if StringText then build=tonumber(StringText:match(' build (%d+)%s*$')) end
           if build then break end
         end
       end
     end
   end
   local w=far.AdvControl(F.ACTL_GETFARRECT)
-  local res=far.Dialog(uGuid,w.Right-items[1][4]-2,w.Bottom-w.Top-7,w.Right-2,w.Bottom-w.Top-2,nil,items,F.FDLG_SMALLDIALOG,DlgProc)
+  XD,YD = w.Right-items[1][4]-2,w.Bottom-w.Top-7
+  local res=far.Dialog(uGuid,XD,YD,w.Right-2,w.Bottom-w.Top-2,nil,items,F.FDLG_SMALLDIALOG,DlgProc)
   if res==#items-2 or res==#items-1 then
     if FileName and #FileList>0 then
       local url
