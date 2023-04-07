@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.11.3
+-- v1.1.11.4
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -40,7 +40,7 @@ transform=
   [Uuid Guids.FileOpenCreateId               ]: {1,3,6} -- Shell: New
   [Uuid Guids.FindFileId                     ]: build<6082 and {1,3,6,7,9,16.1-d,17.1-d,18.1-d,19.1-d,21.1-d,23.2-d,24.1-d} or {1,3,6,11,17.1,18.1,19.1,20.1,22.1,24.2,25.1} -- Find File
   [Uuid Guids.EditorSearchId                 ]: build<6096 and {1,2.3,3.3,5,7,12.1,13.1} or {1,4.3,5.3,7,15.1,16.1} -- Editor Search
-  [Uuid Guids.EditorReplaceId                ]: build<6096 and {1,2.3,3.3,5,7,12.1,13.1,14.1} or {1,4.3,5.3,7,10,15.1,16.1,17.1} -- Editor Replace
+  [Uuid Guids.EditorReplaceId                ]: build<6096 and {1,2.3,3.3,5,7,12.1,13.1,14.1} or {1,4.3,5.3,7,10,15.1,16.1,17.1,18.5} -- Editor Replace
   [Uuid Guids.FileSaveAsId                   ]: {1,3,6} -- File Save As
   [Uuid Guids.PluginInformationId            ]: {1,3,5,7,9,11,13,15,17}
   [Uuid Guids.DescribeFileId                 ]: {1,3} -- Describe File
