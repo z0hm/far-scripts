@@ -98,9 +98,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Dialog.Maximize.moon](https://github.com/z0hm/far-scripts/blob/master/Dialog.Maximize.moon "Dialog.Maximize.moon")
 
-  *v1.1.11.3 (13387 bytes, changed 2023-02-04 07:21)*
+  *v1.1.11.4 (13392 bytes, changed 2023-04-07 07:40)*
 
-  *SHA-256 `9b6fa2618d41536ba072ecf04139a87088e025b9e18367c1aa93f636d75a9cc2`*
+  *SHA-256 `e532c0b0cb25076cee037fd7ca1c65b346a1da01578ba3c711297be705b06c36`*
 
   Resizing dialogs, aligning the positions of dialog elements
 
@@ -914,9 +914,9 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *21706 bytes, changed 2022-02-13 11:08*
+  *23100 bytes, changed 2023-04-28 13:07*
 
-  *SHA-256 `aa5918fc7b3db42dd7008964b4bb27d2b6644ebd53d4b242856825f4c3296665`*
+  *SHA-256 `0a9421fea52735612c890f31ecd0df95d6c152509927a663b93c3fa8e19efa35`*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 

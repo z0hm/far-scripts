@@ -26,6 +26,8 @@ aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
 aqjptr=/tmp/aqjptr
 aqjdir=/tmp/aqjdir
+radtmp=/tmp/rad.rad
+wavtmp=/tmp/out.wav
 app=/usr/ap
 appath=$app/path.txt
 applay=$app/play.txt
@@ -380,6 +382,49 @@ plist(){
   for ((i=0;i<=$((${#mus[*]}-1));i++)); do echo "$path/${arr0[${mus[$i]}]}" >> "$appath"; done
 }
 
+# view RAD
+radio(){
+  if [[ $vname =~ ^.+\.([^\.]+)$ ]]
+  then tmp="${BASH_REMATCH[1]}"; tmp="${tmp^^}"
+    if   [ "$tmp" == "RAD" ]
+    then
+      local prot=""
+      local name=""
+      local link=""
+      local txt=""
+      local ip=""
+      if [[ "$(cat "$vpath")" =~ ^(.+//)([^:/]+)(.*)$ ]]
+      then
+        prot="${BASH_REMATCH[1]}"
+        name="${BASH_REMATCH[2]}"
+        link="${BASH_REMATCH[3]}"
+        if [ -n "$name" ]
+        then
+          if [[ "$name" =~ ^[0-9\.]+$ ]]
+          then echo -n "$prot$name$link" > "$radtmp"
+          else
+            txt="$(wget -qO - "https://8.8.8.8/resolve?name=$name&type=a&do=1")"
+            if [ -n "$txt" ]
+            then
+              if [[ "$txt" =~ \"Answer\":\[\{(.+)\}\] ]]
+              then
+                txt="${BASH_REMATCH[1]}"
+                if [ -n "$txt" ] && [[ "$txt" =~ \"name\":\"([^\"]+)\.\" ]]
+                then
+                  if [ "${name,,}" == "${BASH_REMATCH[1],,}" ] && [[ "$txt" =~ \"data\":\"([0-9\.]+)\" ]]
+                  then ip="${BASH_REMATCH[1]}"; echo -n "$prot$ip$link" > "$radtmp"
+                  fi
+                fi
+              fi
+            fi
+          fi
+        fi
+      fi
+      if [ -n "$ip" ]; then echo "name: $name"; echo "ip: $ip"; else echo "ip: $name"; fi
+    fi
+  fi
+}
+
 # Main()
 lnapp
 echo -e "\n$yr -=[ AP console quiet ]=- $te"
@@ -472,10 +517,10 @@ do
           else
             killap
             echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
-            ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "/tmp/out.wav"
+            ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "$wavtmp"
             tmshow
             echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
-            apset; cd "$app"; ./ap "/tmp/out.wav" 0
+            apset; cd "$app"; ./ap "$wavtmp" 0
             tight=false
           fi
         fi
@@ -518,13 +563,14 @@ do
       if ${arr1[$num]}; then echo; page=0; id=$num; path="$vpath"; cdir; if $brk; then brk=false; break; fi
       elif [ -f "$vpath" ]
       then
+        vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext^^}"
         if ${arr2[$num]}
         then
           killap; tmshow
-          echo -e "\n$yb ${tm[0]} play:$gb $num $gk ${arr0[$num]}$te"
-          infoln; apset; cd "$app"; ./ap "$vpath" $timeshift
+          echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
+          infoln; apset; cd "$app"
+          if   [ "$ext" == ".RAD" ]; then radio; ./ap "$radtmp" 0; else ./ap "$vpath" $timeshift; fi
         else
-          vname="${arr0[$num]}"; ext="${vname:(-4)}"; ext="${ext^^}"
           if   [ "$ext" == ".CUE" ]; then echo; rdcue; shcue; aqsave
           elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo; utf=true; fview
           else lnup
