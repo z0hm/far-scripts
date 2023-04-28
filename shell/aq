@@ -384,45 +384,27 @@ plist(){
 
 # view RAD
 radio(){
-  if [[ $vname =~ ^.+\.([^\.]+)$ ]]
-  then tmp="${BASH_REMATCH[1]}"; tmp="${tmp^^}"
-    if   [ "$tmp" == "RAD" ]
+  if [[ "$(cat "$vpath")" =~ ^(.+//)([^:/]+)(.*)$ ]]
+  then
+    local prot="${BASH_REMATCH[1]}"
+    local name="${BASH_REMATCH[2]}"
+    local link="${BASH_REMATCH[3]}"
+    if [ -n "$name" ]
     then
-      local prot=""
-      local name=""
-      local link=""
-      local txt=""
-      local ip=""
-      if [[ "$(cat "$vpath")" =~ ^(.+//)([^:/]+)(.*)$ ]]
-      then
-        prot="${BASH_REMATCH[1]}"
-        name="${BASH_REMATCH[2]}"
-        link="${BASH_REMATCH[3]}"
-        if [ -n "$name" ]
+      if [[ "$name" =~ ^[0-9\.]+$ ]]
+      then echo "ip: $name"; echo -n "$prot$name$link" > "$radtmp"
+      else
+        local txt="$(wget -qO - "https://8.8.8.8/resolve?name=$name&type=a&do=1")"
+        if [ -n "$txt" ]
         then
-          if [[ "$name" =~ ^[0-9\.]+$ ]]
-          then echo -n "$prot$name$link" > "$radtmp"
-          else
-            txt="$(wget -qO - "https://8.8.8.8/resolve?name=$name&type=a&do=1")"
-            if [ -n "$txt" ]
+          if [[ "$txt" =~ \"Answer\":\[\{(.+)\}\] ]]
+          then
+            txt="${BASH_REMATCH[1]}"
+            if [ -n "$txt" ] && [[ "$txt" =~ \"name\":\"([^\"]+)\.\" ]]
             then
-              if [[ "$txt" =~ \"Answer\":\[\{(.+)\}\] ]]
-              then
-                txt="${BASH_REMATCH[1]}"
-                if [ -n "$txt" ] && [[ "$txt" =~ \"name\":\"([^\"]+)\.\" ]]
-                then
-                  if [ "${name,,}" == "${BASH_REMATCH[1],,}" ] && [[ "$txt" =~ \"data\":\"([0-9\.]+)\" ]]
-                  then ip="${BASH_REMATCH[1]}"; echo -n "$prot$ip$link" > "$radtmp"
-                  fi
-                fi
-              fi
-            fi
-          fi
-        fi
-      fi
-      if [ -n "$ip" ]; then echo "name: $name"; echo "ip: $ip"; else echo "ip: $name"; fi
-    fi
-  fi
+              if [ "${name,,}" == "${BASH_REMATCH[1],,}" ] && [[ "$txt" =~ \"data\":\"([0-9\.]+)\" ]]
+              then local ip="${BASH_REMATCH[1]}"; echo "name: $name"; echo "ip: $ip"; echo -n "$prot$ip$link" > "$radtmp"
+              fi; fi; fi; fi; fi; fi; fi
 }
 
 # Main()
