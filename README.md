@@ -914,9 +914,9 @@ linux shell scripts - sh, bash, dash, sash & etc.
 
 ## [aq](https://github.com/z0hm/far-scripts/blob/master/shell/aq "aq")
 
-  *22719 bytes, changed 2023-04-28 15:27*
+  *22757 bytes, changed 2023-04-29 08:08*
 
-  *SHA-256 `38384eab250a9fb1f4d677b6c434af529c46986b211debd02a86c1eccfc4981d`*
+  *SHA-256 `2f22534da03ba701df87952dec3cf1fd62f42028dda6a683996ceb1cb36665bb`*
 
   Bash script - interface for [Album Player Console](http://albumplayer.ru/linux/ap64.tar.gz "apc")
 

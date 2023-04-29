@@ -19,6 +19,7 @@
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
+dns2ip=true  # use dns.google:443 
 apmode=true  # use auto select player
 apex=1  # use ap1
 home=/media
@@ -26,7 +27,7 @@ aqpage=/tmp/aqpage
 aqjump=/tmp/aqjump
 aqjptr=/tmp/aqjptr
 aqjdir=/tmp/aqjdir
-radtmp=/tmp/rad.rad
+radtmp=/tmp/out.rad
 wavtmp=/tmp/out.wav
 app=/usr/ap
 appath=$app/path.txt
@@ -186,11 +187,7 @@ shpage(){
           else
             if   [ "$ext" == ".CUE" ]; then cue+=($i); echo -e "$yb $i $yk ${arr0[$i]}$te"
             elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo -e "$cb $i $ck ${arr0[$i]}$te"; else echo -e "$eb $i $te ${arr0[$i]}"
-            fi
-          fi
-        fi
-      fi
-    fi
+            fi; fi; fi; fi; fi
   done
   if [ ${#cue[*]} -gt 0 ] && [ ${#mus[*]} -eq 1 ]; then echo; vname="${arr0[${cue[0]}]}"; vpath="$path/$vname"; rdcue; shcue; fi
 }
@@ -384,16 +381,19 @@ plist(){
 
 # view RAD
 radio(){
+  local ip=""
+  local prot=""
+  local name=""
+  local link=""
   if [[ "$(cat "$vpath")" =~ ^(.+//)([^:/]+)(.*)$ ]]
   then
-    local prot="${BASH_REMATCH[1]}"
-    local name="${BASH_REMATCH[2]}"
-    local link="${BASH_REMATCH[3]}"
+    prot="${BASH_REMATCH[1]}"
+    name="${BASH_REMATCH[2]}"
+    link="${BASH_REMATCH[3]}"
     if [ -n "$name" ]
     then
-      if [[ "$name" =~ ^[0-9\.]+$ ]]
-      then echo "ip: $name"; echo -n "$prot$name$link" > "$radtmp"
-      else
+      if [[ ! "$name" =~ ^[0-9\.]+$ ]]
+      then
         local txt="$(wget -qO - "https://8.8.8.8/resolve?name=$name&type=a&do=1")"
         if [ -n "$txt" ]
         then
@@ -403,8 +403,9 @@ radio(){
             if [ -n "$txt" ] && [[ "$txt" =~ \"name\":\"([^\"]+)\.\" ]]
             then
               if [ "${name,,}" == "${BASH_REMATCH[1],,}" ] && [[ "$txt" =~ \"data\":\"([0-9\.]+)\" ]]
-              then local ip="${BASH_REMATCH[1]}"; echo "name: $name"; echo "ip: $ip"; echo -n "$prot$ip$link" > "$radtmp"
+              then ip="${BASH_REMATCH[1]}"
               fi; fi; fi; fi; fi; fi; fi
+  if [ -n "$ip" ]; then echo "name: $name"; echo "ip: $ip"; echo -n "$prot$ip$link" > "$radtmp"; vpath="$radtmp"; else echo "ip: $name"; fi
 }
 
 # Main()
@@ -497,10 +498,9 @@ do
             mount -t iso9660 -o loop "$path/$vname" /tmp/iso
             tight=false
           else
-            killap
             echo -e "\n$yb conv:$gb $num $gk $vname$te\n"
             ffmpeg -vn -y -hide_banner -i "$path/$vname" -acodec pcm_s32le "$wavtmp"
-            tmshow
+            killap; tmshow
             echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
             apset; cd "$app"; ./ap "$wavtmp" 0
             tight=false
@@ -550,8 +550,9 @@ do
         then
           killap; tmshow
           echo -e "\n$yb ${tm[0]} play:$gb $num $gk $vname$te"
-          infoln; apset; cd "$app"
-          if   [ "$ext" == ".RAD" ]; then radio; ./ap "$radtmp" 0; else ./ap "$vpath" $timeshift; fi
+          infoln
+          if   [ "$ext" == ".RAD" ] && $dns2ip; then radio; fi;
+          apset; cd "$app"; ./ap "$vpath" $timeshift
         else
           if   [ "$ext" == ".CUE" ]; then echo; rdcue; shcue; aqsave
           elif [ "$ext" == ".TXT" -o "$ext" == ".LOG" ]; then echo; utf=true; fview
