@@ -381,15 +381,10 @@ plist(){
 
 # view RAD
 radio(){
-  local ip=""
-  local prot=""
-  local name=""
-  local link=""
+  local ip=""; local prot=""; local name=""; local link=""
   if [[ "$(cat "$vpath")" =~ ^(.+//)([^:/]+)(.*)$ ]]
   then
-    prot="${BASH_REMATCH[1]}"
-    name="${BASH_REMATCH[2]}"
-    link="${BASH_REMATCH[3]}"
+    prot="${BASH_REMATCH[1]}"; name="${BASH_REMATCH[2]}"; link="${BASH_REMATCH[3]}"
     if [ -n "$name" ]
     then
       if [[ ! "$name" =~ ^[0-9\.]+$ ]]
@@ -400,11 +395,8 @@ radio(){
           if [[ "$txt" =~ \"Answer\":\[\{(.+)\}\] ]]
           then
             txt="${BASH_REMATCH[1]}"
-            if [ -n "$txt" ] && [[ "$txt" =~ \"name\":\"([^\"]+)\.\" ]]
-            then
-              if [ "${name,,}" == "${BASH_REMATCH[1],,}" ] && [[ "$txt" =~ \"data\":\"([0-9\.]+)\" ]]
-              then ip="${BASH_REMATCH[1]}"
-              fi; fi; fi; fi; fi; fi; fi
+            if [ -n "$txt" ] && [[ "$txt" =~ \"name\":\"${name,,}\.\"[^\}]+\"data\":\"([0-9\.]+)\" ]]; then ip="${BASH_REMATCH[1]}"; fi
+          fi; fi; fi; fi; fi
   if [ -n "$ip" ]; then echo "name: $name"; echo "ip: $ip"; echo -n "$prot$ip$link" > "$radtmp"; vpath="$radtmp"; else echo "ip: $name"; fi
 }
 
