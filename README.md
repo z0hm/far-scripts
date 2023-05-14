@@ -746,11 +746,17 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")
 
-  *v1.3.2.5 (11534 bytes, changed 2020-08-20 20:44)*
+  *v1.3.2.6 (11664 bytes, changed 2023-05-14 10:35)*
 
-  *SHA-256 `85bab92630c25fa700c2b19bf864c6b1dc1852329514eff28906767d79dd468c`*
+  *SHA-256 `a9ca42311535946820fddf61fef2a7e58192f3839b926667d87de0299be58c17`*
 
   Select Duplicates File Names in Branch panel with complex logic
+
+  For the correct result, set default sorting system settings:
+
+    [ ] Treat digits as numbers
+
+    [ ] Case sensitive
 
   ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/7a5542e442b1ee61b39f6f9ad8dcae63/1585894944/7348/1370861/2020_04_03_091759.png)
 

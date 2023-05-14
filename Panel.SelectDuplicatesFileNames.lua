@@ -1,6 +1,9 @@
 ﻿-- Panel.SelectDuplicatesFileNames.lua
--- v1.3.2.5
+-- v1.3.2.6
 -- Select Duplicates File Names in Branch panel with complex logic
+-- For the correct result, set default sorting system settings:
+--   [ ] Treat digits as numbers
+--   [ ] Case sensitive
 -- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/7a5542e442b1ee61b39f6f9ad8dcae63/1585894944/7348/1370861/2020_04_03_091759.png)
 -- Keys: launch from Macro Browser alt.
 -- Tip: In the dialog all elements have prompts, press F1 for help
@@ -119,9 +122,9 @@ action=function()
       local pin,pif = tonumber(PInfo.ItemsNumber),tonumber(PInfo.Flags)
       if pin>1 then
         if bit.band(pif,F.PFLAGS_SELECTEDFIRST)>0 then Keys("ShiftF12") end
-        if bit.band(pif,F.PFLAGS_NUMERICSORT)>0 then pc(PANEL_ACTIVE,"FCTL_SETNUMERICSORT",0,NULL) end
-        local pfcss=bit.band(pif,F.PFLAGS_CASESENSITIVESORT)==0
-        if ts[4] and not pfcss or not ts[4] and pfcss then pc(PANEL_ACTIVE,"FCTL_SETCASESENSITIVESORT",ts[4] and 0 or 1,NULL) end
+        --if bit.band(pif,F.PFLAGS_NUMERICSORT)>0 then pc(PANEL_ACTIVE,"FCTL_SETNUMERICSORT",0,NULL) end
+        --local pfcss=bit.band(pif,F.PFLAGS_CASESENSITIVESORT)==0
+        --if ts[4] and not pfcss or not ts[4] and pfcss then pc(PANEL_ACTIVE,"FCTL_SETCASESENSITIVESORT",ts[4] and 0 or 1,NULL) end
         if bit.band(pif,F.PFLAGS_REVERSESORTORDER)==0 then pc(PANEL_ACTIVE,"FCTL_SETSORTORDER",1,NULL) end
         Panel.LoadCustomSortMode(PanelMode,{Description=Desc1;Indicator=Indi1;Compare=Compare})
         Panel.SetCustomSortMode(PanelMode,0)
