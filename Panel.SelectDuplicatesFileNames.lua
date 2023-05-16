@@ -1,5 +1,5 @@
 ﻿-- Panel.SelectDuplicatesFileNames.lua
--- v1.3.4.1
+-- v1.3.4.3
 -- Select Duplicates File Names in Branch panel with complex logic
 -- For the correct result, set default sorting system settings:
 --   [ ] Treat digits as numbers
@@ -29,7 +29,7 @@ local Flags = C.SORT_STRINGSORT
 local NULL = ffi.cast("void*",0)
 local PANEL_ACTIVE = ffi.cast("HANDLE",-1)
 local pBL0,pBL1 = ffi.cast("BOOL*",0),ffi.cast("BOOL*",1)
-local BS,ts = string.byte("\\"),{nil,true,9999,true,false,2,2,2,false}
+local BS,ts = string.byte("\\"),{nil,true,9999,true,false,2,2,2,false,true,false}
 local tHash = {}
 local temp = win.GetEnv("Temp")
 repfile = temp.."\\"..repfile
@@ -38,7 +38,7 @@ local freport = repfile
 ffi.cdef[[ wchar_t* wcsrchr(const wchar_t*, wchar_t); ]]
 
 local Items = {
- --[[01]] {F.DI_DOUBLEBOX,    3, 1, 53, 10, 0, 0, 0, 0, "Select duplicates of FileName. Help: F1"},
+ --[[01]] {F.DI_DOUBLEBOX,    3, 1, 53, 12, 0, 0, 0, 0, "Select duplicates of FileName. Help: F1"},
  --[[02]] {F.DI_CHECKBOX,     5, 2, 26,  2, 0, 0, 0, 0, "Num&ber of symbols"},
  --[[03]] {F.DI_EDIT,        27, 2, 32,  2, 0, 0, 0, 0, ""},
  --[[04]] {F.DI_CHECKBOX,     5, 3, 16,  3, 0, 0, 0, 0, "Ignore &case"},
@@ -46,25 +46,27 @@ local Items = {
  --[[06]] {F.DI_CHECKBOX,     5, 5, 21,  5, 0, 0, 0, F.DIF_3STATE, "&Sizes of FD:"},
  --[[07]] {F.DI_CHECKBOX,     5, 6, 22,  6, 0, 0, 0, F.DIF_3STATE, "&Hashes of FD:"},
  --[[08]] {F.DI_CHECKBOX,     5, 7, 26,  7, 0, 0, 0, F.DIF_3STATE, "&Attributes of FD:"},
- --[[09]] {F.DI_CHECKBOX,     5, 9, 15,  9, 0, 0, 0, 0, "Re&port"},
- --[[10]] {F.DI_TEXT,        -1, 8,  0,  0, 0, 0, 0, F.DIF_SEPARATOR,""},
- --[[11]] {F.DI_BUTTON,       0, 9,  0,  0, 0, 0, 0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Ok"},
- --[[12]] {F.DI_BUTTON,       0, 9,  0,  0, 0, 0, 0, F.DIF_CENTERGROUP,"Ca&ncel"}
+ --[[09]] {F.DI_CHECKBOX,     5, 8, 47,  8, 0, 0, 0, 0, "Accuracy (&Two-pass method for <> only)"},
+ --[[10]] {F.DI_CHECKBOX,     5, 9, 37,  9, 0, 0, 0, 0, "Cl&ear selection for begin"},
+ --[[11]] {F.DI_CHECKBOX,     5,11, 15, 11, 0, 0, 0, 0, "Re&port"},
+ --[[12]] {F.DI_TEXT,        -1,10,  0,  0, 0, 0, 0, F.DIF_SEPARATOR,""},
+ --[[13]] {F.DI_BUTTON,       0,11,  0,  0, 0, 0, 0, F.DIF_DEFAULTBUTTON+F.DIF_CENTERGROUP,"&Ok"},
+ --[[14]] {F.DI_BUTTON,       0,11,  0,  0, 0, 0, 0, F.DIF_CENTERGROUP,"Ca&ncel"}
 }
 
-local function GetStartAndLenW(name)
-  local ptr = C.wcsrchr(name,BS)
-  name = ptr==nil and name or ptr+1
-  local len = tonumber(C.wcslen(name))
-  if ts[2] and ts[3]<0 and -ts[3]<len then
-    local res=ffi.new("wchar_t[?]",len+1)
-    ffi.copy(res,name+len+ts[3],-ts[3]*2)
-    ffi.copy(res-ts[3],name,(len+ts[3])*2)
-    return res,len
-  else
-    return name,len
-  end
-end
+--local function GetStartAndLenW(name)
+--  local ptr = C.wcsrchr(name,BS)
+--  name = ptr==nil and name or ptr+1
+--  local len = tonumber(C.wcslen(name))
+--  if ts[2] and ts[3]<0 and -ts[3]<len then
+--    local res=ffi.new("wchar_t[?]",len+1)
+--    ffi.copy(res,name+len+ts[3],-ts[3]*2)
+--    ffi.copy(res-ts[3],name,(len+ts[3])*2)
+--    return res,len
+--  else
+--    return name,len
+--  end
+--end
 
 local function StartAndLenW(name)
   local ptr = C.wcsrchr(name,BS)
@@ -134,11 +136,15 @@ local function DlgProc(hDlg,Msg,Param1,Param2)
     hDlg:send(F.DM_SETCHECK,8,tts[8]==0 and F.BSTATE_UNCHECKED or tts[8]==1 and F.BSTATE_CHECKED or tts[8]==2 and F.BSTATE_3STATE)
     hDlg:send(F.DM_SETTEXT,8,"&Attributes of FD: "..(tts[8]==0 and "<>" or tts[8]==1 and "==" or "--"))
     hDlg:send(F.DM_SETCHECK,9,tts[9] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
-  elseif Msg==F.DN_BTNCLICK and (Param1==2 or Param1==4 or Param1==5 or Param1==9) then
+    hDlg:send(F.DM_SETCHECK,10,tts[10] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+    hDlg:send(F.DM_SETCHECK,11,tts[11] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
+  elseif Msg==F.DN_BTNCLICK and (Param1==2 or Param1==4 or Param1==5 or Param1==9 or Param1==10 or Param1==11) then
     tts[Param1] = Param2~=0
   elseif Msg==F.DN_BTNCLICK and (Param1==6 or Param1==7 or Param1==8) then
     tts[Param1] = Param2
     hDlg:send(F.DM_SETTEXT,Param1,(Param1==6 and "&Sizes of FD: " or (Param1==7 and "&Hashes of FD: " or "&Attributes of FD: "))..(Param2==0 and "<>" or (Param2==1 and "==" or "--")))
+    tts[9]=tts[6]==0 or tts[7]==0 or tts[8]==0
+    hDlg:send(F.DM_SETCHECK,9,tts[9] and F.BSTATE_CHECKED or F.BSTATE_UNCHECKED)
   elseif Msg==F.DN_EDITCHANGE and Param1==3 then -- Number symbols
     tts[3] = tonumber(hDlg:send(F.DM_GETTEXT,3)) or tts[3]
   else
@@ -165,6 +171,14 @@ Macro {
       if pc(PANEL_ACTIVE,"FCTL_GETPANELINFO",0,PInfo)==1 then
         local pin,pif = tonumber(PInfo.ItemsNumber),tonumber(PInfo.Flags)
         if pin>1 then
+          if ts[10] then
+            local psin=tonumber(PInfo.SelectedItemsNumber)
+            if psin>0 then
+              pc(PANEL_ACTIVE,"FCTL_BEGINSELECTION",0,NULL)
+              for i=0,psin-1 do pc(PANEL_ACTIVE,"FCTL_CLEARSELECTION",i,NULL) end
+              pc(PANEL_ACTIVE,"FCTL_ENDSELECTION",0,NULL)
+            end
+          end
           if bit.band(pif,F.PFLAGS_SELECTEDFIRST)>0 then Keys("ShiftF12") end
           if bit.band(pif,F.PFLAGS_REVERSESORTORDER)==0 then pc(PANEL_ACTIVE,"FCTL_SETSORTORDER",1,NULL) end
           Panel.LoadCustomSortMode(PanelMode,{Description=Description;Indicator=Indicator;Compare=Compare})
@@ -198,15 +212,15 @@ Macro {
               pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i,pBL1)
             end
           end
-          if ts[5] then
+          if ts[9] then
             PGPI(0)
             for i=1,pin-1 do
               st0,ln0,st2,ln2,sz0,fa0,hs0 = st1,ln1,st3,ln3,sz1,fa1,hs1
               PGPI(i)
               if (not ts[2] or ts[2] and C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,st2,ln2,st3,ln3)==2) -- Full FileName only
-                --and ((ts[6]==0 and sz0~=sz1 or ts[6]==1 and sz0==sz1 or ts[6]==2)
-                -- and (ts[7]==0 and hs0~=hs1 or ts[7]==1 and hs0==hs1 or ts[7]==2)
-                -- and (ts[8]==0 and fa0~=fa1 or ts[8]==1 and fa0==fa1 or ts[8]==2))
+                and (((ts[5] and ts[6]==1 or not ts[5] and ts[6]==0) and sz0==sz1)
+                  or ((ts[5] and ts[7]==1 or not ts[5] and ts[7]==0) and hs0==hs1)
+                  or ((ts[5] and ts[8]==1 or not ts[5] and ts[8]==0) and fa0==fa1))
               then
                 pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL0)
                 pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i,pBL0)
@@ -215,7 +229,7 @@ Macro {
           end
           pc(PANEL_ACTIVE,"FCTL_ENDSELECTION",0,NULL)
           pc(PANEL_ACTIVE,"FCTL_REDRAWPANEL",0,NULL)
-          if ts[9] then
+          if ts[11] then
             local pisel,pisin=""
             if pc(PANEL_ACTIVE,"FCTL_GETPANELINFO",0,PInfo)==1 then
               pisin=tonumber(PInfo.SelectedItemsNumber)
@@ -237,6 +251,7 @@ Macro {
               "\nSizes of FD: "..(ts[6]==0 and "<>" or ts[6]==1 and "==" or "--")..
               "\nHashes of FD: "..(ts[7]==0 and "<>" or ts[7]==1 and "==" or "--")..
               "\nAttributes of FD: "..(ts[8]==0 and "<>" or ts[8]==1 and "==" or "--")..
+              "\nAccuracy (two-pass method): "..tostring(ts[9])..
               "\n"..string.rep("-",40).."\nAttr\tSize\tHash\tPath\n"..string.rep("-",40).."\n")
             local function PGPSI(i)
               ppi.Size = pc(PANEL_ACTIVE,"FCTL_GETSELECTEDPANELITEM",i,NULL)
@@ -273,7 +288,9 @@ Macro {
     elseif Dlg.CurPos==6 then far.Message("-- ignore, == equal, <> is not equal","Help: Sizes of FD")
     elseif Dlg.CurPos==7 then far.Message("-- ignore, == equal, <> is not equal","Help: Hashes of FD")
     elseif Dlg.CurPos==8 then far.Message("-- ignore, == equal, <> is not equal","Help: Attributes of FD")
-    elseif Dlg.CurPos==9 then far.Message("mcs  - total time of execution in mcs\nReport will be saved to:\n"..freport,"Help: Report",nil,"l")
+    elseif Dlg.CurPos==9 then far.Message("Two-pass method for\n<> (is not equal) options only","Help: Accuracy")
+    elseif Dlg.CurPos==10 then far.Message("Clear selection for begin","Help: Clear selection")
+    elseif Dlg.CurPos==11 then far.Message("mcs  - total time of execution in mcs\nReport will be saved to:\n"..freport,"Help: Report",nil,"l")
     end
   end;
 }
