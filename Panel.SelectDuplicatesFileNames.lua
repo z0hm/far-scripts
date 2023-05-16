@@ -14,7 +14,7 @@ if not (bit and jit) then return end
 local F = far.Flags
 local guid = "0CCE7734-1558-46AF-8D31-56344AA9C049"
 local uGuid = win.Uuid(guid)
-local MenuGuid = "740B747D-D83F-45C9-89AA-A69F528C0408"
+local MenuGuid = "B8B6E1DA-4221-47D2-AB2E-9EC67D0DC1E3"
 local IntChecker = "E186306E-3B0D-48C1-9668-ED7CF64C0E65"
 
 -- Settings --------------------------------------------------------------------

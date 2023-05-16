@@ -746,9 +746,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")
 
-  *v1.3.4.1 (13484 bytes, changed 2023-05-16 06:27)*
+  *v1.3.4.1 (13484 bytes, changed 2023-05-16 07:26)*
 
-  *SHA-256 `b51ef775ec1a7c20b986c7401ad4a4ba04fa03b6fb1cc64e7ea36e133209e5b0`*
+  *SHA-256 `c592792c8728226e82d45aa6f49537e27c1a368a2502ac44c58075c9a82780ff`*
 
   Select Duplicates File Names in Branch panel with complex logic
 
