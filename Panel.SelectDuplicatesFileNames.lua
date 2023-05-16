@@ -38,7 +38,7 @@ local freport = repfile
 ffi.cdef[[ wchar_t* wcsrchr(const wchar_t*, wchar_t); ]]
 
 local Items = {
- --[[01]] {F.DI_DOUBLEBOX,    3, 1, 53, 12, 0, 0, 0, 0, "Select duplicates of FileName. Help: F1"},
+ --[[01]] {F.DI_DOUBLEBOX,    3, 1, 57, 12, 0, 0, 0, 0, Description..". Help: F1"},
  --[[02]] {F.DI_CHECKBOX,     5, 2, 26,  2, 0, 0, 0, 0, "Num&ber of symbols"},
  --[[03]] {F.DI_EDIT,        27, 2, 32,  2, 0, 0, 0, 0, ""},
  --[[04]] {F.DI_CHECKBOX,     5, 3, 16,  3, 0, 0, 0, 0, "Ignore &case"},
@@ -160,7 +160,7 @@ Macro {
   condition = function(key) return Area.Shell and key==Key or Area.Menu and Menu.Id==MenuGuid and Menu.Value:find(Description) and (key=="Enter" or key=="MsLClick") end;
   action=function()
     if Area.Menu then Keys("Esc") end
-    if far.Dialog(uGuid,-1,-1,57,Items[1][5]+2,nil,Items,nil,DlgProc)==#Items-1 then
+    if far.Dialog(uGuid,-1,-1,Items[1][4]+4,Items[1][5]+2,nil,Items,nil,DlgProc)==#Items-1 then
       local t0=far.FarClock()
       for i=2,#Items-3 do ts[i]=tts[i] end
       Flags = ts[4] and bit.bor(Flags,C.NORM_IGNORECASE) or bit.band(Flags,bit.bnot(C.NORM_IGNORECASE))
@@ -251,7 +251,7 @@ Macro {
               "\nSizes of FD: "..(ts[6]==0 and "<>" or ts[6]==1 and "==" or "--")..
               "\nHashes of FD: "..(ts[7]==0 and "<>" or ts[7]==1 and "==" or "--")..
               "\nAttributes of FD: "..(ts[8]==0 and "<>" or ts[8]==1 and "==" or "--")..
-              "\nAccuracy (two-pass method): "..tostring(ts[9])..
+              "\nAccuracy (Two-pass method): "..tostring(ts[9])..
               "\n"..string.rep("-",40).."\nAttr\tSize\tHash\tPath\n"..string.rep("-",40).."\n")
             local function PGPSI(i)
               ppi.Size = pc(PANEL_ACTIVE,"FCTL_GETSELECTEDPANELITEM",i,NULL)
