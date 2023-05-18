@@ -746,9 +746,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [Panel.SelectDuplicatesFileNames.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectDuplicatesFileNames.lua "Panel.SelectDuplicatesFileNames.lua")
 
-  *v1.3.4.3 (14658 bytes, changed 2023-05-16 11:02)*
+  *v1.3.5.0 (15848 bytes, changed 2023-05-18 13:46)*
 
-  *SHA-256 `0e448b93e6e0fae143314fe0fe4775b1d27a33323680e0e5240e225023bcc5c6`*
+  *SHA-256 `5adf048c1c0926a5dcc4627c87b69ad38c7d1edee01da0a7eb0207de377edf5d`*
 
   Select Duplicates File Names in Branch panel with complex logic
 
@@ -757,6 +757,8 @@ a very wide range of tasks using the Far and Windows API's.
     [ ] Treat digits as numbers
 
     [ ] Case sensitive
+
+  Column <R> shows the Result of the comparison
 
   The Integrity Checker plugin is required to calculate Hashes
 

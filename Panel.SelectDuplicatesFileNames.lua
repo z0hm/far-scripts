@@ -1,9 +1,10 @@
 ﻿-- Panel.SelectDuplicatesFileNames.lua
--- v1.3.4.3
+-- v1.3.5.0
 -- Select Duplicates File Names in Branch panel with complex logic
 -- For the correct result, set default sorting system settings:
 --   [ ] Treat digits as numbers
 --   [ ] Case sensitive
+-- Column <R> shows the Result of the comparison
 -- The Integrity Checker plugin is required to calculate Hashes
 -- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/7a5542e442b1ee61b39f6f9ad8dcae63/1585894944/7348/1370861/2020_04_03_091759.png)
 -- Keys: launch from Macro Browser alt.
@@ -11,10 +12,14 @@
 
 if not (bit and jit) then return end
 
+local bit = bit
+local band,bnot,bor = bit.band,bit.bnot,bit.bor
+
 local F = far.Flags
 local guid = "0CCE7734-1558-46AF-8D31-56344AA9C049"
 local uGuid = win.Uuid(guid)
-local MenuGuid = "B8B6E1DA-4221-47D2-AB2E-9EC67D0DC1E3"
+local MenuGuid1 = "B8B6E1DA-4221-47D2-AB2E-9EC67D0DC1E3"
+local MenuGuid2 = "C323FBCF-6803-4F2C-B8B4-E576E7F125DC"
 local IntChecker = "E186306E-3B0D-48C1-9668-ED7CF64C0E65"
 
 -- Settings --------------------------------------------------------------------
@@ -23,7 +28,7 @@ local Key = "CtrlShiftF3"
 local repfile = "PSDFN-Report.txt"
 --------------------------------------------------------------------------------
 
-local ffi = require'ffi'
+local ffi = require"ffi"
 local C = ffi.C
 local Flags = C.SORT_STRINGSORT
 local NULL = ffi.cast("void*",0)
@@ -34,8 +39,20 @@ local tHash = {}
 local temp = win.GetEnv("Temp")
 repfile = temp.."\\"..repfile
 local freport = repfile
+local Duplicates = {}
+local prefix = ""
 
 ffi.cdef[[ wchar_t* wcsrchr(const wchar_t*, wchar_t); ]]
+
+local c0col = {
+  GetContentFields = function(ColNames) for i,v in ipairs(ColNames) do if v=="R" then return true end end end;
+  GetContentData = function(FilePath,ColNames)
+    local data={}
+    for i,v in ipairs(ColNames) do if v=="R" then data[i] = Duplicates[FilePath] or "" end end
+    return next(data) and data
+  end
+}
+if not Far then for k,v in pairs(c0col) do export[k]=v end elseif ContentColumns then ContentColumns(c0col) end
 
 local Items = {
  --[[01]] {F.DI_DOUBLEBOX,    3, 1, 57, 12, 0, 0, 0, 0, Description..". Help: F1"},
@@ -54,20 +71,6 @@ local Items = {
  --[[14]] {F.DI_BUTTON,       0,11,  0,  0, 0, 0, 0, F.DIF_CENTERGROUP,"Ca&ncel"}
 }
 
---local function GetStartAndLenW(name)
---  local ptr = C.wcsrchr(name,BS)
---  name = ptr==nil and name or ptr+1
---  local len = tonumber(C.wcslen(name))
---  if ts[2] and ts[3]<0 and -ts[3]<len then
---    local res=ffi.new("wchar_t[?]",len+1)
---    ffi.copy(res,name+len+ts[3],-ts[3]*2)
---    ffi.copy(res-ts[3],name,(len+ts[3])*2)
---    return res,len
---  else
---    return name,len
---  end
---end
-
 local function StartAndLenW(name)
   local ptr = C.wcsrchr(name,BS)
   name = ptr==nil and name or ptr+1
@@ -84,7 +87,7 @@ end
 local function GetHash(path)
   if type(path)~="string" then path=win.Utf16ToUtf8(ffi.string(path,C.wcslen(path)*2)) end
   local hash=tHash[path]
-  if not hash then hash=tostring(Plugin.SyncCall(IntChecker,"gethash","SHA-256",path,true)) tHash[path]=hash end
+  if not hash then hash=Plugin.SyncCall(IntChecker,"gethash","SHA-512",prefix..path,true) or "" tHash[path]=hash end
   return hash
 end
 
@@ -105,8 +108,8 @@ local Compare = function(p1,p2)
   if ts[7]~=2 then
     local sz1=tonumber(p1.FileSize)
     local sz2=tonumber(p2.FileSize)
-    local hs1 = sz1==0 and "false" or GetHash(p1.FileName)
-    local hs2 = sz2==0 and "false" or GetHash(p2.FileName)
+    local hs1 = sz1==0 and "" or GetHash(p1.FileName)
+    local hs2 = sz2==0 and "" or GetHash(p2.FileName)
     if     hs1<hs2 then res=-1
     elseif hs1>hs2 then res=1
     end
@@ -157,13 +160,20 @@ Panel.LoadCustomSortMode(PanelMode,{Description=Description;Indicator=Indicator;
 
 Macro {
   description=Description.." in Branch panel"; area="Shell Menu"; key = Key.." Enter MsLClick"; name="PSDFN";
-  condition = function(key) return Area.Shell and key==Key or Area.Menu and Menu.Id==MenuGuid and Menu.Value:find(Description) and (key=="Enter" or key=="MsLClick") end;
+  condition = function(key) return Area.Shell and key==Key or Area.Menu and (Menu.Id==MenuGuid1 or Menu.Id==MenuGuid2) and Menu.Value:find(Description) and (key=="Enter" or key=="MsLClick") end;
   action=function()
     if Area.Menu then Keys("Esc") end
+    if panel.GetPanelInfo(nil,1).ItemsNumber>0 then
+      local f=panel.GetPanelItem(nil,1,1).FileName
+      local pre0='\\\\?\\'
+      local pre1=f:sub(1,4)==pre0
+      local pre2=f:sub(2,3)==':\\'
+      prefix=pre1 and '' or (pre2 and pre0 or pre0..APanel.Path..'\\')
+    end
     if far.Dialog(uGuid,-1,-1,Items[1][4]+4,Items[1][5]+2,nil,Items,nil,DlgProc)==#Items-1 then
       local t0=far.FarClock()
       for i=2,#Items-3 do ts[i]=tts[i] end
-      Flags = ts[4] and bit.bor(Flags,C.NORM_IGNORECASE) or bit.band(Flags,bit.bnot(C.NORM_IGNORECASE))
+      Flags = ts[4] and bor(Flags,C.NORM_IGNORECASE) or band(Flags,bnot(C.NORM_IGNORECASE))
       --local PInfo=panel.GetPanelInfo(nil,1)
       local PInfo=ffi.new("struct PanelInfo")
       PInfo.StructSize=ffi.sizeof(PInfo)
@@ -179,11 +189,11 @@ Macro {
               pc(PANEL_ACTIVE,"FCTL_ENDSELECTION",0,NULL)
             end
           end
-          if bit.band(pif,F.PFLAGS_SELECTEDFIRST)>0 then Keys("ShiftF12") end
-          if bit.band(pif,F.PFLAGS_REVERSESORTORDER)==0 then pc(PANEL_ACTIVE,"FCTL_SETSORTORDER",1,NULL) end
+          if band(pif,F.PFLAGS_SELECTEDFIRST)>0 then Keys("ShiftF12") end
+          if band(pif,F.PFLAGS_REVERSESORTORDER)==0 then pc(PANEL_ACTIVE,"FCTL_SETSORTORDER",1,NULL) end
           Panel.LoadCustomSortMode(PanelMode,{Description=Description;Indicator=Indicator;Compare=Compare})
           Panel.SetCustomSortMode(PanelMode,0)
-          local st0,ln0,st1,ln1,st2,ln2,st3,ln3,sz0,sz1,fa0,fa1,hs0,hs1
+          local st0,ln0,st1,ln1,st2,ln2,st3,ln3,sz0,sz1,fa0,fa1,hs0,hs1,fp0,fp1
           local ppi = ffi.new("struct FarGetPluginPanelItem")
           ppi.StructSize = ffi.sizeof("struct FarGetPluginPanelItem")
           local function PGPI(i)
@@ -193,42 +203,52 @@ Macro {
               ppi.Item = ffi.cast("struct PluginPanelItem*",buf)
               pc(PANEL_ACTIVE,"FCTL_GETPANELITEM",i,ppi)
               if ts[2] then st1,ln1,st3,ln3=StartAndLenW(ffi.cast("const unsigned short*",ppi.Item.FileName)) end
-              if ts[6]~=2 then sz1=tonumber(ppi.Item.FileSize) end
-              if ts[7]~=2 then hs1=GetHash(ppi.Item.FileName) end
-              if ts[8]~=2 then fa1=tonumber(ppi.Item.FileAttributes) end
+              sz1=tonumber(ppi.Item.FileSize)
+              if ts[7]~=2 then
+                fp1=win.Utf16ToUtf8(ffi.string(ppi.Item.FileName,C.wcslen(ppi.Item.FileName)*2))
+                hs1=GetHash(fp1)
+              end
+              fa1=tonumber(ppi.Item.FileAttributes)
             end
           end
-          PGPI(0)
+          Duplicates={}
+          local count,mark,sel = 0,'0'
           pc(PANEL_ACTIVE,"FCTL_BEGINSELECTION",0,NULL)
+          PGPI(0)
           for i=1,pin-1 do
-            st0,ln0,st2,ln2,sz0,fa0,hs0 = st1,ln1,st3,ln3,sz1,fa1,hs1
+            st0,ln0,st2,ln2,sz0,fa0,hs0,fp0 = st1,ln1,st3,ln3,sz1,fa1,hs1,fp1
             PGPI(i)
             if (not ts[2] or ts[2] and C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,st0,ln0,st1,ln1)==2)
               and ((ts[6]==0 and sz0~=sz1 or ts[6]==1 and sz0==sz1 or ts[6]==2)
                and (ts[7]==0 and hs0~=hs1 or ts[7]==1 and hs0==hs1 or ts[7]==2)
                and (ts[8]==0 and fa0~=fa1 or ts[8]==1 and fa0==fa1 or ts[8]==2))
             then
-              pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL1)
-              pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i,pBL1)
+              if band(fa0,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL1) Duplicates[prefix..fp0]=mark end
+              if band(fa1,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i  ,pBL1) Duplicates[prefix..fp1]=mark end
+              sel=true
+            end
+            if sz1~=sz0 then count,mark,sel = 0,'0'
+            elseif sel and sz1==sz0 and hs1~=hs0 then count=count+1 if count>35 then count=0 end mark=tostring(tonumber(count,36))
             end
           end
           if ts[9] then
             PGPI(0)
             for i=1,pin-1 do
-              st0,ln0,st2,ln2,sz0,fa0,hs0 = st1,ln1,st3,ln3,sz1,fa1,hs1
+              st0,ln0,st2,ln2,sz0,fa0,hs0,fp0 = st1,ln1,st3,ln3,sz1,fa1,hs1,fp1
               PGPI(i)
               if (not ts[2] or ts[2] and C.CompareStringW(C.LOCALE_USER_DEFAULT,Flags,st2,ln2,st3,ln3)==2) -- Full FileName only
                 and (((ts[5] and ts[6]==1 or not ts[5] and ts[6]==0) and sz0==sz1)
                   or ((ts[5] and ts[7]==1 or not ts[5] and ts[7]==0) and hs0==hs1)
                   or ((ts[5] and ts[8]==1 or not ts[5] and ts[8]==0) and fa0==fa1))
               then
-                pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL0)
-                pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i,pBL0)
+                if band(fa0,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL0) Duplicates[prefix..fp0]=nil end
+                if band(fa1,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i  ,pBL0) Duplicates[prefix..fp1]=nil end
               end
             end
           end
           pc(PANEL_ACTIVE,"FCTL_ENDSELECTION",0,NULL)
           pc(PANEL_ACTIVE,"FCTL_REDRAWPANEL",0,NULL)
+          local t1=far.FarClock()
           if ts[11] then
             local pisel,pisin=""
             if pc(PANEL_ACTIVE,"FCTL_GETPANELINFO",0,PInfo)==1 then
@@ -244,7 +264,7 @@ Macro {
             end
             local h = io.open(freport,"w+b")
             h:write("Items: "..pisel..
-              "\nExecution time: "..(far.FarClock()-t0)..
+              "\nExecution time: "..(t1-t0)..
               " mcs\nNumber of symbols: "..(ts[2] and ts[3] or "all")..
               "\nIgnore case: "..tostring(ts[4])..
               "\nIgnore Full Duplicates of FileName: "..tostring(ts[5])..
