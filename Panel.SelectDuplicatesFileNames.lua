@@ -40,7 +40,6 @@ local temp = win.GetEnv("Temp")
 repfile = temp.."\\"..repfile
 local freport = repfile
 local Duplicates = {}
-local prefix = ""
 
 ffi.cdef[[ wchar_t* wcsrchr(const wchar_t*, wchar_t); ]]
 
@@ -87,7 +86,7 @@ end
 local function GetHash(path)
   if type(path)~="string" then path=win.Utf16ToUtf8(ffi.string(path,C.wcslen(path)*2)) end
   local hash=tHash[path]
-  if not hash then hash=Plugin.SyncCall(IntChecker,"gethash","SHA-512",prefix..path,true) or "" tHash[path]=hash end
+  if not hash then hash=Plugin.SyncCall(IntChecker,"gethash","SHA-512",path,true) or "" tHash[path]=hash end
   return hash
 end
 
@@ -163,13 +162,6 @@ Macro {
   condition = function(key) return Area.Shell and key==Key or Area.Menu and (Menu.Id==MenuGuid1 or Menu.Id==MenuGuid2) and Menu.Value:find(Description) and (key=="Enter" or key=="MsLClick") end;
   action=function()
     if Area.Menu then Keys("Esc") end
-    if panel.GetPanelInfo(nil,1).ItemsNumber>0 then
-      local f=panel.GetPanelItem(nil,1,1).FileName
-      local pre0='\\\\?\\'
-      local pre1=f:sub(1,4)==pre0
-      local pre2=f:sub(2,3)==':\\'
-      prefix=pre1 and '' or (pre2 and pre0 or pre0..APanel.Path..'\\')
-    end
     if far.Dialog(uGuid,-1,-1,Items[1][4]+4,Items[1][5]+2,nil,Items,nil,DlgProc)==#Items-1 then
       local t0=far.FarClock()
       for i=2,#Items-3 do ts[i]=tts[i] end
@@ -212,9 +204,15 @@ Macro {
             end
           end
           Duplicates={}
-          local count,mark,sel = 0,'0'
+          local count,mark,sel,prefix = 0,'0'
           pc(PANEL_ACTIVE,"FCTL_BEGINSELECTION",0,NULL)
           PGPI(0)
+          if ts[7]~=2 then
+            local pre0='\\\\?\\'
+            local pre1=fp1:sub(1,4)==pre0
+            local pre2=fp1:sub(2,3)==':\\'
+            prefix=pre1 and '' or (pre2 and pre0 or pre0..APanel.Path..'\\')
+          end
           for i=1,pin-1 do
             st0,ln0,st2,ln2,sz0,fa0,hs0,fp0 = st1,ln1,st3,ln3,sz1,fa1,hs1,fp1
             PGPI(i)
@@ -223,8 +221,8 @@ Macro {
                and (ts[7]==0 and hs0~=hs1 or ts[7]==1 and hs0==hs1 or ts[7]==2)
                and (ts[8]==0 and fa0~=fa1 or ts[8]==1 and fa0==fa1 or ts[8]==2))
             then
-              if band(fa0,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL1) Duplicates[prefix..fp0]=mark end
-              if band(fa1,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i  ,pBL1) Duplicates[prefix..fp1]=mark end
+              if band(fa0,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL1) if ts[7]~=2 then Duplicates[prefix..fp0]=mark end end
+              if band(fa1,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i  ,pBL1) if ts[7]~=2 then Duplicates[prefix..fp1]=mark end end
               sel=true
             end
             if sz1~=sz0 then count,mark,sel = 0,'0'
@@ -241,8 +239,8 @@ Macro {
                   or ((ts[5] and ts[7]==1 or not ts[5] and ts[7]==0) and hs0==hs1)
                   or ((ts[5] and ts[8]==1 or not ts[5] and ts[8]==0) and fa0==fa1))
               then
-                if band(fa0,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL0) Duplicates[prefix..fp0]=nil end
-                if band(fa1,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i  ,pBL0) Duplicates[prefix..fp1]=nil end
+                if band(fa0,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i-1,pBL0) if ts[7]~=2 then Duplicates[prefix..fp0]=nil end end
+                if band(fa1,0x10)==0 then pc(PANEL_ACTIVE,"FCTL_SETSELECTION",i  ,pBL0) if ts[7]~=2 then Duplicates[prefix..fp1]=nil end end
               end
             end
           end
