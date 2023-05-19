@@ -4,7 +4,7 @@
 -- For the correct result, set default sorting system settings:
 --   [ ] Treat digits as numbers
 --   [ ] Case sensitive
--- Column **<R>** shows the Result of the comparison
+-- Column **&lt;R&gt;** shows the Result of the comparison
 -- The Integrity Checker plugin is required to calculate Hashes
 -- ![Panel.SelectDuplicatesFileNames](http://i.piccy.info/i9/7a5542e442b1ee61b39f6f9ad8dcae63/1585894944/7348/1370861/2020_04_03_091759.png)
 -- Keys: launch from Macro Browser alt.
