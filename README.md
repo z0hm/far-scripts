@@ -704,27 +704,6 @@ a very wide range of tasks using the Far and Windows API's.
 
 
 
-[&nbsp;](#user-content-panelrad2m3ulua)
-
-## [Panel.RAD2M3U.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.RAD2M3U.lua "Panel.RAD2M3U.lua")
-
-  *v1.0.3 (3225 bytes, changed 2021-06-08 06:43)*
-
-  *SHA-256 `ff22e3edee8ad10c0e3cb8e404a54d060a4168f232a211c023bb804df3233d1c`*
-
-  [Album Player](http://albumplayer.ru/index.html "Album Player") (APlayer) radio station files converter *.rad,*m3u<=>FolderName.m3u
-
-  Actions:
-
-  * M3U: creating a common playlist from RAD and M3U files in a folder and subfolders
-
-  * RAD: to create RAD and M3U files with folders and subfolders from the common playlist, place the cursor on the playlist and press <kbd>F2</kbd>
-
-  Keys: <kbd>F2</kbd>
-
-
-
-
 [&nbsp;](#user-content-panelselectbomlua)
 
 ## [Panel.SelectBOM.lua](https://github.com/z0hm/far-scripts/blob/master/Panel.SelectBOM.lua "Panel.SelectBOM.lua")
