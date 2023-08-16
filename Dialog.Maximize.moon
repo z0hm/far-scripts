@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.11.4
+-- v1.1.11.5
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -12,19 +12,19 @@ DX=4 -- indent
 XScale=_G.XScale or XScale
 _XScale={id:"",xs:XScale,cw:nil,ch:nil,dw:nil,dh:nil,dl:nil,dt:nil,dr:nil,db:nil,pl:nil,pr:nil} -- original width
 
-f=far
-F,AdvControl,Dialog,GetDlgItem,Guids,SetDlgItem,SendDlgMessage,InputRecordToName = f.Flags,f.AdvControl,f.Dialog,f.GetDlgItem,f.Guids,f.SetDlgItem,f.SendDlgMessage,f.InputRecordToName
+far=far
+F,AdvControl,Dialog,GetDlgItem,Guids,SetDlgItem,SendDlgMessage,InputRecordToName = far.Flags,far.AdvControl,far.Dialog,far.GetDlgItem,far.Guids,far.SetDlgItem,far.SendDlgMessage,far.InputRecordToName
 
-m=math
-abs,ceil,floor,fmod,modf = m.abs,m.ceil,m.floor,m.fmod,m.modf
+math=math
+abs,ceil,floor,fmod,modf = math.abs,math.ceil,math.floor,math.fmod,math.modf
 
-s=string
-match = s.match
+string=string
+match = string.match
 
-w=win
-Uuid=w.Uuid
+win=win
+Uuid=win.Uuid
 
-build=({f.AdvControl('ACTL_GETFARMANAGERVERSION',true)})[4]
+build=({AdvControl('ACTL_GETFARMANAGERVERSION',true)})[4]
 d=build<6061 and 1 or 0  -- no separate Fuzzy Search yet?
 
 Guid_DlgXScale=Uuid"D37E1039-B69B-4C63-B750-CBA4B3A7727C"
