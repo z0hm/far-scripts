@@ -83,9 +83,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [CommandLineF4.lua](https://github.com/z0hm/far-scripts/blob/master/CommandLineF4.lua "CommandLineF4.lua")
 
-  *v1.1.1 (2369 bytes, changed 2020-04-09 09:55)*
+  *v1.1.2 (2399 bytes, changed 2023-08-20 07:32)*
 
-  *SHA-256 `4889097a118ea867db12c0314e83269fb20d9a9053b2cca40b2799ead068173f`*
+  *SHA-256 `ee1296bf4c455f99d41449810257f76636423e42f35a8272e159467d9f89fd13`*
 
   Editing command line content in the editor
 

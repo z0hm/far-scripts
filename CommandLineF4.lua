@@ -1,5 +1,5 @@
 ﻿-- CommandLineF4.lua
--- v1.1.1
+-- v1.1.2
 -- Editing command line content in the editor
 -- Keys: F4 in Panel with not empty command line, F2 in editor for save text to command line
 
@@ -10,6 +10,8 @@ local name = "far.xxxxxx.cmd"
 
 local ffi = require'ffi'
 local C = ffi.C
+local table = table
+local tinsert = table.insert
 
 Macro {
  area="Shell"; key="F4"; flags="NotEmptyCommandLine"; description="Command Line -> Editor";
@@ -43,7 +45,7 @@ Macro {
     local y=tonumber(ei.CurLine)
     x=tonumber(ei.CurPos)
     l=tonumber(ei.TotalLines)-1
-    local ss,ln
+    local t,ln = {}
     local egs=ffi.new("struct EditorGetString")
     egs.StructSize=ffi.sizeof(egs)
     for i=0,l do
@@ -51,11 +53,11 @@ Macro {
       egs.StringNumber=i
       if ec(-1,"ECTL_GETSTRING",0,egs) then
         ln=egs.StringLength*2
-        ss=ffi.string(egs.StringText,ln)
         len=len+ln
-        if i<l then text=text..ss..nw else text=text..ss end
+        tinsert(t,ffi.string(egs.StringText,ln))
       end
     end
+    text=table.concat(t,nw)
   end
   editor.Quit(-1)
   local cl=ffi.new("wchar_t[?]",len/2+l+1)
