@@ -304,7 +304,7 @@ aqhelp(){
   echo -e "\n$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
   echo -e "\n$gk i$wk  show name played file and info about it,$gk i<num>$wk  show info about file$te"
   echo -e "$gk c<num>$wk  convert file to /tmp/out.wav,$gk v<num>$wk/${gk}u<num>$wk  view ansi/utf-8 file$te"
-  echo -e "\n$gk ap$wk  show active player,$gk ap0$wk  use auto select player$te"
+  echo -e "\n$gk ap$wk  show active player,$gk ap0$wk  use auto select player,$gk d$wk  dns2ip On/Off$te"
   echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
   echo -e "\n$gk ro<num>$wk  remount partition as RO,$gk rw<num>$wk  remount partition as RW$te"
   echo -e "$gk cp<num>$wk  copy file to $home/$flash,$gk mv<num>$wk  move file to $home/$flash$te"
@@ -513,6 +513,7 @@ do
       elif [ "$num" == "t" ]; then oldnum=$num; tmdiff; echo -e "\n$wb time:$yb ${tm[0]}$df $te"
       elif [ "$num" == "tr" ]; then tmshow; echo -e "\n$wb time:$yb ${tm[0]} $wb diff:$yb 00:00 $te"
       elif [ "$num" == "l" ]; then echo; shpage
+      elif [ "$num" == "d" ]; then echo; if $dns2ip; then dns2ip=false; echo -e "$yb dns2ip:$gb Off $te"; else dns2ip=true; echo -e "$yb dns2ip:$gb On $te"; fi
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
       elif [[ $num =~ ^[np]$ ]]; then steppl; if $brk; then brk=false; break; fi
