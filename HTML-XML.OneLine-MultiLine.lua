@@ -1,5 +1,5 @@
 ﻿-- HTML-XML.OneLine-MultiLine.lua
--- v1.0.0.2
+-- v1.0.0.3
 -- Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 -- Keys: launch from Macro Browser alt.
 
@@ -22,7 +22,7 @@ action = function()
     for m0,m1,v,m2,s in l:gmatch("(<([/!%?%[]?)(%[?[%w%-]+)[^>]-([/!%?%-%]]?)>)([^<]*)") do
       local j=m1=="/"
       local k=j or m1==""
-      if k then if j0 and j then i=i-1 elseif not (j0 or j) then i=i+1 end end
+      if k then if j0 and j then if i>0 then i=i-1 end elseif not (j0 or j) then i=i+1 end end
       if m2~="" then j=true end
       if k then j0=j end
       s=s:gsub("[%s%c]+$","")

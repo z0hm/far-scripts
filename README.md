@@ -293,9 +293,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [HTML-XML.OneLine-MultiLine.lua](https://github.com/z0hm/far-scripts/blob/master/HTML-XML.OneLine-MultiLine.lua "HTML-XML.OneLine-MultiLine.lua")
 
-  *v1.0.0.2 (1224 bytes, changed 2022-02-18 13:24)*
+  *v1.0.0.3 (1240 bytes, changed 2023-10-21 06:01)*
 
-  *SHA-256 `ced9c13da8abbeb0a969f93bcd6661465f6b2b70585bdaf30644bd30c1884a9d`*
+  *SHA-256 `485e53c382199e4f4f41ddbb23343ba0263cfa0398ea2e201caf3608ef8d09a7`*
 
   Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 
