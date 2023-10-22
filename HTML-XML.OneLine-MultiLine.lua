@@ -1,5 +1,5 @@
 ﻿-- HTML-XML.OneLine-MultiLine.lua
--- v1.0.0.3
+-- v1.0.0.4
 -- Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 -- Keys: launch from Macro Browser alt.
 
@@ -20,18 +20,24 @@ action = function()
   local a=io.open(fout,"ab")
 
   -- <(/?).+?(/?)>
-  local i,j0,v0,m10 = -1,false,"",""
+  local i,j0,m10,v0 = -1,false,""
   for l in r:lines() do
-    for m0,m1,v,m2,s in l:gmatch("(<([/!%?%[]?)(%[?[%w%-]+)[^>]-([/!%?%-%]]?)>)([^<]*)") do
-      local j=m1=="/"
-      local k=j or m1==""
-      if k then if j0 and j then if i>0 then i=i-1 end elseif not (j0 or j) then i=i+1 end end
-      if m2~="" then j=true end
-      if k then j0=j end
-      s=s:gsub("[%s%c]+$","")
-      if v0~="" and (v0~=v or (m1==m10 or m1=="")) then a:write(eol..srep(tab,i)) end
-      a:write(m0..s)
-      v0,m10 = v,m1
+    l=l:gsub("^[%s%c]+",""):gsub("[%s%c]+$","")
+    if l==""
+    then a:write(eol) if v0 then v0="" end
+    else
+      local z=true
+      for m0,m1,v,m2,s in l:gmatch("(<([/!%?%[]?)(%[?[%w_%-]+)[^>]-([/!%?%-%]]?)>)([^<]*)") do
+        local j=m1=="/"
+        local k=j or m1==""
+        if k then if j0 and j then if i>0 then i=i-1 end elseif not (j0 or j) then i=i+1 end end
+        if m2~="" then j=true end
+        if k then j0=j end
+        if v0 and (v0~=v or (m1==m10 or m1=="")) then a:write(eol..srep(tab,i)) end
+        a:write(m0..s)
+        v0,m10,z = v,m1,false
+      end
+      if z then a:write(eol..srep(tab,i)..l) if v0 then v0="" end end
     end
   end
   a:close()
