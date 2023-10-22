@@ -3,6 +3,9 @@
 -- Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 -- Keys: launch from Macro Browser alt.
 
+local string=string
+local srep = string.rep
+
 Macro {
 description="HTML-XML.OneLine->MultiLine"; area="Shell Editor";
 action = function()
@@ -26,7 +29,7 @@ action = function()
       if m2~="" then j=true end
       if k then j0=j end
       s=s:gsub("[%s%c]+$","")
-      if v0~="" and (v0~=v or (m1==m10 or m1=="")) then a:write("\n"..string.rep(tab,i)) end
+      if v0~="" and (v0~=v or (m1==m10 or m1=="")) then a:write("\n"..srep(tab,i)) end
       a:write(m0..s)
       v0,m10 = v,m1
     end
