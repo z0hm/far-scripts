@@ -27,7 +27,7 @@ action = function()
     then a:write(eol) if v0 then v0="" end
     else
       local z=true
-      for m0,m1,v,m2,s in l:gmatch("(<([/!%?%[]?)(%[?[%w_%-]+)[^>]-([/!%?%-%]]?)>)([^<]*)") do
+      for m0,m1,v,m2,s in l:gmatch("(<([/!%?%[]?)(%[?[%w_%-:]+)[^>]-([/!%?%-%]]?)>)([^<]*)") do
         local j=m1=="/"
         local k=j or m1==""
         if k then if j0 and j then if i>0 then i=i-1 end elseif not (j0 or j) then i=i+1 end end
