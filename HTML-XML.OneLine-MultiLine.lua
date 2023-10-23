@@ -1,10 +1,12 @@
 ﻿-- HTML-XML.OneLine-MultiLine.lua
--- v1.0.0.4
+-- v1.0.1.0
 -- Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 -- Keys: launch from Macro Browser alt.
 
 local string=string
 local srep = string.rep
+local table=table
+local tinsert,tremove = table.insert,table.remove
 
 Macro {
 description="HTML-XML.OneLine->MultiLine"; area="Shell Editor";
@@ -20,25 +22,31 @@ action = function()
   local a=io.open(fout,"ab")
 
   -- <(/?).+?(/?)>
-  local i,j0,m10,v0 = -1,false,""
+  local t,p,m10,m20,v0 = {},-1,"",""
   for l in r:lines() do
     l=l:gsub("^[%s%c]+",""):gsub("[%s%c]+$","")
-    if l==""
-    then a:write(eol) if v0 then v0="" end
+    if l=="" then a:write(eol) if v0 then v0="" end
     else
       local z=true
       for m0,m1,v,m2,s in l:gmatch("(<([/!%?%[]?)(%[?[%w_%-:]+)[^>]-([/!%?%-%]]?)>)([^<]*)") do
-        local j=m1=="/"
-        local k=j or m1==""
-        if k then if j0 and j then if i>0 then i=i-1 end elseif not (j0 or j) then i=i+1 end end
-        if m2~="" then j=true end
-        if k then j0=j end
-        if v0 and (v0~=v or (m1==m10 or m1=="")) then a:write(eol..srep(tab,i)) end
+        if m1=="/" then
+          for j=#t,1,-1 do
+            if t[j][1]==v then
+              p=t[j][2]
+              for i=#t,j,-1 do tremove(t,i) end
+              break
+            end
+          end
+        else
+          if m10=="" and m20=="" then p=p+1 end
+          if m2~="/" then tinsert(t,{v,p}) end
+        end
+        if v0 and (v~=v0 or (m1==m10 or m1=="")) then a:write(eol..srep(tab,p)) end
         s=s:gsub("[%s%c]+$","")
         a:write(m0..s)
-        v0,m10,z = v,m1,false
+        v0,m10,m20,z = v,m1,m2,false
       end
-      if z then a:write(eol..srep(tab,i)..l) if v0 then v0="" end end
+      if z then a:write(eol..srep(tab,p)..l) if v0 then v0="" end end
     end
   end
   a:close()
