@@ -34,6 +34,7 @@ action = function()
         if m2~="" then j=true end
         if k then j0=j end
         if v0 and (v0~=v or (m1==m10 or m1=="")) then a:write(eol..srep(tab,i)) end
+        s=s:gsub("[%s%c]+$","")
         a:write(m0..s)
         v0,m10,z = v,m1,false
       end
