@@ -260,9 +260,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarUpdate.lua](https://github.com/z0hm/far-scripts/blob/master/FarUpdate.lua "FarUpdate.lua")
 
-  *v1.9.1 (12961 bytes, changed 2023-03-11 09:06)*
+  *v1.9.1 (13137 bytes, changed 2023-12-23 09:34)*
 
-  *SHA-256 `4895cde65784ffd7d2f9b23bc8449e27a259418f3ebe79427efd1e7eb80d09a2`*
+  *SHA-256 `b8b7f723dafc228d9b529d158160e5f6d44561cf8e427720727adc016c8d2805`*
 
   Opening changelog and updating Far Manager to any version available on the site
 
@@ -293,9 +293,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [HTML-XML.OneLine-MultiLine.lua](https://github.com/z0hm/far-scripts/blob/master/HTML-XML.OneLine-MultiLine.lua "HTML-XML.OneLine-MultiLine.lua")
 
-  *v1.0.1.1 (1555 bytes, changed 2023-10-24 07:17)*
+  *v1.0.1.1 (1485 bytes, changed 2023-10-24 18:04)*
 
-  *SHA-256 `a03ceb347b061e92ba6cd68e19e63698c3e4c01d6a20daa609ecf6e2dd6fae60`*
+  *SHA-256 `7a4d07fbbc0371c7da85159d960fb7849d54617a263c98804f41e3ddea100ac0`*
 
   Visual improvement of HTML-XML code (pretty print), creates a new file name~2.ext
 

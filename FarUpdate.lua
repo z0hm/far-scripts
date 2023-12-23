@@ -45,7 +45,10 @@ local box={true,x64,1,false} -- [ Far ]   [ x64 ]   [ 1=7z 2=msi 3=pdb.7z ]   [ 
 local EGI,StringText,build,xbuild,XD,YD
 local WaitCloseFar='nircmd.exe waitprocess "'..farhome..'\\Far.exe"'
 local ProfileBackUp='\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..'" > '..tmp..'FarProfileBackUp.log'
-local StartFar=function() return '\nstart "" "'..farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe"' end
+local ConEmu=farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe'
+local FarLnk=farhome..'\\Far.lnk'
+local FarExe=farhome..'\\Far.exe'
+local StartFar=function() return '\nstart "" "'..(win.GetFileAttr(ConEmu) and  ConEmu or (win.GetFileAttr(FarLnk) and FarLnk or FarExe))..'"' end
 local FarProfileBackUpBat=tmp..'FarProfileBackUp.bat'
 local FarUpdateBat=tmp..'FarUpdate.bat'
 

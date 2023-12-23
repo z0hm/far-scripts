@@ -5,8 +5,6 @@
 
 local string=string
 local srep = string.rep
-local table=table
-local tinsert,tremove = table.insert,table.remove
 
 Macro {
 description="HTML-XML.OneLine->MultiLine"; area="Shell Editor";
