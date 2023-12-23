@@ -1,5 +1,5 @@
 ﻿-- FarUpdate.lua
--- v1.9.1
+-- v1.9.2
 -- Opening changelog and updating Far Manager to any version available on the site
 -- ![changelog](http://i.piccy.info/i9/ff857187ff978fdbe845befda7fbfa4e/1592909758/25212/1384833/2020_06_23_134723.png)
 -- Far: press **[ Reload last ]** to reload the list with files
