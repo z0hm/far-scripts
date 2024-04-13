@@ -1,5 +1,5 @@
-﻿-- FarExit.lua
--- v1.1.0.2
+-- FarExit.lua
+-- v1.1.0.3
 -- Extend Quit Far Dialog
 -- ![changelog](http://i.piccy.info/i9/c30733a554949540a04b6ec94d7c20b8/1620285331/7939/1427986/FarExit.png)
 -- Required: MessageX.lua in the modules folder
@@ -8,12 +8,14 @@
 local F = far.Flags
 local uGuidEditAskSaveId = win.Uuid(far.Guids.EditAskSaveId)
 local uGuidFarAskQuitId  = win.Uuid(far.Guids.FarAskQuitId)
+local GuidScreensSwitchId  = far.Guids.ScreensSwitchId
+local uGuidScreensSwitchId  = win.Uuid(far.Guids.ScreensSwitchId)
 local GuidFarExitId      = "FA70F0B0-AE94-4CB2-BB17-D9F8F6DEC66B"
 local uGuidFarExitId     = win.Uuid(GuidFarExitId)
 local bYES,bNO,bCANCEL,bSAVE,bEXIT = 4,5,6,1,2
 local FarExitFlag,FarExitCode,hDlg = true
 local key,desc = "0","Extend Quit Dialog"
-local viewers,editors,edmod = 0,0,0
+local dialogs,viewers,editors,edmod = 0,0,0,0
 
 local MessageX=require'MessageX'
 
@@ -21,14 +23,13 @@ local function Title() return viewers==0 and editors==0 and "Quit" or "Quit ["..
 
 local function Message()
   local ss,s = ""
-  if viewers>0 or editors>0 then
-    if viewers>0 then ss=ss.." Opened Viewer(s): "..viewers.."\n" end
-    if editors>0 then ss=ss.." Opened Editor(s): "..editors.."\n"
-      if edmod>0 then ss=ss.."<#ec>Unsaved Editor(s): "..edmod.."<#rr>\n" end
-    end
-    ss=ss.."\n"
+  if dialogs>0 then ss=ss.." Opened Dialog(s): "..dialogs.."\n" end
+  if viewers>0 then ss=ss.." Opened Viewer(s): "..viewers.."\n" end
+  if editors>0 then ss=ss.." Opened Editor(s): "..editors.."\n"
+    if edmod>0 then ss=ss.."<#ec>Unsaved Editor(s): "..edmod.."<#rr>\n" end
   end
-  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR?"..(viewers==0 and editors==0 and "" or " ") else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
+  if #ss>0 then ss=ss.."\n" end
+  if FarExitFlag then s,ss = "Exit",ss.."Do you want to quit FAR?" else s,ss = "Close",ss.."Do you want to close all viewers and editors?" end
   if viewers==0 and editors==0 then ss=ss.."\n" else ss=ss.."\n\n<#es>0<#rs> Quit or not" if edmod>0 then ss=ss.."                    " end end
   if edmod>0 then ss=ss.."\n<#es>1<#rs> <#sa>Save modified Editors and "..s.."<#sr>\n<#es>2<#rs> <#sc>"..(FarExitFlag and "Exit without saving Editors" or "Close Editors without saving").."   <#sr>\n<#es>3<#rs> Cancel                         " end
   return ss
@@ -53,12 +54,15 @@ return Event({
       id = id and id.Id or ""
       if id==uGuidFarAskQuitId then
         local windows=far.AdvControl(F.ACTL_GETWINDOWCOUNT,0,0)
-        viewers,editors,edmod,FarExitCode = 0,0,0,nil
+        dialogs,viewers,editors,edmod,FarExitCode = 0,0,0,0,nil
         for ii=1,windows do
           local info=far.AdvControl(F.ACTL_GETWINDOWINFO,ii,0)
-          if info and F.WTYPE_VIEWER==info.Type then viewers=viewers+1 end
-          if info and F.WTYPE_EDITOR==info.Type then editors=editors+1
-            if bit64.band(info.Flags,F.WIF_MODIFIED)==F.WIF_MODIFIED then edmod=edmod+1 end
+          if info then
+            if     F.WTYPE_DIALOG==info.Type then dialogs=dialogs+1
+            elseif F.WTYPE_VIEWER==info.Type then viewers=viewers+1
+            elseif F.WTYPE_EDITOR==info.Type then editors=editors+1
+              if bit64.band(info.Flags,F.WIF_MODIFIED)==F.WIF_MODIFIED then edmod=edmod+1 end
+            end
           end
         end
         if viewers==0 and editors==0 then FarExitFlag=true end
@@ -87,7 +91,7 @@ return Event({
       elseif id==uGuidEditAskSaveId and (FarExitCode==bSAVE or FarExitCode==bEXIT) then
         hDlg=param.hDlg
         far.SendDlgMessage(hDlg,F.DM_CLOSE,FarExitCode==bSAVE and bYES or (FarExitCode==bEXIT and bNO or bCANCEL),0)
-      elseif id==uGuidFarExitId then hDlg=param.hDlg
+      elseif id==uGuidFarExitId or id==uGuidScreensSwitchId then hDlg=param.hDlg
       end
     elseif hDlg and (viewers>0 or editors>0) and Area.Dialog and Dlg.Id==GuidFarExitId and event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT then
       if param.Param2.EventType==F.KEY_EVENT then
@@ -96,6 +100,14 @@ return Event({
           FarExitFlag=not FarExitFlag
           mf.postmacro(Keys,"F10 F10")
         end
+      end
+    elseif hDlg and Area.Dialog and Dlg.Id==GuidEditAskSaveId and FarExitCode==nil then
+      local EdExitCode=MessageX("File has been modified. Save?","Editor","!&Yes;&No;&Cancel","","",uGuidEditAskSaveId)
+      far.SendDlgMessage(param.hDlg,F.DM_CLOSE,EdExitCode==bSAVE and bYES or (EdExitCode==bEXIT and bNO or bCANCEL),0)
+    elseif hDlg and Area.Menu and Menu.Id==GuidScreensSwitchId and event==F.DE_DEFDLGPROCINIT and param.Msg==F.DN_CONTROLINPUT then
+      if param.Param2.EventType==F.KEY_EVENT then
+        local name=far.InputRecordToName(param.Param2)
+        if name=="Del" then mf.postmacro(Keys,"Enter F10 F12 End") end
       end
     end
     return false
