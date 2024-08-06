@@ -848,9 +848,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")
 
-  *v1.0.1 (2992 bytes, changed 2020-06-20 09:14)*
+  *v1.0.2 (3538 bytes, changed 2024-08-06 05:05)*
 
-  *SHA-256 `df78566a3629554de8d67b05feb9aa424db60357acf45db06e9894b85ef3fabd`*
+  *SHA-256 `0a956866e9e1ce795a6d9ae0a4175185aa432d82fd70bd2190f7b98eb7e4357c`*
 
   Create btpolicy.xml for uTorrent, with priority peering zone (example for Belarus users)
 
