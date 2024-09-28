@@ -1,15 +1,16 @@
 -- FarExit.lua
--- v1.1.0.3
+-- v1.1.0.4
 -- Extend Quit Far Dialog
 -- ![changelog](http://i.piccy.info/i9/c30733a554949540a04b6ec94d7c20b8/1620285331/7939/1427986/FarExit.png)
 -- Required: MessageX.lua in the modules folder
 -- Keys: F10
 
 local F = far.Flags
-local uGuidEditAskSaveId = win.Uuid(far.Guids.EditAskSaveId)
+local GuidEditAskSaveId = far.Guids.EditAskSaveId
+local uGuidEditAskSaveId = win.Uuid(GuidEditAskSaveId)
 local uGuidFarAskQuitId  = win.Uuid(far.Guids.FarAskQuitId)
 local GuidScreensSwitchId  = far.Guids.ScreensSwitchId
-local uGuidScreensSwitchId  = win.Uuid(far.Guids.ScreensSwitchId)
+local uGuidScreensSwitchId  = win.Uuid(GuidScreensSwitchId)
 local GuidFarExitId      = "FA70F0B0-AE94-4CB2-BB17-D9F8F6DEC66B"
 local uGuidFarExitId     = win.Uuid(GuidFarExitId)
 local bYES,bNO,bCANCEL,bSAVE,bEXIT = 4,5,6,1,2

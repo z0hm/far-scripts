@@ -241,9 +241,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [FarExit.lua](https://github.com/z0hm/far-scripts/blob/master/FarExit.lua "FarExit.lua")
 
-  *v1.1.0.3 (5721 bytes, changed 2024-04-13 08:46)*
+  *v1.1.0.4 (5760 bytes, changed 2024-09-28 18:16)*
 
-  *SHA-256 `2db53b5fc92c1c6546a276543c4e0a75dc03ec8209f76acbbaae3e35637cc3a2`*
+  *SHA-256 `cffb87d34d957deec87a74f52a0776f7b932f1e57fc30e24a8bf1a355af49e20`*
 
   Extend Quit Far Dialog
 
