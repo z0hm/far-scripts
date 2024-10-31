@@ -19,7 +19,7 @@
 # Url: http://albumplayer.ru/linux/english.html
 
 # init
-dns2ip=true  # use dns.google:443 
+dns2ip=true  # use dns.google:443
 apmode=true  # use auto select player
 apex=1  # use ap1
 home=/media
@@ -283,11 +283,11 @@ cdir(){
 
 steppl(){
   local tmp=$num
-  if [[ $oldnum =~ ^[np]$ ]]; then num=$lastnum; else num=$oldnum; fi
+  if [[ $oldnum =~ ^[-+np]$ ]]; then num=$lastnum; else num=$oldnum; fi
   if [[ $num =~ ^[0-9]+$ ]]
   then oldnum=$tmp
-    if   [ "$tmp" == "p" ]; then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; brk=true; else lnup; fi
-    elif [ "$tmp" == "n" ]; then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; brk=true; else lnup; fi
+    if   [[ "$tmp" =~ ^[-p]$ ]]; then if [ $num -gt 1 ] && ${arr2[$(($num-1))]}; then num=$(($num-1)); lastnum=$num; brk=true; else lnup; fi
+    elif [[ "$tmp" =~ ^[+n]$ ]]; then if [ $num -lt $last ] && ${arr2[$(($num+1))]}; then num=$(($num+1)); lastnum=$num; brk=true; else lnup; fi
     fi
   fi
 }
@@ -298,7 +298,7 @@ aqhelp(){
   echo -e "\n$gk l$wk  list files,$gk a$wk  show previous $pglen files,$gk z$wk  show next $pglen files$te"
   echo -e "$te nothing$wk  repeat last command,$gk r$wk  return to previous folder$te"
   echo -e "\n$gk .$wk  play all music files in folder,$gk s$wk  stop playback$te"
-  echo -e "$gk <num>$wk  play file <num>,$gk p$wk  play previous file,$gk n$wk  play next file$te"
+  echo -e "$gk <num>$wk  play file <num>,$gk -$wk or$gk p$wk  play previous file,$gk +$wk or$gk n$wk  play next file$te"
   echo -e "$gk <num>.<num>:<num>$wk or$gk <num>:<num>$wk  play file number <num> from min:sec$te"
   echo -e "$gk <num>.<num>$wk or$gk .<num>$wk  play track number <num> if cue sheet loaded$te"
   echo -e "\n$gk t$wk  show time and playing time,$gk tr<num>$wk  reset playback time$te"
@@ -435,7 +435,7 @@ do
   shpage
   while true #:cline
   do
-    if [ "$oldnum" != "r" ] && [ "$oldnum" != "n" ] && [ "$oldnum" != "p" ]; then oldnum=$num; fi
+    if [[ "$oldnum" =~ ^[^-+rnp]$ ]]; then oldnum=$num; fi
     prompt
     while read -p "$msg" num
     do
@@ -516,7 +516,7 @@ do
       elif [ "$num" == "d" ]; then echo; if $dns2ip; then dns2ip=false; echo -e "$yb dns2ip:$gb Off $te"; else dns2ip=true; echo -e "$yb dns2ip:$gb On $te"; fi
       elif [ "$num" == "z" -a $finish -lt $last ]; then echo; page=$(($page+1)); oldnum=$num; shpage
       elif [ "$num" == "a" -a $page -gt 0 ]; then echo; page=$(($page-1)); oldnum=$num; shpage
-      elif [[ $num =~ ^[np]$ ]]; then steppl; if $brk; then brk=false; break; fi
+      elif [[ $num =~ ^[-+np]$ ]]; then steppl; if $brk; then brk=false; break; fi
       elif [[ $num =~ ^[0-9]+$ ]] && [ $num -lt ${#arr0[*]} ]
       then oldnum=$((10#$num)); break
       else if $tight; then lnup; fi
