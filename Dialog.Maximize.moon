@@ -1,5 +1,5 @@
 -- Dialog.Maximize.moon
--- v1.1.11.5
+-- v1.1.11.6
 -- Resizing dialogs, aligning the positions of dialog elements
 -- Keys: F2 in dialogs or CtrlAltRight or CtrlAltLeft
 -- Url: https://forum.farmanager.com/viewtopic.php?p=148024#p148024
@@ -71,14 +71,19 @@ transform=
   [Uuid"6938029A-B71F-09EE-D09D-9982EE2B40BC"]: {1,3,4.3,15.3} -- Editor: Repeat
   [Uuid"DCDDDA35-A319-1B82-8410-36C04A1390B0"]: {1,3,5,10.3} -- Editor: Transliterate
   -- LFSearch/Shell
-  [Uuid"3CD8A0BB-8583-4769-BBBC-5B6667D13EF9"]: {1,3,5,6.3} -- Shell/Find
-  [Uuid"F7118D4A-FBC3-482E-A462-0167DF7CC346"]: {1,3,5,7,8.3,9.3,10.4,31.2,32.1,33.5} -- Shell/Replace
-  [Uuid"74D7F486-487D-40D0-9B25-B2BB06171D86"]: {1,3,5,7,8.3,9.3} -- Shell/Grep
-  [Uuid"AF8D7072-FF17-4407-9AF4-7323273BA899"]: {1,3,11,13,14.4,16.4,20.2,21.1,22.5,25,27} -- Shell/Rename
+  --[Uuid"3CD8A0BB-8583-4769-BBBC-5B6667D13EF9"]: {1,3,5,6.3} -- Shell/Find
+  [Uuid"3CD8A0BB-8583-4769-BBBC-5B6667D13EF9"]: {1,3,5} -- Shell/Find
+  --[Uuid"F7118D4A-FBC3-482E-A462-0167DF7CC346"]: {1,3,5,7,8.3,9.3,10.4,31.2,32.1,33.5} -- Shell/Replace
+  [Uuid"F7118D4A-FBC3-482E-A462-0167DF7CC346"]: {1,3,5,7,8.4,29.2,30.5,31.5} -- Shell/Replace
+  --[Uuid"74D7F486-487D-40D0-9B25-B2BB06171D86"]: {1,3,5,7,8.3,9.3} -- Shell/Grep
+  [Uuid"74D7F486-487D-40D0-9B25-B2BB06171D86"]: {1,3,5,7} -- Shell/Grep
+  [Uuid"AF8D7072-FF17-4407-9AF4-7323273BA899"]: {1,3,11,13,14.4,16.4,20.2,21.5,22.5,25,27} -- Shell/Rename
   -- LFSearch/Editor
-  [Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1,3,4.3,7.1,"8.12.F2.2.13",10.1,14.4,15.4,"16.6.1","19.10.20",25,27.2,28.1,29.5} -- Editor/Find
-  [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1,3,5,6.3,7.3,8.4,10.4,"14.10.9","15.16.9.11","17.10.9","20.12.3.1","21.10.20","22.10.20","23.6.1",32,34.2,35.5,36.5} -- Editor/Replace
-  [Uuid"87ED8B17-E2B2-47D0-896D-E2956F396F1A"]: {1,3,5,6.4,19.2,20.1,21.5} -- Editor/Multi-Line Replace
+  --[Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1,3,4.3,7.1,"8.12.F2.2.13",10.1,14.4,15.4,"16.6.1","19.10.20",25,27.2,28.1,29.5} -- Editor/Find
+  [Uuid"0B81C198-3E20-4339-A762-FFCBBC0C549C"]: {1,3,13.4,14.4,"15.6.1",24,26.2,27.5,28.5} -- Editor/Find
+  --[Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1,3,5,6.3,7.3,8.4,10.4,"14.10.9","15.16.9.11","17.10.9","20.12.3.1","21.10.20","22.10.20","23.6.1",32,34.2,35.5,36.5} -- Editor/Replace
+  [Uuid"FE62AEB9-E0A1-4ED3-8614-D146356F86FF"]: {1,3,5,6.4,8.4,19.4,20.4,"21.6.1",30,32.2,33.5,34.5} -- Editor/Replace
+  [Uuid"87ED8B17-E2B2-47D0-896D-E2956F396F1A"]: {1,3,5,6.4,19.2,20.5,21.5} -- Editor/Multi-Line Replace
   -- Editor Find
   [Uuid"A0562FC4-25FA-48DC-BA5E-48EFA639865F"]: {1,2.3,4,10.1} -- Find
   [Uuid"070544C7-E2F6-4E7B-B348-7583685B5647"]: {1,2.3,4,6,12.1,13.1} -- Replace
