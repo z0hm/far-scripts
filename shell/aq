@@ -307,8 +307,8 @@ aqhelp(){
   echo -e "\n$gk ap$wk  show active player,$gk ap0$wk  use auto select player,$gk d$wk  dns2ip On/Off$te"
   echo -e "$gk ap1$wk  use player without timeshift,$gk ap2$wk  use player with timeshift$te"
   echo -e "\n$gk ro<num>$wk  remount partition as RO,$gk rw<num>$wk  remount partition as RW$te"
-  echo -e "$gk cp<num>$wk  copy file to $home/$flash,$gk mv<num>$wk  move file to $home/$flash$te"
-  echo -e "$gk rm<num>$wk  remove file,$gk ex<num>$wk  execute file$te"
+  echo -e "$gk cp<num>$wk  copy file to $home/$flash,$gk ex<num>$wk  execute file$te"
+  echo -e "$gk mv<num>$wk  move file to $home/$flash,$gk rm<num>$wk  remove file$te"
 }
 
 apinfo(){
