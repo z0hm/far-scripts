@@ -48,7 +48,7 @@ local ProfileBackUp='\n7z.exe a -aoa -xr!CrashLogs "'..fp7z..'" "'..farprofile..
 local ConEmu=farhome..'\\ConEmu'..(box[2] and '64' or '')..'.exe'
 local FarLnk=farhome..'\\Far.lnk'
 local FarExe=farhome..'\\Far.exe'
-local StartFar=function() return '\nstart "" "'..(win.GetFileAttr(ConEmu) and  ConEmu or (win.GetFileAttr(FarLnk) and FarLnk or FarExe))..'"' end
+local StartFar=function() return '\nstart "" "'..(win.GetFileAttr(ConEmu) and  ConEmu or (win.GetFileAttr(FarLnk) and FarLnk or FarExe))..'"\nexit' end
 local FarProfileBackUpBat=tmp..'FarProfileBackUp.bat'
 local FarUpdateBat=tmp..'FarUpdate.bat'
 
@@ -73,7 +73,7 @@ local function FarUpdate(FileName)
   end
   s=s..'\n7z.exe x -aoa -o"'..farhome..'" -x!PluginSDK -xr@"'..tmp..'FarUpdExc.txt" "'..tmp..FileName..'" > '..tmp..'FarUpdate.log'
   if u then s=s..StartFar() end
-  fwrite(FarUpdateBat,s..'\nexit')
+  fwrite(FarUpdateBat,s)
   s='*Spa.lng\n*Sky.lng\n*Sky.hlf\n*Ger.lng\n*Ger.hlf\n*Hun.lng\n*Hun.hlf\n*Ita.lng\n*Pol.lng\n*Pol.hlf\n*.pol.*\n*Cze.lng\n*Cze.hlf\n*Ukr.lng\n*Ukr.hlf\n*Bel.lng\n*Bel.hlf\n*.bel.*\n*Lit.lng'
   if u then s=s..'\n*.map\n*.pdb' end
   fwrite(tmp..'FarUpdExc.txt',s)
