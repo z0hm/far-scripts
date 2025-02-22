@@ -1,5 +1,5 @@
 -- ChessKnight.lua
--- v0.9.2.3
+-- v0.9.2.4
 -- Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 -- ![Chess Knight](http://i.piccy.info/i9/e36cd250a4b8367f2253c06f4b77c386/1627298655/18083/1436873/2021_07_26_142058.png)
 -- Launch: in cmdline Far.exe: lua:@ChessKnight.lua
@@ -33,6 +33,10 @@ else
   local t={}
   for n in string.gmatch(answer,"%d+") do table.insert(t,tonumber(n)) end
   bx,by,x0,y0,ret0,log = unpack(t)
+  if x0<1 then x0=1 end
+  if y0<1 then y0=1 end
+  if x0>bx then x0=bx end
+  if y0>by then y0=by end
   if #t>6 then for i=7,#t do local s=tostring(t[i]) table.insert(holes,{tonumber(string.sub(s,1,#tostring(bx))),tonumber(string.sub(s,#tostring(bx)+1,#s))}) end end
 end
 ret0,log = ret0==1,log==1
@@ -65,8 +69,8 @@ local ttime=far.FarClock()
 -- порядок следования векторов в массиве определяет приоритет выбора клетки для хода среди клеток с одинаковым количеством доступных для движения векторов
 --local dx=ffi.new("int8_t[8]",{-1,-2,-2,-1, 1, 2, 2, 1})
 --local dy=ffi.new("int8_t[8]",{ 2, 1,-1,-2,-2,-1, 1, 2})
-local dx=ffi.new("const int8_t[8]",{-1,-1, 2,-2, 1, 1,-2, 2}) -- должны быть такими же как и в ChessKnight.exe
-local dy=ffi.new("const int8_t[8]",{ 2,-2, 1, 1,-2, 2,-1,-1}) -- должны быть такими же как и в ChessKnight.exe
+local dd=ffi.new("const int8_t[8]",{-1,-1, 2,-2, 1, 1,-2, 2}) -- должны быть такими же как и в ChessKnight.exe
+--local dy=ffi.new("const int8_t[8]",{ 2,-2, 1, 1,-2, 2,-1,-1}) -- должны быть такими же как и в ChessKnight.exe
 -- создаём чистую доску, свободная клетка содержит -1, либо вектор хода с неё 0-7, либо дыру 8
 local function array(st,...) st=st..string.rep('[$]',#{...}) local array_ct=ffi.typeof(st,...) return array_ct({{-1}}) end
 local t00=array("int8_t" ,bx,by) -- слой векторов с дырами
@@ -132,12 +136,12 @@ do
   local function around(x,y)
     local tl=-1
     for i=0,7 do
-      local x1,y1 = x+dx[i],y+dy[i]
+      local x1,y1 = x+dd[i],y+dd[7-i]
       if x1>=0 and x1<=bx and y1>=0 and y1<=by and t00[x1][y1]<0 then
         tl=tl+1
         local a=0
         for j=0,7 do
-          local x2,y2 = x1+dx[j],y1+dy[j]
+          local x2,y2 = x1+dd[j],y1+dd[7-j]
           if x2>=0 and x2<=bx and y2>=0 and y2<=by and t00[x2][y2]<0 then a=a+1 end
         end
         ta[tl],ti[tl] = a,i
@@ -156,7 +160,7 @@ do
   end
   
   local cn,cl = 0,around(x,y) -- индекс клетки финиша, количество клеток на расстоянии 1 хода от старта t1s=1
-  for i=cl,0,-1 do cx[i],cy[i] = x+dx[ti[i]],y+dy[ti[i]] end -- массив координат клеток на расстоянии 1 хода от старта t1s=1
+  for i=cl,0,-1 do cx[i],cy[i] = x+dd[ti[i]],y+dd[7-ti[i]] end -- массив координат клеток на расстоянии 1 хода от старта t1s=1
   
   -- logging max board 15x15 - xy stored in 1 byte
   local lshift,pB,buf_size,fname,name_out,mode_out,f_out,obuf = bit.lshift
@@ -179,10 +183,10 @@ do
   if t1v>=0 then
     ffi_copy(Tree[t1s],ti,t1v+1) -- записываем вектора в дерево
     -- сохраняем указатель на активный (последний) вектор
-    tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
+    tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dd[v],y+dd[7-v] -- получаем вектор и координаты следующей клетки
     if ret and x2==cx[cn] and y2==cy[cn] and t1s<full1 then -- вектор указывает на клетку финиша?
       t1v=t1v-1 -- перемещаем указатель на предыдущий вектор
-      if t1v<0 then goto ROLLBACK else tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] end -- больше векторов нет?
+      if t1v<0 then goto ROLLBACK else tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dd[v],y+dd[7-v] end -- больше векторов нет?
     end
     t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходим на следующую клетку
     goto START -- следующий ход
@@ -200,14 +204,14 @@ do
     end
     t00[x][y],t01[x][y] = -1,-1 -- освобождаем клетку x,y
     t1v=tv[t1s] -- восстанавливаем указатель на приведший на неё вектор
-    v=Tree[t1s][t1v] x,y = x-dx[v],y-dy[v] rb=rb+1 -- получаем вектор и возвращаемся на клетку с которой пришли
+    v=Tree[t1s][t1v] x,y = x-dd[v],y-dd[7-v] rb=rb+1 -- получаем вектор и возвращаемся на клетку с которой пришли
     if log then if pB<buf_size then obuf[pB]=lshift(x+1,4)+y+1 pB=pB+1 else C.fwrite(obuf,1,pB,f_out) obuf[0]=lshift(x+1,4)+y+1 pB=1 end end -- logging
     t1v=t1v-1 -- выбираем другой вектор хода
   until t1v>=0
-  tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] -- получаем вектор и координаты следующей клетки
+  tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dd[v],y+dd[7-v] -- получаем вектор и координаты следующей клетки
   if ret and x2==cx[cn] and y2==cy[cn] then -- вектор указывает на клетку финиша?
     t1v=t1v-1 -- перемещаем указатель на предыдущий вектор
-    if t1v<0 then goto ROLLBACK else tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dx[v],y+dy[v] end -- больше векторов нет?
+    if t1v<0 then goto ROLLBACK else tv[t1s]=t1v v=Tree[t1s][t1v] x2,y2 = x+dd[v],y+dd[7-v] end -- больше векторов нет?
   end
   t00[x][y],t01[x][y] = v,t1s x,y = x2,y2 fw,t1s = fw+1,t1s+1 -- переходим на следующую клетку
   goto START -- следующий ход
@@ -218,7 +222,7 @@ end
 ::RESULTS::
 ttime = math.floor((far.FarClock()-ttime)/1000)/1000
 -- Вывод результатов на экран и в %TEMP%\ChessKnight.txt
-local function chk(x,y) for i=0,7 do if x+dx[i]==x0 and y+dy[i]==y0 then return true end end return false end
+local function chk(x,y) for i=0,7 do if x+dd[i]==x0 and y+dd[7-i]==y0 then return true end end return false end
 bx,by,x0,y0,full = bx+1,by+1,x0+1,y0+1,full+1 -- align from 0 to 1
 local s0="Board: "..bx.."x"..by.."\nHoles: "..holes_show().."\nStart: "..string_format(fbx,x0)..string_format(fby,y0).."\nClosed path: "..(ret0 and "yes" or "no").."\nLogging: "..(log and "yes" or "no")
 s0=s0.."\n\nSolution: "..(status==1 and "found " or (status==2 and "partially found " or "not found ")).."\nVisited squares: "..(t1s+1).."/"..full.."\nTime: "..ttime.." s\n"
@@ -229,7 +233,7 @@ if not variants then vs,variants = true,0 end
 for i=0,t1s-1 do
   t1v=tv[i] v=Tree[i][t1v]
   if vs then variants=variants+t1v+1 end
-  x2,y2 = x2+dx[v],y2+dy[v]
+  x2,y2 = x2+dd[v],y2+dd[7-v]
   s1=s1.." "..string_format(fbx,x2)..string_format(fby,y2)
   local s=string_format(" %02X  %02X",i,tv[i]) for j=0,7 do s=s..string_format(" %02X",Tree[i][j]) end s4=s4..s.."\n"
 end

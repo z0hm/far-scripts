@@ -53,9 +53,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
 
-  *v0.9.2.1 (28275 bytes, changed 2021-08-21 07:46)*
+  *v0.9.2.4 (24141 bytes, changed 2025-02-22 10:28)*
 
-  *SHA-256 `7d72d9df2e16681075c9b4dc1516f2c353f223e70b5d2933e30d6ed0e8af6181`*
+  *SHA-256 `87dadb22c7764c1767dbe3f3fcef1a8d649b4df49876bff7eace9cbd1fe9e177`*
 
   For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 
@@ -66,9 +66,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.2.3 (15821 bytes, changed 2022-07-10 04:50)*
+  *v0.9.2.4 (15943 bytes, changed 2025-02-22 11:10)*
 
-  *SHA-256 `4b1de7d8e27884324adf62065e6d406dd5dcdf19024b3dc5418d6c7571c82e10`*
+  *SHA-256 `1aa381485d7b5de1182f51af91eaaf3841ffa04fcb8c15ac445cae6ed20d84f6`*
 
   Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 
