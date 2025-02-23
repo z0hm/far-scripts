@@ -53,9 +53,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.c](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.c "ChessKnight.c")
 
-  *v0.9.2.4 (24147 bytes, changed 2025-02-22 17:43)*
+  *v0.9.2.4 (24115 bytes, changed 2025-02-23 15:22)*
 
-  *SHA-256 `5806783d5146f1f2415efed81ff9728d6b8198dd07cb8a16243f4d4760b95dd3`*
+  *SHA-256 `1c3801df371974959e06a816ea84f8f80cad9dd94c068e6ada67f870a5678697`*
 
   For fast find solution, put the compiled ChessKnight.exe to one folder with ChessKnight.lua
 

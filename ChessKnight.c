@@ -146,11 +146,9 @@ int main(int argc, char *argv[])
         for(int8_t i1=cl; i1>0; i1--)
         {
           int8_t i0=i1-1;
-          if(ta[i1]>ta[i0])
+          if(ta[i0]<ta[i1])
           {
-            uint8_t tmp;
-            tmp=ta[i0]; ta[i0]=ta[i1]; ta[i1]=tmp;
-            tmp=ti[i0]; ti[i0]=ti[i1]; ti[i1]=tmp;
+            uint8_t tmp1=ta[i0]; uint8_t tmp2=ti[i0]; ta[i0]=ta[i1]; ti[i0]=ti[i1]; ta[i1]=tmp1; ti[i1]=tmp2;
           }
           else break;
         }
@@ -488,8 +486,7 @@ int main(int argc, char *argv[])
           int8_t i1=i0+1; // i1 must be uint8_t, but int8_t faster - O3 work strange
           if(ta[i0]<ta[i1])
           {
-            uint8_t tmp1=ta[i1]; ta[i1]=ta[i0]; ta[i0]=tmp1;
-            uint8_t tmp2=ti[i1]; ti[i1]=ti[i0]; ti[i0]=tmp2;
+            uint8_t tmp1=ta[i1]; uint8_t tmp2=ti[i1]; ta[i1]=ta[i0]; ti[i1]=ti[i0]; ta[i0]=tmp1; ti[i0]=tmp2;
           }
         }
       }
