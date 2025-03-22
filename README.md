@@ -66,9 +66,9 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [ChessKnight.lua](https://github.com/z0hm/far-scripts/blob/master/ChessKnight.lua "ChessKnight.lua")
 
-  *v0.9.2.4 (15943 bytes, changed 2025-02-22 11:10)*
+  *v0.9.2.4 (16006 bytes, changed 2025-03-05 08:49)*
 
-  *SHA-256 `1aa381485d7b5de1182f51af91eaaf3841ffa04fcb8c15ac445cae6ed20d84f6`*
+  *SHA-256 `9ee9debacac8475cd41a250791461e945d36f6217ffa525b8133b9b5a5ad614f`*
 
   Finding the path of the chess knight. The path can be closed. The chessboard can be up to 127x127 in size, with any aspect ratio. Rules: previously visited squares and squares with holes are not available for moving.
 
@@ -848,13 +848,13 @@ a very wide range of tasks using the Far and Windows API's.
 
 ## [btpolicy.xml.lua](https://github.com/z0hm/far-scripts/blob/master/btpolicy.xml.lua "btpolicy.xml.lua")
 
-  *v1.0.2 (3538 bytes, changed 2024-08-06 05:05)*
+  *v1.0.3 (3840 bytes, changed 2025-03-22 10:03)*
 
-  *SHA-256 `0a956866e9e1ce795a6d9ae0a4175185aa432d82fd70bd2190f7b98eb7e4357c`*
+  *SHA-256 `ee30a9f730ba801065d621b9954748f21421f91f73b4c3d0b2df823d0d411d20`*
 
   Create btpolicy.xml for uTorrent, with priority peering zone (example for Belarus users)
 
-  Keys: launch from Macro Browser alt.
+  Launch: in cmdline Far.exe: lua:@btpolicy.xml.lua or lfjit.exe btpolicy.xml.lua
 
 
 
